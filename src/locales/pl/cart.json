@@ -1,0 +1,12 @@
+{
+  "heading": "Koszyk",
+  "empty": {
+    "title": "Twój koszyk jest pusty"
+  },
+  "summary": {
+    "itemCount_one": "{{count}} produkt",
+    "itemCount_few": "{{count}} produkty",
+    "itemCount_many": "{{count}} produktów",
+    "itemCount_other": "{{count}} produktu"
+  }
+}

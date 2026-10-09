@@ -1,0 +1,10 @@
+{
+  "heading": "Cart",
+  "empty": {
+    "title": "Your cart is empty"
+  },
+  "summary": {
+    "itemCount_one": "{{count}} item",
+    "itemCount_other": "{{count}} items"
+  }
+}

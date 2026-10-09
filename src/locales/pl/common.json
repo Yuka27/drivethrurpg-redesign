@@ -1,0 +1,148 @@
+{
+  "brand": {
+    "homeLink": "DriveThruRPG – strona główna"
+  },
+  "actions": {
+    "opensInNewTab": "(otwiera się w nowej karcie)",
+    "tryAgain": "Spróbuj ponownie",
+    "backHome": "Wróć na stronę główną"
+  },
+  "header": {
+    "search": {
+      "label": "Szukaj tytułów",
+      "placeholder": "Wpisz, aby wyszukać..."
+    },
+    "currency": "Waluta",
+    "language": "Język",
+    "aiContent": {
+      "label": "AI",
+      "toggle": "Pokazuj treści AI",
+      "shown": "Treści AI są widoczne",
+      "hidden": "Treści AI są ukryte"
+    },
+    "theme": {
+      "switchToLight": "Przełącz na jasny motyw",
+      "switchToDark": "Przełącz na ciemny motyw"
+    },
+    "myLibrary": "Moja biblioteka",
+    "wishlist": {
+      "label": "Lista życzeń",
+      "withCount_one": "Lista życzeń, {{count}} pozycja",
+      "withCount_few": "Lista życzeń, {{count}} pozycje",
+      "withCount_many": "Lista życzeń, {{count}} pozycji",
+      "withCount_other": "Lista życzeń, {{count}} pozycji"
+    },
+    "notifications": {
+      "label": "Powiadomienia",
+      "withCount_one": "Powiadomienia, {{count}} nieprzeczytane",
+      "withCount_few": "Powiadomienia, {{count}} nieprzeczytane",
+      "withCount_many": "Powiadomienia, {{count}} nieprzeczytanych",
+      "withCount_other": "Powiadomienia, {{count}} nieprzeczytanych"
+    },
+    "cart": {
+      "label": "Koszyk",
+      "withCount_one": "Koszyk, {{count}} produkt",
+      "withCount_few": "Koszyk, {{count}} produkty",
+      "withCount_many": "Koszyk, {{count}} produktów",
+      "withCount_other": "Koszyk, {{count}} produktu"
+    },
+    "login": "Zaloguj się",
+    "loggingIn": "Logowanie…"
+  },
+  "account": {
+    "tooltip": "Konto",
+    "menuFor": "Menu konta: {{name}}",
+    "settings": "Ustawienia konta",
+    "preferences": "Preferencje",
+    "orders": "Zamówienia",
+    "following": "Obserwowane",
+    "getTheApp": "Pobierz aplikację",
+    "logout": "Wyloguj się",
+    "loggingOut": "Wylogowywanie…"
+  },
+  "menu": {
+    "open": "Otwórz menu",
+    "close": "Zamknij menu",
+    "title": "Menu",
+    "descriptionGuest": "Preferencje strony i logowanie",
+    "descriptionUser": "Preferencje strony i Twoje konto",
+    "preferences": "Preferencje",
+    "currency": "Waluta",
+    "language": "Język",
+    "theme": "Motyw",
+    "themeLight": "Jasny",
+    "themeDark": "Ciemny",
+    "aiContent": "Treści AI",
+    "login": "Zaloguj się",
+    "newHere": "Pierwszy raz tutaj?",
+    "createAccount": "Załóż konto"
+  },
+  "footer": {
+    "otherSites": "Nasze inne serwisy",
+    "legalNav": "Informacje prawne i kanały",
+    "socialNav": "Media społecznościowe",
+    "legal": {
+      "privacyPolicy": "Polityka prywatności",
+      "bugBounty": "Program Bug Bounty",
+      "productRss": "Kanał RSS nowości",
+      "newsletterRss": "Kanał RSS newslettera"
+    },
+    "dungeonScrawl": {
+      "createMaps": "Twórz mapy RPG w kilka minut",
+      "createMap": "Stwórz mapę"
+    },
+    "moreSystems_one": "+{{count}} system więcej",
+    "moreSystems_few": "+{{count}} systemy więcej",
+    "moreSystems_many": "+{{count}} systemów więcej",
+    "moreSystems_other": "+{{count}} systemu więcej",
+    "showLess": "Pokaż mniej",
+    "copyright": "© Roll20, LLC — Wszystkie nazwy produktów i firm są znakami towarowymi lub zastrzeżonymi znakami towarowymi ich właścicieli."
+  },
+  "newsletter": {
+    "heading": "Otrzymuj nowości na skrzynkę",
+    "hint": "Bez spamu – wypisz się, kiedy chcesz",
+    "emailLabel": "Adres e-mail",
+    "emailPlaceholder": "twoj@email.pl",
+    "subscribe": "Zapisz się",
+    "subscribing": "Zapisywanie…",
+    "success": "Zapisano. Wypatruj nowości w skrzynce."
+  },
+  "preferences": {
+    "saveFailed": "Nie udało się zapisać preferencji na koncie.",
+    "saveFailedDetail": "Nadal obowiązują na tym urządzeniu."
+  },
+  "auth": {
+    "loginFailed": "Nie udało się zalogować. Spróbuj ponownie.",
+    "logoutFailed": "Nie udało się wylogować. Spróbuj ponownie."
+  },
+  "pages": {
+    "notFound": {
+      "title": "Krytyczna porażka",
+      "body": "Ta strona nie istnieje."
+    },
+    "error": {
+      "title": "Coś poszło nie tak",
+      "unexpected": "Nieoczekiwany błąd"
+    }
+  },
+  "errors": {
+    "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+    "invalid_credentials": "Nieprawidłowy e-mail lub hasło.",
+    "account_locked": "Twoje konto jest zablokowane. Zresetuj hasło, aby je odblokować.",
+    "session_expired": "Zaloguj się ponownie.",
+    "email_taken": "Konto z tym adresem e-mail już istnieje.",
+    "weak_password": "Hasło musi mieć co najmniej 10 znaków.",
+    "invalid_email": "Podaj prawidłowy adres e-mail.",
+    "gift_expired": "Ten prezent wygasł.",
+    "gift_not_found": "Nie znaleźliśmy tego prezentu.",
+    "promo_invalid": "Ten kod promocyjny jest nieprawidłowy.",
+    "promo_expired": "Ten kod promocyjny wygasł.",
+    "payment_declined": "Płatność została odrzucona. Wybierz inną metodę płatności.",
+    "rate_limited": "Zbyt wiele prób. Odczekaj chwilę i spróbuj ponownie.",
+    "not_found": "Nie znaleźliśmy tego, czego szukasz.",
+    "unavailable": "Usługa jest teraz niedostępna. Spróbuj ponownie za chwilę."
+  },
+  "toasts": {
+    "region": "Powiadomienia"
+  }
+}

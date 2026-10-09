@@ -1,0 +1,140 @@
+{
+  "brand": {
+    "homeLink": "DriveThruRPG home"
+  },
+  "actions": {
+    "opensInNewTab": "(opens in a new tab)",
+    "tryAgain": "Try again",
+    "backHome": "Back to home"
+  },
+  "header": {
+    "search": {
+      "label": "Search titles",
+      "placeholder": "Type to search..."
+    },
+    "currency": "Currency",
+    "language": "Language",
+    "aiContent": {
+      "label": "AI",
+      "toggle": "Show AI content",
+      "shown": "AI content shown",
+      "hidden": "AI content hidden"
+    },
+    "theme": {
+      "switchToLight": "Switch to light theme",
+      "switchToDark": "Switch to dark theme"
+    },
+    "myLibrary": "My Library",
+    "wishlist": {
+      "label": "Wishlist",
+      "withCount_one": "Wishlist, {{count}} item",
+      "withCount_other": "Wishlist, {{count}} items"
+    },
+    "notifications": {
+      "label": "Notifications",
+      "withCount_one": "Notifications, {{count}} unread",
+      "withCount_other": "Notifications, {{count}} unread"
+    },
+    "cart": {
+      "label": "Cart",
+      "withCount_one": "Cart, {{count}} item",
+      "withCount_other": "Cart, {{count}} items"
+    },
+    "login": "Log In",
+    "loggingIn": "Logging in…"
+  },
+  "account": {
+    "tooltip": "Account",
+    "menuFor": "Account menu for {{name}}",
+    "settings": "Account settings",
+    "preferences": "Preferences",
+    "orders": "Orders",
+    "following": "Following",
+    "getTheApp": "Get the app",
+    "logout": "Log out",
+    "loggingOut": "Logging out…"
+  },
+  "menu": {
+    "open": "Open menu",
+    "close": "Close menu",
+    "title": "Menu",
+    "descriptionGuest": "Site preferences and sign in",
+    "descriptionUser": "Site preferences and your account",
+    "preferences": "Preferences",
+    "currency": "Currency",
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "aiContent": "AI content",
+    "login": "Log in",
+    "newHere": "New here?",
+    "createAccount": "Create an account"
+  },
+  "footer": {
+    "otherSites": "Our other sites",
+    "legalNav": "Legal and feeds",
+    "socialNav": "Social media",
+    "legal": {
+      "privacyPolicy": "Privacy Policy",
+      "bugBounty": "Bug Bounty Program",
+      "productRss": "New Product RSS Feed",
+      "newsletterRss": "Newsletter RSS Feed"
+    },
+    "dungeonScrawl": {
+      "createMaps": "Create RPG Maps in Minutes",
+      "createMap": "Create a Map"
+    },
+    "moreSystems_one": "+{{count}} more system",
+    "moreSystems_other": "+{{count}} more systems",
+    "showLess": "Show less",
+    "copyright": "© Roll20, LLC — All product and company names are trademarks or registered trademarks of their respective holders."
+  },
+  "newsletter": {
+    "heading": "Get new releases in your inbox",
+    "hint": "No spam - unsubscribe anyway",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "your@email.com",
+    "subscribe": "Subscribe",
+    "subscribing": "Subscribing…",
+    "success": "You're subscribed. Watch your inbox for new releases."
+  },
+  "preferences": {
+    "saveFailed": "Could not save your preferences to your account.",
+    "saveFailedDetail": "They are still applied on this device."
+  },
+  "auth": {
+    "loginFailed": "Could not log you in. Please try again.",
+    "logoutFailed": "Could not log you out. Please try again."
+  },
+  "pages": {
+    "notFound": {
+      "title": "Critical miss",
+      "body": "This page doesn't exist."
+    },
+    "error": {
+      "title": "Something went wrong",
+      "unexpected": "Unexpected error"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "invalid_credentials": "Wrong email or password.",
+    "account_locked": "Your account is locked. Reset your password to unlock it.",
+    "session_expired": "Please sign in again.",
+    "email_taken": "An account with this email already exists.",
+    "weak_password": "Use at least 10 characters for your password.",
+    "invalid_email": "Enter a valid email address.",
+    "gift_expired": "This gift has expired.",
+    "gift_not_found": "We couldn't find this gift.",
+    "promo_invalid": "This promo code isn't valid.",
+    "promo_expired": "This promo code has expired.",
+    "payment_declined": "Your payment was declined. Try another payment method.",
+    "rate_limited": "Too many attempts. Please wait a moment and try again.",
+    "not_found": "We couldn't find what you were looking for.",
+    "unavailable": "The service is unavailable right now. Please try again shortly."
+  },
+  "toasts": {
+    "region": "Notifications"
+  }
+}

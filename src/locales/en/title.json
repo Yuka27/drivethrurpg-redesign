@@ -1,0 +1,6 @@
+{
+  "contentLanguage": {
+    "shownIn": "Shown in {{language}}",
+    "cardTooltip": "This title is shown in {{language}}"
+  }
+}
