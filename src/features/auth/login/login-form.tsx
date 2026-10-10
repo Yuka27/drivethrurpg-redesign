@@ -5,8 +5,8 @@ import type { ElementType } from 'react'
 import { useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { CartContextNote } from '../shared/CartContextNote'
-import { SocialButtons } from '../shared/SocialButtons'
+import { CartContextNote } from '../shared/cart-context-note'
+import { SocialButtons } from '../shared/social-buttons'
 import {
   LoginRequestSchema,
   useLogin,

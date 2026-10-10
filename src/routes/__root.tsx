@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useAuthSync } from '@/api/auth'
 import { usePreferencesSync } from '@/api/preferences'
-import { AuthDialog } from '@/features/auth/AuthDialog'
+import { AuthDialog } from '@/features/auth/auth-dialog'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 

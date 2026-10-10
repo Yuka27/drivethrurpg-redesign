@@ -1,8 +1,8 @@
 import { useRouter } from '@tanstack/react-router'
 
-import { BenefitsPanel } from './BenefitsPanel'
-import { RegisterForm } from './RegisterForm'
-import { RegisterSuccess } from './RegisterSuccess'
+import { BenefitsPanel } from './benefits-panel'
+import { RegisterForm } from './register-form'
+import { RegisterSuccess } from './register-success'
 import { useRegisterFlow } from './use-register-flow'
 
 /**

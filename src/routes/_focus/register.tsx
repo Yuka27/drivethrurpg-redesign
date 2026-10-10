@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { z } from 'zod'
 
 import { useMe } from '@/api/me'
-import { RegisterPage } from '@/features/auth/register/RegisterPage'
+import { RegisterPage } from '@/features/auth/register/register-page'
 import { safeRedirect } from '@/lib/search-params'
 
 const RegisterSearchSchema = z.object({

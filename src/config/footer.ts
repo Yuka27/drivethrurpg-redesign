@@ -38,7 +38,7 @@ export type BrandLink = {
 }
 
 /** Sister-site logos in the strip above the footer (order = left to right). */
-export const brandLinks: BrandLink[] = [
+export const brandLinks: Array<BrandLink> = [
   {
     label: 'DriveThruComics',
     href: 'https://www.drivethrucomics.com',
@@ -98,7 +98,7 @@ export const brandLinks: BrandLink[] = [
 ]
 
 /** Row of small links next to the newsletter form. */
-export const legalLinks: FooterLink[] = [
+export const legalLinks: Array<FooterLink> = [
   { labelKey: 'footer.legal.privacyPolicy', href: TODO_URL },
   { labelKey: 'footer.legal.bugBounty', href: TODO_URL },
   { labelKey: 'footer.legal.productRss', href: TODO_URL },
@@ -109,14 +109,14 @@ export type LinkGroup = {
   /** brand name, never translated */
   title: string
   titleHref?: string
-  links: FooterLink[]
+  links: Array<FooterLink>
   /** show only the first N links, rest behind "+M more systems" / "Show less" */
   previewCount?: number
   /** plural key for the "+M more" button, called with { count: hidden links } */
   moreKey?: FooterTextKey
 }
 
-export const linkGroups: LinkGroup[] = [
+export const linkGroups: Array<LinkGroup> = [
   {
     title: 'Roll20',
     titleHref: 'https://roll20.net',
@@ -176,7 +176,7 @@ export const linkGroups: LinkGroup[] = [
   },
 ]
 
-export const socialLinks: FooterLink[] = [
+export const socialLinks: Array<FooterLink> = [
   { label: 'Facebook', href: TODO_URL, external: true },
   { label: 'Twitter', href: TODO_URL, external: true },
   { label: 'Bluesky', href: TODO_URL, external: true },

@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { z } from 'zod'
 
-import { LoginForm } from '@/features/auth/login/LoginForm'
+import { LoginForm } from '@/features/auth/login/login-form'
 import { prefillEmail, safeRedirect } from '@/lib/search-params'
 
 const LoginSearchSchema = z.object({

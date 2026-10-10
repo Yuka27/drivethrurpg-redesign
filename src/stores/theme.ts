@@ -34,7 +34,7 @@ export const useThemeStore = create<ThemeState>()((set) => ({
   theme: initialTheme,
   resolvedTheme: resolve(initialTheme),
   setTheme: (theme) => {
-    void safeLocalStorage.setItem(STORAGE_KEY, theme)
+    safeLocalStorage.setItem(STORAGE_KEY, theme)
     set({ theme, resolvedTheme: resolve(theme) })
   },
 }))
