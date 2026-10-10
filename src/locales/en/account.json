@@ -164,5 +164,33 @@
       "language": "Language",
       "currency": "Currency"
     }
+  },
+  "following": {
+    "title": "Following",
+    "subtitle": "Manage the publishers and game lines you follow, and how you hear about them.",
+    "search": "Search publishers you follow",
+    "searchPlaceholder": "Search",
+    "sort": "Sort",
+    "sortDisplay": "Sort: {{option}}",
+    "sortRecent": "Recently added",
+    "sortName": "Name (A–Z)",
+    "sortTitles": "Most titles",
+    "new_one": "{{count}} new",
+    "new_other": "{{count}} new",
+    "newLabel_one": "{{count}} new title",
+    "newLabel_other": "{{count}} new titles",
+    "meta_one": "{{count}} title · followed {{date}}",
+    "meta_other": "{{count}} titles · followed {{date}}",
+    "email": "Email me about new releases",
+    "emailLabel": "Email me about new releases from {{name}}",
+    "menu": "Following",
+    "menuLabel": "Following {{name}}",
+    "viewPublisher": "View publisher",
+    "unfollow": "Unfollow",
+    "unfollowed": "You unfollowed {{name}}.",
+    "undo": "Undo",
+    "empty": "You don’t follow any publishers yet.",
+    "emptyHint": "Follow a publisher from its page to hear about new releases.",
+    "noMatches": "No publishers match “{{query}}”."
   }
 }

@@ -55,6 +55,11 @@ export const queryKeys = {
     detail: (id: string, prefs: Preferences) =>
       ['publishers', 'detail', id, prefs] as const,
   },
+  following: {
+    all: ['following'] as const,
+    list: (prefs: Preferences) => ['following', 'list', prefs] as const,
+    feed: (prefs: Preferences) => ['following', 'feed', prefs] as const,
+  },
   cart: (prefs: Preferences) => ['cart', prefs] as const,
   wishlist: (prefs: Preferences) => ['wishlist', prefs] as const,
   library: (filters: Record<string, unknown>, prefs: Preferences) =>
