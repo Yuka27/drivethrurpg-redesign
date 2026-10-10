@@ -14,9 +14,11 @@
     "format": "vp fmt . && vp lint --fix",
     "check": "vp fmt --check .",
     "test": "vp test run",
-    "test:watch": "vp test",
+    "test:watch": "vp test watch",
     "i18n:check": "node scripts/i18n-check.mjs",
-    "prepare": "vp config"
+    "prepare": "vp config",
+    "test:ui": "vp test watch --ui --coverage",
+    "test:coverage": "vp test run --coverage"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -45,11 +47,18 @@
   },
   "devDependencies": {
     "@tanstack/devtools-vite": "0.8.5",
+    "@tanstack/intent": "^0.5.5",
     "@tanstack/router-plugin": "1.168.42",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "5.0.3",
+    "@vitest/ui": "5.0.3",
     "jsdom": "^30.1.2",
     "typescript": "^6.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@1.1.0",

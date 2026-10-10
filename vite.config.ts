@@ -265,6 +265,21 @@ const config = defineConfig({
   test: {
     environment: 'jsdom',
     include: ['src/**/*.test.{ts,tsx}'],
+    setupFiles: ['src/test/setup.ts'],
+    // off by default; `--coverage` turns it on (test:coverage, test:ui).
+    // The html report is what the Vitest UI shows in its coverage panel.
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.test.{ts,tsx}',
+        'src/**/*.d.ts',
+        'src/test/**',
+        'src/routeTree.gen.ts',
+        'src/main.tsx',
+      ],
+      reporter: ['text-summary', 'html'],
+    },
   },
   resolve: { tsconfigPaths: true },
   plugins: lazyPlugins(() => [

@@ -91,9 +91,10 @@ function Search() {
 - `npm run typecheck`: `tsc --noEmit`.
 - `npm run lint`: Oxlint via `vp lint`, type-aware. `npm run format` formats and applies lint fixes.
 - `npm run check`: formatting check only (`vp fmt --check`).
-- `npm test` / `npm run test:watch`: Vitest with jsdom; tests match `src/**/*.test.{ts,tsx}`.
+- `npm test` / `npm run test:watch` / `npm run test:ui`: one run, watch mode, or watch mode with coverage and the Vitest UI in the browser. `npm run test:coverage` runs once with coverage (summary in the terminal, HTML report in `coverage/`). `@vitest/ui` and `@vitest/coverage-v8` stay pinned to the Vitest version bundled with `vite-plus`. Vitest runs with jsdom; tests match `src/**/*.test.{ts,tsx}` and sit next to the code they test. Import test APIs from `vite-plus/test`, not `vitest`. Components are tested with Testing Library (`@testing-library/react`, `user-event`, `jest-dom` matchers), querying by role and visible English text.
+- Test helpers in `src/test/`: `setup.ts` (runs before every file: jest-dom, English i18n, jsdom stubs, cleanup of storage and the auth token), `render.tsx` (`renderWithProviders`: fresh React Query cache plus a memory router so `<Link>` works), and `api.ts` (`mockApi` fakes `fetch` per `"METHOD /path"`, plus `apiError`, `session`, `user` and `cart` fixtures). Never let tests hit the real API.
 - `npm run i18n:check`: validates locale files.
 - A pre-commit hook (`.vite-hooks/pre-commit`, installed by `vp config` on `npm install`) runs `vp staged`, which runs `vp check --fix` on staged files.
 - Formatting: no semicolons, single quotes, trailing commas, 80-character lines.
 - Notable lint rules: kebab-case file names, `Array<T>` instead of `T[]`, `import type` for type-only imports, imports at the top of the file.
-- Intent: as of this update, `npm exec --no -- intent list` reports that `@tanstack/intent` is not installed. Do not download a replacement; report the missing dependency when the skill workflow is needed.
+- Intent: `@tanstack/intent` is a dev dependency. `npm exec --no -- intent list` surfaces version-matched skills from installed TanStack packages (Router core and its sub-skills, the router plugin, Devtools).
