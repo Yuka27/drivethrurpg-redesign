@@ -9,6 +9,10 @@ import { clearAuthToken } from '@/lib/auth-token'
 // jsdom has no layout APIs; Radix (Checkbox measures itself), the router's
 // scroll restoration and our hooks need them
 window.scrollTo = () => {}
+// Radix Select uses pointer capture and scrolls the selected option into view
+Element.prototype.hasPointerCapture = () => false
+Element.prototype.releasePointerCapture = () => {}
+Element.prototype.scrollIntoView = () => {}
 globalThis.ResizeObserver = class {
   observe() {}
   unobserve() {}

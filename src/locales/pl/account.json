@@ -1,3 +1,170 @@
 {
-  "heading": "Konto"
+  "myAccount": "Moje konto",
+  "balance": {
+    "label": "Saldo konta",
+    "redeem": "Zrealizuj kartę podarunkową"
+  },
+  "nav": {
+    "label": "Moje konto",
+    "settings": "Ustawienia",
+    "activity": "Aktywność",
+    "account": "Konto",
+    "accountHint": "Dane, logowanie, adresy, płatności",
+    "preferences": "Preferencje",
+    "preferencesHint": "Powiadomienia, pobieranie, język, waluta",
+    "orders": "Zamówienia",
+    "following": "Obserwowane"
+  },
+  "breadcrumb": "Ścieżka nawigacji",
+  "settings": {
+    "title": "Konto",
+    "subtitle": "Adres e-mail i hasło, których używasz do logowania."
+  },
+  "signIn": {
+    "title": "Logowanie",
+    "subtitle": "Adres e-mail i hasło, których używasz do logowania.",
+    "email": "E-mail",
+    "emailHint": "Adres e-mail, którego używasz do logowania.",
+    "change": "Zmień",
+    "password": "Hasło",
+    "passwordHint": "Użyj długiego, unikalnego hasła",
+    "passwordSet": "Hasło ustawione",
+    "changePassword": "Zmień hasło"
+  },
+  "changeEmail": {
+    "title": "Zmień adres e-mail",
+    "description": "Wyślemy link potwierdzający na nowy adres. Adres zmieni się po potwierdzeniu.",
+    "newEmail": "Nowy adres e-mail",
+    "submit": "Wyślij link potwierdzający",
+    "sent": "Wysłaliśmy link potwierdzający na {{email}}."
+  },
+  "changePassword": {
+    "title": "Zmień hasło",
+    "description": "Po zapisaniu wylogujemy Cię na wszystkich innych urządzeniach.",
+    "current": "Obecne hasło",
+    "new": "Nowe hasło",
+    "submit": "Zapisz nowe hasło",
+    "saving": "Zapisywanie…",
+    "saved": "Hasło zostało zmienione."
+  },
+  "connected": {
+    "title": "Połączone konta",
+    "subtitle": "Loguj się szybciej i korzystaj z biblioteki w Roll20.",
+    "roll20": "Połącz bibliotekę DriveThruRPG z kontem Roll20",
+    "google": "Logowanie przez Google",
+    "facebook": "Logowanie przez Facebook",
+    "connected": "Połączone",
+    "notConnected": "Niepołączone",
+    "connect": "Połącz",
+    "disconnect": "Odłącz",
+    "connectLabel": "Połącz {{provider}}",
+    "disconnectLabel": "Odłącz {{provider}}",
+    "disconnected": "Odłączono {{provider}}.",
+    "mergeTitle": "Masz drugie konto DriveThru?",
+    "mergeHint": "Połącz je, aby scalić biblioteki i zamówienia",
+    "merge": "Połącz konta"
+  },
+  "addresses": {
+    "title": "Adresy",
+    "subtitle": "Używane na fakturach i do obliczania podatku. Tytuły cyfrowe nie są wysyłane.",
+    "add": "Dodaj nowy adres",
+    "default": "Domyślny",
+    "empty": "Brak zapisanych adresów",
+    "remove": "Usuń",
+    "removeLabel": "Usuń adres: {{name}}, {{line}}",
+    "removeTitle": "Usunąć ten adres?",
+    "removeBody": "{{name}}, {{line}} nie będzie już proponowany przy zamówieniu.",
+    "removed": "Adres usunięty."
+  },
+  "payment": {
+    "title": "Metody płatności",
+    "subtitle": "Zapisane karty przyspieszają zamówienie.",
+    "empty": "Brak zapisanych metod płatności",
+    "emptyHint": "Możesz zapisać kartę przy zamówieniu. Pokazujemy tu tylko 4 ostatnie cyfry.",
+    "add": "Dodaj metodę płatności",
+    "card": "{{brand}} kończąca się na {{last4}}",
+    "expires": "Ważna do {{date}}",
+    "default": "Domyślna",
+    "remove": "Usuń",
+    "removeLabel": "Usuń {{card}}",
+    "removeTitle": "Usunąć tę kartę?",
+    "removeBody": "{{card}} nie będzie już proponowana przy zamówieniu.",
+    "removed": "Karta usunięta."
+  },
+  "apps": {
+    "title": "Aplikacje biblioteki",
+    "subtitle": "Klucze do łączenia aplikacji z biblioteką.",
+    "keys": "Klucze aplikacji",
+    "activeKeys_one": "{{count}} aktywny klucz",
+    "activeKeys_few": "{{count}} aktywne klucze",
+    "activeKeys_many": "{{count}} aktywnych kluczy",
+    "activeKeys_other": "{{count}} aktywnego klucza",
+    "manage": "Zarządzaj kluczami"
+  },
+  "delete": {
+    "title": "Usuń konto",
+    "subtitle": "Trwale usuń konto i dostęp do biblioteki.",
+    "button": "Usuń konto",
+    "confirmTitle": "Usunąć Twoje konto?",
+    "confirmBody": "Twoja biblioteka, zamówienia i zapisane dane zostaną usunięte. Tej operacji nie można cofnąć.",
+    "confirm": "Usuń moje konto",
+    "deleting": "Usuwanie…",
+    "done": "Twoje konto jest usuwane. Wysłaliśmy e-mail z potwierdzeniem."
+  },
+  "dialog": {
+    "cancel": "Anuluj",
+    "removing": "Usuwanie…"
+  },
+  "comingSoon": "Ta funkcja nie jest jeszcze dostępna.",
+  "loadError": "Nie udało się wczytać tej sekcji. Spróbuj ponownie później.",
+  "preferencesPage": {
+    "title": "Preferencje",
+    "subtitle": "Powiadomienia, kontakt z wydawcami i to, co widzisz w sklepie.",
+    "email": {
+      "title": "Powiadomienia e-mail",
+      "subtitle": "Zmiany zapisują się automatycznie.",
+      "pauseMarketing": "Wstrzymaj wszystkie e-maile marketingowe",
+      "pauseMarketingHint": "Potwierdzenia zamówień i ważne wiadomości o koncie wysyłamy zawsze.",
+      "dailyDeals": "Codzienne okazje",
+      "dailyDealsHint": "Okazja dnia, raz dziennie",
+      "reviewReminders": "Przypomnienia o recenzjach",
+      "reviewRemindersHint": "Zachęta do oceny kupionych tytułów",
+      "wishlistPriceDrops": "Obniżki z listy życzeń",
+      "wishlistPriceDropsHint": "Gdy tytuł z listy życzeń jest w promocji",
+      "libraryFileUpdates": "Aktualizacje plików w bibliotece",
+      "libraryFileUpdatesHint": "Gdy posiadany tytuł dostaje nowe pliki",
+      "paused": "Wstrzymane razem z e-mailami marketingowymi",
+      "followed": "Nowości od obserwowanych wydawców",
+      "followedHint": "Ustawiane osobno dla każdego wydawcy",
+      "manage": "Zarządzaj",
+      "manageLabel": "Zarządzaj nowościami od obserwowanych wydawców"
+    },
+    "publishers": {
+      "title": "Kontakt z wydawcami",
+      "subtitle": "Co wydawcy mogą zrobić z Twoimi danymi po zakupie.",
+      "notifications": "Pokazuj nowości wydawców w Powiadomieniach",
+      "notificationsHint": "Nowe pliki, errata i oferty wydawców pojawią się w Powiadomieniach.",
+      "shareEmail": "Udostępniaj mój e-mail wydawcom do ich własnego marketingu",
+      "shareEmailHint": "Wyłączone oznacza, że wydawcy nigdy nie widzą Twojego adresu."
+    },
+    "downloads": {
+      "title": "Pobieranie",
+      "subtitle": "Dokąd trafiają pliki pobierane z Biblioteki.",
+      "saveTo": "Zapisuj pliki",
+      "saveToHint": "Domyślnie dla pojedynczych plików i archiwów ZIP",
+      "device": "Na tym urządzeniu",
+      "ask": "Pytaj za każdym razem"
+    },
+    "content": {
+      "title": "Treści i wyświetlanie",
+      "subtitle": "Określa, co widzisz w całym sklepie.",
+      "adult": "Pokazuj treści dla dorosłych",
+      "adultHint": "Tytuły oznaczone 18+",
+      "ai": "Pokazuj treści generowane przez AI",
+      "aiHint": "Tytuły stworzone z użyciem generatywnej AI",
+      "theme": "Motyw",
+      "language": "Język",
+      "currency": "Waluta"
+    }
+  }
 }

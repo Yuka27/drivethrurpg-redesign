@@ -3,13 +3,12 @@ import { vi } from 'vite-plus/test'
 import type { Me } from '@/api/me'
 
 type Reply = { status?: number; body?: unknown }
-/** `"POST /auth/login"` → a reply, or a function returning one (sync or async) */
-type Handlers = Partial<
-  Record<
-    string,
-    Reply | ((request: { body: unknown }) => Reply | Promise<Reply>)
-  >
->
+/** What one "METHOD /path" answers: a reply, or a function returning one (sync or async) */
+export type Handler =
+  | Reply
+  | ((request: { body: unknown }) => Reply | Promise<Reply>)
+/** `"POST /auth/login"` → its handler */
+type Handlers = Partial<Record<string, Handler>>
 type FetchArgs = Parameters<typeof fetch>
 
 /** "POST /auth/login" for a call to {API}/api/v1/auth/login */

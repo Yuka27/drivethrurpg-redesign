@@ -1,9 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_auth/account/preferences')({
-  component: RouteComponent,
-})
+import { AccountPreferencesPage } from '@/features/account/account-preferences'
 
-function RouteComponent() {
-  return <div>Hello "/account/preferences"!</div>
-}
+export const Route = createFileRoute('/_auth/account/preferences')({
+  component: () => <AccountPreferencesPage breadcrumb />,
+})

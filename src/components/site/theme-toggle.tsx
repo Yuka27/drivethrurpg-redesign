@@ -35,7 +35,7 @@ export function ThemeToggle() {
 }
 
 const segmentClass =
-  'h-7 min-w-0 border-border bg-background px-2.5 text-xs font-medium hover:bg-accent hover:text-accent-foreground data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-white'
+  'h-8 min-w-0 border-border bg-background px-2.5 text-xs font-medium hover:bg-accent hover:text-accent-foreground data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-white'
 
 /** Light/Dark segmented control for the mobile menu; the active segment is red, as in Figma. */
 export function ThemeSegmented() {

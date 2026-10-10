@@ -1,3 +1,168 @@
 {
-  "heading": "Account"
+  "myAccount": "My account",
+  "balance": {
+    "label": "Account balance",
+    "redeem": "Redeem gift card"
+  },
+  "nav": {
+    "label": "My account",
+    "settings": "Settings",
+    "activity": "Activity",
+    "account": "Account",
+    "accountHint": "Details, sign-in, addresses, payments",
+    "preferences": "Preferences",
+    "preferencesHint": "Notifications, downloads, language, currency",
+    "orders": "Orders",
+    "following": "Following"
+  },
+  "breadcrumb": "Breadcrumb",
+  "settings": {
+    "title": "Account",
+    "subtitle": "The email and password you use to log in."
+  },
+  "signIn": {
+    "title": "Sign-in",
+    "subtitle": "The email and password you use to log in.",
+    "email": "Email",
+    "emailHint": "The email you use to log in.",
+    "change": "Change",
+    "password": "Password",
+    "passwordHint": "Use a long, unique password",
+    "passwordSet": "Password set",
+    "changePassword": "Change password"
+  },
+  "changeEmail": {
+    "title": "Change email",
+    "description": "We send a confirmation link to the new address. Your email changes once you confirm it.",
+    "newEmail": "New email address",
+    "submit": "Send confirmation link",
+    "sent": "We sent a confirmation link to {{email}}."
+  },
+  "changePassword": {
+    "title": "Change password",
+    "description": "After you save, we sign you out on all other devices.",
+    "current": "Current password",
+    "new": "New password",
+    "submit": "Save new password",
+    "saving": "Saving…",
+    "saved": "Your password was changed."
+  },
+  "connected": {
+    "title": "Connected accounts",
+    "subtitle": "Log in faster and use your library across Roll20.",
+    "roll20": "Link your DriveThruRPG library to your Roll20 account",
+    "google": "Log in with Google",
+    "facebook": "Log in with Facebook",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connectLabel": "Connect {{provider}}",
+    "disconnectLabel": "Disconnect {{provider}}",
+    "disconnected": "{{provider}} was disconnected.",
+    "mergeTitle": "Have a second DriveThru account?",
+    "mergeHint": "Merge it to combine libraries and orders",
+    "merge": "Merge Accounts"
+  },
+  "addresses": {
+    "title": "Addresses",
+    "subtitle": "Used on invoices and to work out tax. Digital titles are not shipped.",
+    "add": "Add New Address",
+    "default": "Default",
+    "empty": "No saved addresses",
+    "remove": "Remove",
+    "removeLabel": "Remove address: {{name}}, {{line}}",
+    "removeTitle": "Remove this address?",
+    "removeBody": "{{name}}, {{line}} will no longer be offered at checkout.",
+    "removed": "Address removed."
+  },
+  "payment": {
+    "title": "Payment methods",
+    "subtitle": "Saved cards make checkout faster.",
+    "empty": "No saved payment methods",
+    "emptyHint": "You can save one at checkout. Only the last 4 digits are shown here.",
+    "add": "Add payment method",
+    "card": "{{brand}} ending in {{last4}}",
+    "expires": "Expires {{date}}",
+    "default": "Default",
+    "remove": "Remove",
+    "removeLabel": "Remove {{card}}",
+    "removeTitle": "Remove this card?",
+    "removeBody": "{{card}} will no longer be offered at checkout.",
+    "removed": "Card removed."
+  },
+  "apps": {
+    "title": "Library apps",
+    "subtitle": "Keys for connecting apps to your library.",
+    "keys": "App keys",
+    "activeKeys_one": "{{count}} active key",
+    "activeKeys_other": "{{count}} active keys",
+    "manage": "Manage keys"
+  },
+  "delete": {
+    "title": "Delete account",
+    "subtitle": "Permanently remove your account and library access.",
+    "button": "Delete account",
+    "confirmTitle": "Delete your account?",
+    "confirmBody": "Your library, orders and saved details will be removed. This cannot be undone.",
+    "confirm": "Delete my account",
+    "deleting": "Deleting…",
+    "done": "Your account is being deleted. We sent you a confirmation email."
+  },
+  "dialog": {
+    "cancel": "Cancel",
+    "removing": "Removing…"
+  },
+  "comingSoon": "This is not available yet.",
+  "loadError": "We could not load this section. Try again later.",
+  "preferencesPage": {
+    "title": "Preferences",
+    "subtitle": "Notifications, publisher contact and what you see in the store.",
+    "email": {
+      "title": "Email notifications",
+      "subtitle": "Changes save automatically.",
+      "pauseMarketing": "Pause all marketing emails",
+      "pauseMarketingHint": "Order confirmations and important account messages are always sent.",
+      "dailyDeals": "Daily deal emails",
+      "dailyDealsHint": "The Deal of the Day, once a day",
+      "reviewReminders": "Review reminders",
+      "reviewRemindersHint": "A nudge to rate titles you bought",
+      "wishlistPriceDrops": "Wishlist price drops",
+      "wishlistPriceDropsHint": "When a title on your wishlist goes on sale",
+      "libraryFileUpdates": "Library file updates",
+      "libraryFileUpdatesHint": "When a title you own gets new files",
+      "paused": "Paused with all marketing emails",
+      "followed": "Updates from publishers you follow",
+      "followedHint": "Managed per publisher",
+      "manage": "Manage",
+      "manageLabel": "Manage updates from publishers you follow"
+    },
+    "publishers": {
+      "title": "Publisher contact",
+      "subtitle": "What publishers can do with your details after you buy from them.",
+      "notifications": "Show publisher updates in Notifications",
+      "notificationsHint": "New files, errata and offers from publishers show up in Notifications.",
+      "shareEmail": "Share my email with publishers for their own marketing",
+      "shareEmailHint": "Off means publishers never see your email address."
+    },
+    "downloads": {
+      "title": "Downloads",
+      "subtitle": "Where files go when you download from your Library.",
+      "saveTo": "Save files to",
+      "saveToHint": "Default for single files and ZIPs",
+      "device": "This device",
+      "ask": "Ask every time"
+    },
+    "content": {
+      "title": "Content & display",
+      "subtitle": "Controls what you see across the store.",
+      "adult": "Show adult content",
+      "adultHint": "Titles marked 18+",
+      "ai": "Show AI-generated content",
+      "aiHint": "Titles made with generative AI",
+      "theme": "Theme",
+      "language": "Language",
+      "currency": "Currency"
+    }
+  }
 }

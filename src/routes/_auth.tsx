@@ -1,5 +1,7 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 
+import { SiteFooter } from '@/components/site/site-footer'
+import { SiteHeader } from '@/components/site/site-header'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
 
 // TODO: replace with real session check once auth exists
@@ -21,14 +23,15 @@ export const Route = createFileRoute('/_auth')({
   component: AuthLayout,
 })
 
+/** Same shell as _site: header, page, footer. */
 function AuthLayout() {
   return (
-    <>
-      <header>{/* TODO: site header */}</header>
-      <main>
+    <div className="flex min-h-screen flex-col">
+      <SiteHeader />
+      <main className="flex-1">
         <Outlet />
       </main>
-      <footer>{/* TODO: site footer */}</footer>
-    </>
+      <SiteFooter />
+    </div>
   )
 }

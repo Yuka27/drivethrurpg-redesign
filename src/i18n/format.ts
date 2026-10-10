@@ -51,6 +51,15 @@ export function useFormatDate(
   }, [locale, JSON.stringify(options)])
 }
 
+/** "PL" -> "Poland" (in English UI) / "Polska" (in Polish UI), via Intl.DisplayNames. */
+export function useRegionName() {
+  const locale = useLocale()
+  return useMemo(() => {
+    const names = new Intl.DisplayNames([locale], { type: 'region' })
+    return (code: string) => names.of(code) ?? code
+  }, [locale])
+}
+
 /** "pl" -> "Polish" (in English UI) / "polski" (in Polish UI), via Intl.DisplayNames. */
 export function useLanguageName() {
   const locale = useLocale()

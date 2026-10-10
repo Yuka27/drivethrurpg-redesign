@@ -27,8 +27,13 @@ export const queryKeys = {
     locales: (prefs: Preferences) => ['meta', 'locales', prefs] as const,
   },
   account: {
+    all: ['account'] as const,
     preferences: (prefs: Preferences) =>
       ['account', 'preferences', prefs] as const,
+    connected: (prefs: Preferences) => ['account', 'connected', prefs] as const,
+    addresses: (prefs: Preferences) => ['account', 'addresses', prefs] as const,
+    paymentMethods: (prefs: Preferences) =>
+      ['account', 'payment-methods', prefs] as const,
   },
   home: (prefs: Preferences) => ['home', prefs] as const,
   titles: {

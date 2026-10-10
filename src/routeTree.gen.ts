@@ -22,11 +22,9 @@ import { Route as SiteIndexRouteImport } from './routes/_site/index'
 import { Route as SiteCartRouteImport } from './routes/_site/cart'
 import { Route as SiteSearchRouteImport } from './routes/_site/search'
 import { Route as AuthAccountIndexRouteImport } from './routes/_auth/account/index'
-import { Route as AuthAccountAddressesRouteImport } from './routes/_auth/account/addresses'
 import { Route as AuthAccountBalanceRouteImport } from './routes/_auth/account/balance'
-import { Route as AuthAccountConnectedAccountsRouteImport } from './routes/_auth/account/connected-accounts'
-import { Route as AuthAccountPaymentMethodsRouteImport } from './routes/_auth/account/payment-methods'
 import { Route as AuthAccountPreferencesRouteImport } from './routes/_auth/account/preferences'
+import { Route as AuthAccountSettingsRouteImport } from './routes/_auth/account/settings'
 import { Route as AuthOrdersIndexRouteImport } from './routes/_auth/orders/index'
 import { Route as AuthOrdersOrderIdRouteImport } from './routes/_auth/orders/$orderId'
 import { Route as FocusOrderConfirmationOrderIdRouteImport } from './routes/_focus/order-confirmation.$orderId'
@@ -98,31 +96,19 @@ const AuthAccountIndexRoute = AuthAccountIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthAccountRouteRoute,
 } as any)
-const AuthAccountAddressesRoute = AuthAccountAddressesRouteImport.update({
-  id: '/addresses',
-  path: '/addresses',
-  getParentRoute: () => AuthAccountRouteRoute,
-} as any)
 const AuthAccountBalanceRoute = AuthAccountBalanceRouteImport.update({
   id: '/balance',
   path: '/balance',
   getParentRoute: () => AuthAccountRouteRoute,
 } as any)
-const AuthAccountConnectedAccountsRoute =
-  AuthAccountConnectedAccountsRouteImport.update({
-    id: '/connected-accounts',
-    path: '/connected-accounts',
-    getParentRoute: () => AuthAccountRouteRoute,
-  } as any)
-const AuthAccountPaymentMethodsRoute =
-  AuthAccountPaymentMethodsRouteImport.update({
-    id: '/payment-methods',
-    path: '/payment-methods',
-    getParentRoute: () => AuthAccountRouteRoute,
-  } as any)
 const AuthAccountPreferencesRoute = AuthAccountPreferencesRouteImport.update({
   id: '/preferences',
   path: '/preferences',
+  getParentRoute: () => AuthAccountRouteRoute,
+} as any)
+const AuthAccountSettingsRoute = AuthAccountSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthAccountRouteRoute,
 } as any)
 const AuthOrdersIndexRoute = AuthOrdersIndexRouteImport.update({
@@ -178,11 +164,9 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof FocusCheckoutRoute
   '/cart': typeof SiteCartRoute
   '/search': typeof SiteSearchRoute
-  '/account/addresses': typeof AuthAccountAddressesRoute
   '/account/balance': typeof AuthAccountBalanceRoute
-  '/account/connected-accounts': typeof AuthAccountConnectedAccountsRoute
-  '/account/payment-methods': typeof AuthAccountPaymentMethodsRoute
   '/account/preferences': typeof AuthAccountPreferencesRoute
+  '/account/settings': typeof AuthAccountSettingsRoute
   '/orders/$orderId': typeof AuthOrdersOrderIdRoute
   '/order-confirmation/$orderId': typeof FocusOrderConfirmationOrderIdRoute
   '/gift/$token': typeof SiteGiftTokenRoute
@@ -202,11 +186,9 @@ export interface FileRoutesByTo {
   '/checkout': typeof FocusCheckoutRoute
   '/cart': typeof SiteCartRoute
   '/search': typeof SiteSearchRoute
-  '/account/addresses': typeof AuthAccountAddressesRoute
   '/account/balance': typeof AuthAccountBalanceRoute
-  '/account/connected-accounts': typeof AuthAccountConnectedAccountsRoute
-  '/account/payment-methods': typeof AuthAccountPaymentMethodsRoute
   '/account/preferences': typeof AuthAccountPreferencesRoute
+  '/account/settings': typeof AuthAccountSettingsRoute
   '/orders/$orderId': typeof AuthOrdersOrderIdRoute
   '/order-confirmation/$orderId': typeof FocusOrderConfirmationOrderIdRoute
   '/gift/$token': typeof SiteGiftTokenRoute
@@ -231,11 +213,9 @@ export interface FileRoutesById {
   '/_site/cart': typeof SiteCartRoute
   '/_site/search': typeof SiteSearchRoute
   '/_site/': typeof SiteIndexRoute
-  '/_auth/account/addresses': typeof AuthAccountAddressesRoute
   '/_auth/account/balance': typeof AuthAccountBalanceRoute
-  '/_auth/account/connected-accounts': typeof AuthAccountConnectedAccountsRoute
-  '/_auth/account/payment-methods': typeof AuthAccountPaymentMethodsRoute
   '/_auth/account/preferences': typeof AuthAccountPreferencesRoute
+  '/_auth/account/settings': typeof AuthAccountSettingsRoute
   '/_auth/orders/$orderId': typeof AuthOrdersOrderIdRoute
   '/_focus/order-confirmation/$orderId': typeof FocusOrderConfirmationOrderIdRoute
   '/_site/gift/$token': typeof SiteGiftTokenRoute
@@ -258,11 +238,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/cart'
     | '/search'
-    | '/account/addresses'
     | '/account/balance'
-    | '/account/connected-accounts'
-    | '/account/payment-methods'
     | '/account/preferences'
+    | '/account/settings'
     | '/orders/$orderId'
     | '/order-confirmation/$orderId'
     | '/gift/$token'
@@ -282,11 +260,9 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/cart'
     | '/search'
-    | '/account/addresses'
     | '/account/balance'
-    | '/account/connected-accounts'
-    | '/account/payment-methods'
     | '/account/preferences'
+    | '/account/settings'
     | '/orders/$orderId'
     | '/order-confirmation/$orderId'
     | '/gift/$token'
@@ -310,11 +286,9 @@ export interface FileRouteTypes {
     | '/_site/cart'
     | '/_site/search'
     | '/_site/'
-    | '/_auth/account/addresses'
     | '/_auth/account/balance'
-    | '/_auth/account/connected-accounts'
-    | '/_auth/account/payment-methods'
     | '/_auth/account/preferences'
+    | '/_auth/account/settings'
     | '/_auth/orders/$orderId'
     | '/_focus/order-confirmation/$orderId'
     | '/_site/gift/$token'
@@ -425,13 +399,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAccountIndexRouteImport
       parentRoute: typeof AuthAccountRouteRoute
     }
-    '/_auth/account/addresses': {
-      id: '/_auth/account/addresses'
-      path: '/addresses'
-      fullPath: '/account/addresses'
-      preLoaderRoute: typeof AuthAccountAddressesRouteImport
-      parentRoute: typeof AuthAccountRouteRoute
-    }
     '/_auth/account/balance': {
       id: '/_auth/account/balance'
       path: '/balance'
@@ -439,25 +406,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAccountBalanceRouteImport
       parentRoute: typeof AuthAccountRouteRoute
     }
-    '/_auth/account/connected-accounts': {
-      id: '/_auth/account/connected-accounts'
-      path: '/connected-accounts'
-      fullPath: '/account/connected-accounts'
-      preLoaderRoute: typeof AuthAccountConnectedAccountsRouteImport
-      parentRoute: typeof AuthAccountRouteRoute
-    }
-    '/_auth/account/payment-methods': {
-      id: '/_auth/account/payment-methods'
-      path: '/payment-methods'
-      fullPath: '/account/payment-methods'
-      preLoaderRoute: typeof AuthAccountPaymentMethodsRouteImport
-      parentRoute: typeof AuthAccountRouteRoute
-    }
     '/_auth/account/preferences': {
       id: '/_auth/account/preferences'
       path: '/preferences'
       fullPath: '/account/preferences'
       preLoaderRoute: typeof AuthAccountPreferencesRouteImport
+      parentRoute: typeof AuthAccountRouteRoute
+    }
+    '/_auth/account/settings': {
+      id: '/_auth/account/settings'
+      path: '/settings'
+      fullPath: '/account/settings'
+      preLoaderRoute: typeof AuthAccountSettingsRouteImport
       parentRoute: typeof AuthAccountRouteRoute
     }
     '/_auth/orders/': {
@@ -520,20 +480,16 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthAccountRouteRouteChildren {
-  AuthAccountAddressesRoute: typeof AuthAccountAddressesRoute
   AuthAccountBalanceRoute: typeof AuthAccountBalanceRoute
-  AuthAccountConnectedAccountsRoute: typeof AuthAccountConnectedAccountsRoute
-  AuthAccountPaymentMethodsRoute: typeof AuthAccountPaymentMethodsRoute
   AuthAccountPreferencesRoute: typeof AuthAccountPreferencesRoute
+  AuthAccountSettingsRoute: typeof AuthAccountSettingsRoute
   AuthAccountIndexRoute: typeof AuthAccountIndexRoute
 }
 
 const AuthAccountRouteRouteChildren: AuthAccountRouteRouteChildren = {
-  AuthAccountAddressesRoute: AuthAccountAddressesRoute,
   AuthAccountBalanceRoute: AuthAccountBalanceRoute,
-  AuthAccountConnectedAccountsRoute: AuthAccountConnectedAccountsRoute,
-  AuthAccountPaymentMethodsRoute: AuthAccountPaymentMethodsRoute,
   AuthAccountPreferencesRoute: AuthAccountPreferencesRoute,
+  AuthAccountSettingsRoute: AuthAccountSettingsRoute,
   AuthAccountIndexRoute: AuthAccountIndexRoute,
 }
 
