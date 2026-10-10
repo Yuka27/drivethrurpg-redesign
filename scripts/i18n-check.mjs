@@ -84,14 +84,20 @@ const walk = (dir) => {
 }
 walk(srcDir)
 const source = sourceFiles.map((f) => fs.readFileSync(f, 'utf8')).join('\n')
-// keys used through a computed prefix, e.g. t(`errors.${code}`)
-const DYNAMIC_PREFIXES = ['errors.']
+// keys used through a computed prefix, e.g. t(`errors.${code}`) or t(`register.why.${key}.title`):
+// every template literal that starts with a key path covers the keys under it
+const DYNAMIC_PREFIXES = [
+  ...new Set(
+    [...source.matchAll(/`([A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*)\.\$\{/g)].map(
+      ([, prefix]) => `${prefix}.`,
+    ),
+  ),
+]
 
 let unused = 0
 for (const ns of namespaces) {
   for (const key of baseKeys[ns]) {
-    if (DYNAMIC_PREFIXES.some((p) => ns === 'common' && key.startsWith(p)))
-      continue
+    if (DYNAMIC_PREFIXES.some((p) => key.startsWith(p))) continue
     if (
       !source.includes(`'${key}'`) &&
       !source.includes(`"${key}"`) &&

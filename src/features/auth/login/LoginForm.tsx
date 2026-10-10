@@ -5,11 +5,15 @@ import type { ElementType } from 'react'
 import { useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { LoginRequestSchema, useLogin, useSocialLogin } from '@/api/auth'
+import { CartContextNote } from '../shared/CartContextNote'
+import { SocialButtons } from '../shared/SocialButtons'
+import {
+  LoginRequestSchema,
+  useLogin,
+  useMergeGuestData,
+  useSocialLogin,
+} from '@/api/auth'
 import type { LoginRequest, SocialProvider } from '@/api/auth'
-import facebookIcon from '@/assets/social/facebook.png'
-import googleIcon from '@/assets/social/google.png'
-import roll20Icon from '@/assets/social/roll20.png'
 import logo from '@/assets/logos/drivethrurpg.png'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -23,6 +27,7 @@ import {
   FormRootError,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { cartItemCount, useCart } from '@/api/cart'
 import { TODO_URL } from '@/config/footer'
 import { useApplyApiError } from '@/lib/forms'
 
@@ -33,6 +38,10 @@ type LoginFormProps = {
   /** the modal passes DialogTitle/DialogDescription; the /login page keeps h1/p */
   Title?: ElementType
   Description?: ElementType
+  /** prefilled email, e.g. from register's "Log in instead" */
+  defaultEmail?: string
+  /** in the modal, "Register here" switches view instead of navigating to /register */
+  onSwitchToRegister?: () => void
   onSuccess?: () => void
   /** called when a link inside the form navigates away (the modal closes itself) */
   onNavigate?: () => void
@@ -41,17 +50,21 @@ type LoginFormProps = {
 export function LoginForm({
   Title = 'h1',
   Description = 'p',
+  defaultEmail = '',
+  onSwitchToRegister,
   onSuccess,
   onNavigate,
 }: LoginFormProps) {
   const { t } = useTranslation('auth')
   const login = useLogin()
   const social = useSocialLogin()
+  const { data: cart } = useCart()
+  const merge = useMergeGuestData()
   // validates on submit, then re-validates each field as the user fixes it;
   // the first invalid field gets focus (shouldFocusError, on by default)
   const form = useForm<LoginRequest>({
     resolver: zodResolver(LoginRequestSchema),
-    defaultValues: { email: '', password: '', remember: true },
+    defaultValues: { email: defaultEmail, password: '', remember: true },
   })
   const applyApiError = useApplyApiError(form)
   const pending = login.isPending || social.isPending
@@ -64,14 +77,21 @@ export function LoginForm({
     return () => subscription.unsubscribe()
   }, [form])
 
+  // the note promises the guest cart is kept: bring it into the account (once,
+  // never blocking the login), then hand over to the caller
+  const signedIn = () => {
+    if (cartItemCount(cart) > 0) merge.mutate()
+    onSuccess?.()
+  }
+
   const onSubmit = form.handleSubmit((request) => {
     form.clearErrors('root')
-    login.mutate(request, { onSuccess, onError: applyApiError })
+    login.mutate(request, { onSuccess: signedIn, onError: applyApiError })
   })
 
   const signInWith = (provider: SocialProvider) => {
     form.clearErrors('root')
-    social.mutate(provider, { onSuccess, onError: applyApiError })
+    social.mutate(provider, { onSuccess: signedIn, onError: applyApiError })
   }
 
   return (
@@ -94,6 +114,7 @@ export function LoginForm({
           onSubmit={onSubmit}
           className="flex flex-col gap-4 px-6"
         >
+          <CartContextNote context="login" />
           <div className="flex flex-col gap-2">
             <FormField
               control={form.control}
@@ -182,43 +203,31 @@ export function LoginForm({
               </span>
             </p>
 
-            <div className="flex flex-col gap-2">
-              <SocialButton
-                provider="roll20"
-                name="Roll20"
-                icon={roll20Icon}
-                // Figma: "Continue with Roll20" on mobile, just "Roll20" on desktop
-                longLabelOnMobile
-                disabled={pending}
-                onClick={() => signInWith('roll20')}
-              />
-              <div className="flex gap-2">
-                <SocialButton
-                  provider="google"
-                  name="Google"
-                  icon={googleIcon}
-                  disabled={pending}
-                  onClick={() => signInWith('google')}
-                />
-                <SocialButton
-                  provider="facebook"
-                  name="Facebook"
-                  icon={facebookIcon}
-                  disabled={pending}
-                  onClick={() => signInWith('facebook')}
-                />
-              </div>
-            </div>
+            <SocialButtons
+              layout="stacked"
+              disabled={pending}
+              onSelect={signInWith}
+            />
 
             <p className="text-center text-sm">
               {t('login.noAccount')}{' '}
-              <Link
-                to="/register"
-                onClick={onNavigate}
-                className="text-primary hover:underline"
-              >
-                {t('login.register')}
-              </Link>
+              {onSwitchToRegister ? (
+                <button
+                  type="button"
+                  onClick={onSwitchToRegister}
+                  className="text-primary hover:underline"
+                >
+                  {t('login.register')}
+                </button>
+              ) : (
+                <Link
+                  to="/register"
+                  onClick={onNavigate}
+                  className="text-primary hover:underline"
+                >
+                  {t('login.register')}
+                </Link>
+              )}
             </p>
           </div>
 
@@ -240,54 +249,5 @@ export function LoginForm({
         </form>
       </Form>
     </div>
-  )
-}
-
-type SocialButtonProps = {
-  provider: SocialProvider
-  /** brand name, never translated */
-  name: string
-  icon: string
-  longLabelOnMobile?: boolean
-  disabled: boolean
-  onClick: () => void
-}
-
-function SocialButton({
-  name,
-  icon,
-  longLabelOnMobile,
-  disabled,
-  onClick,
-}: SocialButtonProps) {
-  const { t } = useTranslation('auth')
-  const label = t('login.continueWith', { provider: name })
-
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      className="h-9 flex-1 gap-1"
-      // the visible text ("Google") is part of the name, as WCAG 2.5.3 requires
-      aria-label={label}
-      disabled={disabled}
-      onClick={onClick}
-    >
-      <img
-        src={icon}
-        alt=""
-        width={16}
-        height={16}
-        className="size-4 rounded-xs"
-      />
-      {longLabelOnMobile ? (
-        <>
-          <span className="sm:hidden">{label}</span>
-          <span className="hidden sm:inline">{name}</span>
-        </>
-      ) : (
-        name
-      )}
-    </Button>
   )
 }

@@ -12,23 +12,23 @@ type LoginButtonProps = {
   returnFocusTo?: HTMLElement | null
 }
 
-/** Opens the login modal (LoginDialog, mounted in the root route). */
+/** Opens the login modal (AuthDialog, mounted in the root route). */
 export function LoginButton({
   className,
   children,
   onOpen,
   returnFocusTo,
 }: LoginButtonProps) {
-  const openLogin = useAuthDialogStore((state) => state.openLogin)
+  const openAuth = useAuthDialogStore((state) => state.openAuth)
 
   return (
     <Button
       size="sm"
-      className={className}
+      className={`cursor-pointer ${className}`}
       aria-haspopup="dialog"
       onClick={() => {
         onOpen?.()
-        openLogin(returnFocusTo)
+        openAuth('login', { returnFocusTo })
       }}
     >
       {children}

@@ -140,8 +140,14 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot.Root>) {
   )
 }
 
-function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
+/** asChild renders the description as its child element (e.g. a requirements <ul>). */
+function FormDescription({
+  className,
+  asChild,
+  ...props
+}: React.ComponentProps<'p'> & { asChild?: boolean }) {
   const { formDescriptionId, setHasDescription } = useFormField()
+  const Comp = asChild ? Slot.Root : 'p'
 
   React.useEffect(() => {
     setHasDescription(true)
@@ -149,7 +155,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   }, [setHasDescription])
 
   return (
-    <p
+    <Comp
       data-slot="form-description"
       id={formDescriptionId}
       className={cn('text-xs text-muted-foreground', className)}
@@ -158,10 +164,15 @@ function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
   )
 }
 
-function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
+function FormMessage({
+  className,
+  icon,
+  children,
+  ...props
+}: React.ComponentProps<'p'> & { icon?: React.ReactNode }) {
   const { error, formMessageId } = useFormField()
   const errorText = useErrorText(error?.message)
-  const body = errorText || props.children
+  const body = errorText || children
 
   if (!body) {
     return null
@@ -171,10 +182,15 @@ function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn('text-xs text-destructive', className)}
+      className={cn(
+        'text-xs text-destructive',
+        icon && 'flex items-start gap-1.5',
+        className,
+      )}
       {...props}
     >
-      {body}
+      {icon}
+      {icon ? <span>{body}</span> : body}
     </p>
   )
 }

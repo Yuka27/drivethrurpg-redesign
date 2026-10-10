@@ -111,9 +111,6 @@
     "saveFailed": "Nie udało się zapisać preferencji na koncie.",
     "saveFailedDetail": "Nadal obowiązują na tym urządzeniu."
   },
-  "auth": {
-    "logoutFailed": "Nie udało się wylogować. Spróbuj ponownie."
-  },
   "pages": {
     "notFound": {
       "title": "Krytyczna porażka",
@@ -146,6 +143,8 @@
   },
   "validation": {
     "emailInvalid": "Podaj prawidłowy adres e-mail.",
-    "passwordRequired": "Podaj hasło."
+    "passwordRequired": "Podaj hasło.",
+    "emailInvalidExample": "Podaj prawidłowy adres e-mail, na przykład imie@przyklad.pl.",
+    "passwordMinLength": "Hasło musi mieć co najmniej 10 znaków."
   }
 }

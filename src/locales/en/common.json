@@ -103,9 +103,6 @@
     "saveFailed": "Could not save your preferences to your account.",
     "saveFailedDetail": "They are still applied on this device."
   },
-  "auth": {
-    "logoutFailed": "Could not log you out. Please try again."
-  },
   "pages": {
     "notFound": {
       "title": "Critical miss",
@@ -138,6 +135,8 @@
   },
   "validation": {
     "emailInvalid": "Enter a valid email address.",
-    "passwordRequired": "Enter your password."
+    "passwordRequired": "Enter your password.",
+    "emailInvalidExample": "Enter a valid email address, for example name@example.com.",
+    "passwordMinLength": "Use at least 10 characters."
   }
 }

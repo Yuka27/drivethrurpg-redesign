@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router'
 import { MenuIcon, PanelLeftCloseIcon } from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -20,6 +19,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Switch } from '@/components/ui/switch'
+import { useAuthDialogStore } from '@/stores/auth-dialog'
 import { usePreferencesStore } from '@/stores/preferences'
 
 export function MobileMenu() {
@@ -32,6 +32,7 @@ export function MobileMenu() {
   const close = () => setOpen(false)
   const { data: me } = useMe()
   const logout = useLogout()
+  const openAuth = useAuthDialogStore((state) => state.openAuth)
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -130,13 +131,18 @@ export function MobileMenu() {
             </LoginButton>
             <p className="text-center text-sm text-muted-foreground">
               {t('menu.newHere')}{' '}
-              <Link
-                to="/register"
-                onClick={close}
+              <button
+                type="button"
+                aria-haspopup="dialog"
+                onClick={() => {
+                  close()
+                  // the menu (and this button) goes away: return focus to the ☰ button
+                  openAuth('register', { returnFocusTo: triggerRef.current })
+                }}
                 className="text-primary hover:underline"
               >
                 {t('menu.createAccount')}
-              </Link>
+              </button>
             </p>
           </div>
         )}
