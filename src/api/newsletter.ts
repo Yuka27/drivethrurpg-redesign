@@ -2,16 +2,22 @@ import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
 import { apiFetch } from './client'
+import { message } from '@/lib/forms'
 
-/** Checked before sending (the form shows errors.invalid_email); the API's 422 is the second check. */
-export const NewsletterEmailSchema = z.email().max(254)
+/** Checked in the browser first; the API's 422 invalid_email (field "email") is the second check. */
+export const NewsletterRequestSchema = z.object({
+  email: z
+    .email({ error: message('validation.emailInvalid') })
+    .max(254, { error: message('validation.emailInvalid') }),
+})
+export type NewsletterRequest = z.infer<typeof NewsletterRequestSchema>
 
 const SubscribeResponseSchema = z.object({ subscribed: z.literal(true) })
 
 /** POST /newsletter/subscribe */
 export function useSubscribeNewsletter() {
   return useMutation({
-    mutationFn: (email: string) =>
+    mutationFn: ({ email }: NewsletterRequest) =>
       apiFetch('/newsletter/subscribe', {
         method: 'POST',
         body: { email },

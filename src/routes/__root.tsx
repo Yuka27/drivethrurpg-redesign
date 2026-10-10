@@ -2,11 +2,9 @@ import { Link, Outlet, createRootRoute } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
-
+import { useAuthSync } from '@/api/auth'
 import { usePreferencesSync } from '@/api/preferences'
+import { AuthDialog } from '@/features/auth/auth-dialog'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
@@ -47,26 +45,13 @@ function RootError({ error, reset }: ErrorComponentProps) {
 function RootComponent() {
   const { t } = useTranslation()
   usePreferencesSync()
+  useAuthSync()
 
   return (
     <TooltipProvider delayDuration={300}>
       <Outlet />
+      <AuthDialog />
       <Toaster containerAriaLabel={t('toasts.region')} />
-      <TanStackDevtools
-        config={{
-          position: 'bottom-right',
-        }}
-        plugins={[
-          {
-            name: 'TanStack Router',
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-          {
-            name: 'TanStack Query',
-            render: <ReactQueryDevtoolsPanel />,
-          },
-        ]}
-      />
     </TooltipProvider>
   )
 }

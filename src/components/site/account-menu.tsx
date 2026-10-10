@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 // Figma: 6px gap and padding, 6px radius
-const itemClass = 'gap-1.5 rounded-md px-1.5 py-1'
+const itemClass = 'gap-1.5 rounded-md px-1.5 py-1 cursor-pointer'
 
 type MenuLinkProps = {
   to: ComponentProps<typeof Link>['to']

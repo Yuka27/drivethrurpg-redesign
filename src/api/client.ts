@@ -2,18 +2,21 @@ import { z } from 'zod'
 import { useShallow } from 'zustand/react/shallow'
 
 import { apiLanguage } from '@/i18n/languages'
+import { clearAuthToken, getAuthToken } from '@/lib/auth-token'
 import { env } from '@/lib/env'
 import { usePreferencesStore } from '@/stores/preferences'
 import type { Preferences } from '@/stores/preferences'
 
 const API_BASE = `${env.VITE_API_URL}/api/v1`
 
-/** Every API error body: { error: { code, message, field? } } */
+/** Every API error body: { error: { code, message, field?, retryAfter? } } */
 const ApiErrorBodySchema = z.object({
   error: z.object({
     code: z.string(),
     message: z.string(),
     field: z.string().optional(),
+    /** seconds to wait (rate_limited, unavailable) */
+    retryAfter: z.number().optional(),
   }),
 })
 
@@ -23,6 +26,7 @@ export class ApiError extends Error {
     readonly code: string,
     message: string,
     readonly field?: string,
+    readonly retryAfter?: number,
   ) {
     super(message)
     this.name = 'ApiError'
@@ -54,10 +58,12 @@ export async function apiFetch<T extends z.ZodType>(
     if (value !== undefined) url.searchParams.set(key, String(value))
   }
 
+  const token = getAuthToken()
   const response = await fetch(url, {
     method,
     signal,
     headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
       'X-Currency': currency,
       'Accept-Language': apiLanguage(language),
       'X-Ai-Content': aiContent ? 'show' : 'hide',
@@ -71,6 +77,8 @@ export async function apiFetch<T extends z.ZodType>(
     response.status === 204 ? null : await response.json().catch(() => null)
 
   if (!response.ok) {
+    // the token we sent is no longer accepted: the session is over
+    if (response.status === 401 && token) clearAuthToken()
     const parsed = ApiErrorBodySchema.safeParse(data)
     throw parsed.success
       ? new ApiError(
@@ -78,6 +86,7 @@ export async function apiFetch<T extends z.ZodType>(
           parsed.data.error.code,
           parsed.data.error.message,
           parsed.data.error.field,
+          parsed.data.error.retryAfter,
         )
       : new ApiError(response.status, 'unknown', response.statusText)
   }

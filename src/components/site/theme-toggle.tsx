@@ -25,6 +25,7 @@ export function ThemeToggle() {
         variant="outline"
         size="icon-sm"
         aria-label={label}
+        className="cursor-pointer"
         onClick={() => setTheme(next)}
       >
         {next === 'light' ? <SunIcon /> : <MoonIcon />}

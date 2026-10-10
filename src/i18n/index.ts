@@ -22,7 +22,8 @@ async function loadNamespace(language: string, namespace: string) {
     return pseudoResources[namespace as keyof typeof pseudoResources]
   }
   const load = lazyLocales[`../locales/${language}/${namespace}.json`] as
-    (() => Promise<{ default: object }>) | undefined
+    | (() => Promise<{ default: object }>)
+    | undefined
   // no file (it, de, ja for now): empty resources, so every key falls back to English
   return load ? (await load()).default : {}
 }

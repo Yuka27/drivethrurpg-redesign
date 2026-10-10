@@ -5,8 +5,8 @@ import { enResources } from '@/i18n/resources'
 
 const PLAIN = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const ACCENTED = 'áƀçðéƒĝĥíĵķļɱñóþǫŕšţúṽŵẋýžÁƁÇÐÉƑĜĤÍĴĶĻṀÑÓÞǪŔŠŢÚṼŴẊÝŽ'
-const accentedLetters = [...ACCENTED]
-const ACCENTS = new Map([...PLAIN].map((c, i) => [c, accentedLetters[i]]))
+const accentedLetters = Array.from(ACCENTED)
+const ACCENTS = new Map(PLAIN.split('').map((c, i) => [c, accentedLetters[i]]))
 
 // keep {{interpolation}}, $t(nesting) and <tags> intact
 const PROTECTED = /(\{\{[^}]+\}\}|\$t\([^)]*\)|<[^>]+>)/g

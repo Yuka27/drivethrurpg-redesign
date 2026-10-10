@@ -18,12 +18,8 @@ import { Route as AuthLibraryRouteImport } from './routes/_auth/library'
 import { Route as AuthNotificationsRouteImport } from './routes/_auth/notifications'
 import { Route as AuthWishlistRouteImport } from './routes/_auth/wishlist'
 import { Route as FocusCheckoutRouteImport } from './routes/_focus/checkout'
-import { Route as FocusLoginRouteImport } from './routes/_focus/login'
-import { Route as FocusRegisterRouteImport } from './routes/_focus/register'
 import { Route as SiteIndexRouteImport } from './routes/_site/index'
 import { Route as SiteCartRouteImport } from './routes/_site/cart'
-import { Route as SiteForgotPasswordRouteImport } from './routes/_site/forgot-password'
-import { Route as SiteResetPasswordRouteImport } from './routes/_site/reset-password'
 import { Route as SiteSearchRouteImport } from './routes/_site/search'
 import { Route as AuthAccountIndexRouteImport } from './routes/_auth/account/index'
 import { Route as AuthAccountAddressesRouteImport } from './routes/_auth/account/addresses'
@@ -82,16 +78,6 @@ const FocusCheckoutRoute = FocusCheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => FocusRoute,
 } as any)
-const FocusLoginRoute = FocusLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => FocusRoute,
-} as any)
-const FocusRegisterRoute = FocusRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => FocusRoute,
-} as any)
 const SiteIndexRoute = SiteIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -100,16 +86,6 @@ const SiteIndexRoute = SiteIndexRouteImport.update({
 const SiteCartRoute = SiteCartRouteImport.update({
   id: '/cart',
   path: '/cart',
-  getParentRoute: () => SiteRoute,
-} as any)
-const SiteForgotPasswordRoute = SiteForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => SiteRoute,
-} as any)
-const SiteResetPasswordRoute = SiteResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteSearchRoute = SiteSearchRouteImport.update({
@@ -200,11 +176,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof AuthNotificationsRoute
   '/wishlist': typeof AuthWishlistRoute
   '/checkout': typeof FocusCheckoutRoute
-  '/login': typeof FocusLoginRoute
-  '/register': typeof FocusRegisterRoute
   '/cart': typeof SiteCartRoute
-  '/forgot-password': typeof SiteForgotPasswordRoute
-  '/reset-password': typeof SiteResetPasswordRoute
   '/search': typeof SiteSearchRoute
   '/account/addresses': typeof AuthAccountAddressesRoute
   '/account/balance': typeof AuthAccountBalanceRoute
@@ -228,11 +200,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof AuthNotificationsRoute
   '/wishlist': typeof AuthWishlistRoute
   '/checkout': typeof FocusCheckoutRoute
-  '/login': typeof FocusLoginRoute
-  '/register': typeof FocusRegisterRoute
   '/cart': typeof SiteCartRoute
-  '/forgot-password': typeof SiteForgotPasswordRoute
-  '/reset-password': typeof SiteResetPasswordRoute
   '/search': typeof SiteSearchRoute
   '/account/addresses': typeof AuthAccountAddressesRoute
   '/account/balance': typeof AuthAccountBalanceRoute
@@ -260,11 +228,7 @@ export interface FileRoutesById {
   '/_auth/notifications': typeof AuthNotificationsRoute
   '/_auth/wishlist': typeof AuthWishlistRoute
   '/_focus/checkout': typeof FocusCheckoutRoute
-  '/_focus/login': typeof FocusLoginRoute
-  '/_focus/register': typeof FocusRegisterRoute
   '/_site/cart': typeof SiteCartRoute
-  '/_site/forgot-password': typeof SiteForgotPasswordRoute
-  '/_site/reset-password': typeof SiteResetPasswordRoute
   '/_site/search': typeof SiteSearchRoute
   '/_site/': typeof SiteIndexRoute
   '/_auth/account/addresses': typeof AuthAccountAddressesRoute
@@ -292,11 +256,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/wishlist'
     | '/checkout'
-    | '/login'
-    | '/register'
     | '/cart'
-    | '/forgot-password'
-    | '/reset-password'
     | '/search'
     | '/account/addresses'
     | '/account/balance'
@@ -320,11 +280,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/wishlist'
     | '/checkout'
-    | '/login'
-    | '/register'
     | '/cart'
-    | '/forgot-password'
-    | '/reset-password'
     | '/search'
     | '/account/addresses'
     | '/account/balance'
@@ -351,11 +307,7 @@ export interface FileRouteTypes {
     | '/_auth/notifications'
     | '/_auth/wishlist'
     | '/_focus/checkout'
-    | '/_focus/login'
-    | '/_focus/register'
     | '/_site/cart'
-    | '/_site/forgot-password'
-    | '/_site/reset-password'
     | '/_site/search'
     | '/_site/'
     | '/_auth/account/addresses'
@@ -445,20 +397,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FocusCheckoutRouteImport
       parentRoute: typeof FocusRoute
     }
-    '/_focus/login': {
-      id: '/_focus/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof FocusLoginRouteImport
-      parentRoute: typeof FocusRoute
-    }
-    '/_focus/register': {
-      id: '/_focus/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof FocusRegisterRouteImport
-      parentRoute: typeof FocusRoute
-    }
     '/_site/': {
       id: '/_site/'
       path: '/'
@@ -471,20 +409,6 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof SiteCartRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/forgot-password': {
-      id: '/_site/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof SiteForgotPasswordRouteImport
-      parentRoute: typeof SiteRoute
-    }
-    '/_site/reset-password': {
-      id: '/_site/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof SiteResetPasswordRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/search': {
@@ -640,15 +564,11 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface FocusRouteChildren {
   FocusCheckoutRoute: typeof FocusCheckoutRoute
-  FocusLoginRoute: typeof FocusLoginRoute
-  FocusRegisterRoute: typeof FocusRegisterRoute
   FocusOrderConfirmationOrderIdRoute: typeof FocusOrderConfirmationOrderIdRoute
 }
 
 const FocusRouteChildren: FocusRouteChildren = {
   FocusCheckoutRoute: FocusCheckoutRoute,
-  FocusLoginRoute: FocusLoginRoute,
-  FocusRegisterRoute: FocusRegisterRoute,
   FocusOrderConfirmationOrderIdRoute: FocusOrderConfirmationOrderIdRoute,
 }
 
@@ -656,8 +576,6 @@ const FocusRouteWithChildren = FocusRoute._addFileChildren(FocusRouteChildren)
 
 interface SiteRouteChildren {
   SiteCartRoute: typeof SiteCartRoute
-  SiteForgotPasswordRoute: typeof SiteForgotPasswordRoute
-  SiteResetPasswordRoute: typeof SiteResetPasswordRoute
   SiteSearchRoute: typeof SiteSearchRoute
   SiteIndexRoute: typeof SiteIndexRoute
   SiteGiftTokenRoute: typeof SiteGiftTokenRoute
@@ -669,8 +587,6 @@ interface SiteRouteChildren {
 
 const SiteRouteChildren: SiteRouteChildren = {
   SiteCartRoute: SiteCartRoute,
-  SiteForgotPasswordRoute: SiteForgotPasswordRoute,
-  SiteResetPasswordRoute: SiteResetPasswordRoute,
   SiteSearchRoute: SiteSearchRoute,
   SiteIndexRoute: SiteIndexRoute,
   SiteGiftTokenRoute: SiteGiftTokenRoute,

@@ -1,4 +1,4 @@
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vite-plus/test'
 import { z } from 'zod'
 
 import { initI18n, i18n } from './index'
@@ -43,8 +43,8 @@ describe('Polish plurals', () => {
 
 describe('setLanguage', () => {
   it('switches i18n, <html lang>, the store, the account and refetches', async () => {
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response(JSON.stringify({}), { status: 200 }),
+    const fetchMock = vi.fn<typeof fetch>(() =>
+      Promise.resolve(new Response(JSON.stringify({}), { status: 200 })),
     )
     vi.stubGlobal('fetch', fetchMock)
     const invalidate = vi.spyOn(queryClient, 'invalidateQueries')
@@ -71,7 +71,7 @@ describe('setLanguage', () => {
     // content cached for the new language (or keyed without one) is refetched;
     // entries for the old language are left alone
     const { predicate } = invalidate.mock.calls[0][0] ?? {}
-    const query = (queryKey: unknown[]) =>
+    const query = (queryKey: Array<unknown>) =>
       ({ queryKey }) as unknown as Parameters<NonNullable<typeof predicate>>[0]
     expect(predicate?.(query(['titles', { language: 'pl' }]))).toBe(true)
     expect(predicate?.(query(['no-prefs-key']))).toBe(true)
@@ -96,8 +96,8 @@ describe('setLanguage', () => {
   })
 
   it('does not PATCH the account for guests', async () => {
-    const fetchMock = vi.fn<typeof fetch>(
-      async () => new Response('{}', { status: 200 }),
+    const fetchMock = vi.fn<typeof fetch>(() =>
+      Promise.resolve(new Response('{}', { status: 200 })),
     )
     vi.stubGlobal('fetch', fetchMock)
 

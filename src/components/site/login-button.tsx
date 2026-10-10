@@ -1,36 +1,37 @@
 import type { ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
 
-import { useLogin } from '@/api/auth'
 import { Button } from '@/components/ui/button'
+import { useAuthDialogStore } from '@/stores/auth-dialog'
 
 type LoginButtonProps = {
   className?: string
   children: ReactNode
-  onLoggedIn?: () => void
+  /** runs before the modal opens, e.g. to close the mobile menu */
+  onOpen?: () => void
+  /** where focus returns when the modal closes; defaults to this button */
+  returnFocusTo?: HTMLElement | null
 }
 
-/**
- * TEMPORARY: logs in straight away with demo credentials so the logged-in and
- * guest states can be switched. Replace with a link to /login once the form exists:
- *   <Link to="/login" search={{ redirect: location.href }}>Log In</Link>
- */
+/** Opens the login modal (AuthDialog, mounted in the root route). */
 export function LoginButton({
   className,
   children,
-  onLoggedIn,
+  onOpen,
+  returnFocusTo,
 }: LoginButtonProps) {
-  const { t } = useTranslation()
-  const login = useLogin()
+  const openAuth = useAuthDialogStore((state) => state.openAuth)
 
   return (
     <Button
       size="sm"
-      className={className}
-      disabled={login.isPending}
-      onClick={() => login.mutate(undefined, { onSuccess: onLoggedIn })}
+      className={`cursor-pointer ${className}`}
+      aria-haspopup="dialog"
+      onClick={() => {
+        onOpen?.()
+        openAuth('login', { returnFocusTo })
+      }}
     >
-      {login.isPending ? t('header.loggingIn') : children}
+      {children}
     </Button>
   )
 }

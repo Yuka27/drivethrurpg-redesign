@@ -5,7 +5,8 @@
   "actions": {
     "opensInNewTab": "(opens in a new tab)",
     "tryAgain": "Try again",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "close": "Close"
   },
   "header": {
     "search": {
@@ -40,8 +41,7 @@
       "withCount_one": "Cart, {{count}} item",
       "withCount_other": "Cart, {{count}} items"
     },
-    "login": "Log In",
-    "loggingIn": "Logging in…"
+    "login": "Log In"
   },
   "account": {
     "tooltip": "Account",
@@ -88,7 +88,13 @@
     "moreSystems_one": "+{{count}} more system",
     "moreSystems_other": "+{{count}} more systems",
     "showLess": "Show less",
-    "copyright": "© Roll20, LLC — All product and company names are trademarks or registered trademarks of their respective holders."
+    "copyright": "© Roll20, LLC — All product and company names are trademarks or registered trademarks of their respective holders.",
+    "testing": {
+      "title": "Testing",
+      "note": "Simulates links from emails; no real emails are sent.",
+      "resetPassword": "Set new password",
+      "resetPasswordExpired": "Set new password (expired link)"
+    }
   },
   "newsletter": {
     "heading": "Get new releases in your inbox",
@@ -103,10 +109,6 @@
     "saveFailed": "Could not save your preferences to your account.",
     "saveFailedDetail": "They are still applied on this device."
   },
-  "auth": {
-    "loginFailed": "Could not log you in. Please try again.",
-    "logoutFailed": "Could not log you out. Please try again."
-  },
   "pages": {
     "notFound": {
       "title": "Critical miss",
@@ -120,7 +122,7 @@
   "errors": {
     "generic": "Something went wrong. Please try again.",
     "invalid_credentials": "Wrong email or password.",
-    "account_locked": "Your account is locked. Reset your password to unlock it.",
+    "account_locked": "Too many attempts. Wait a few minutes and try again.",
     "session_expired": "Please sign in again.",
     "email_taken": "An account with this email already exists.",
     "weak_password": "Use at least 10 characters for your password.",
@@ -136,5 +138,11 @@
   },
   "toasts": {
     "region": "Notifications"
+  },
+  "validation": {
+    "emailInvalid": "Enter a valid email address.",
+    "passwordRequired": "Enter your password.",
+    "emailInvalidExample": "Enter a valid email address, for example name@example.com.",
+    "passwordMinLength": "Use at least 10 characters."
   }
 }

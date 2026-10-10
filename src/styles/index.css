@@ -96,6 +96,21 @@
   --shadow-popover: 0 20px 40px rgb(0 0 0 / 0.5); /* mega menu, popovers */
 }
 
+/* ---------- Motion ---------- */
+@theme {
+  /* a light band sweeping across a "glass" placeholder while content changes */
+  --animate-shimmer: shimmer 1.1s ease-in-out infinite;
+
+  @keyframes shimmer {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+}
+
 /* page width used by every mockup: 1240px max, 24px gutters */
 @utility container {
   margin-inline: auto;

@@ -1,6 +1,5 @@
-import { Link } from '@tanstack/react-router'
 import { MenuIcon, PanelLeftCloseIcon } from 'lucide-react'
-import { useId, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ReactNode } from 'react'
 
@@ -20,6 +19,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Switch } from '@/components/ui/switch'
+import { useAuthDialogStore } from '@/stores/auth-dialog'
 import { usePreferencesStore } from '@/stores/preferences'
 
 export function MobileMenu() {
@@ -28,14 +28,17 @@ export function MobileMenu() {
   const setAiContent = usePreferencesStore((state) => state.setAiContent)
   const aiSwitchId = useId()
   const [open, setOpen] = useState(false)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const close = () => setOpen(false)
   const { data: me } = useMe()
   const logout = useLogout()
+  const openAuth = useAuthDialogStore((state) => state.openAuth)
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
+          ref={triggerRef}
           variant="outline"
           size="icon-sm"
           aria-label={t('menu.open')}
@@ -118,18 +121,28 @@ export function MobileMenu() {
           </div>
         ) : (
           <div className="flex flex-col gap-2 p-5">
-            <LoginButton className="w-full" onLoggedIn={close}>
+            <LoginButton
+              className="w-full"
+              onOpen={close}
+              // this button leaves with the menu; return focus to the ☰ button instead
+              returnFocusTo={triggerRef.current}
+            >
               {t('menu.login')}
             </LoginButton>
             <p className="text-center text-sm text-muted-foreground">
               {t('menu.newHere')}{' '}
-              <Link
-                to="/register"
-                onClick={close}
+              <button
+                type="button"
+                aria-haspopup="dialog"
+                onClick={() => {
+                  close()
+                  // the menu (and this button) goes away: return focus to the ☰ button
+                  openAuth('register', { returnFocusTo: triggerRef.current })
+                }}
                 className="text-primary hover:underline"
               >
                 {t('menu.createAccount')}
-              </Link>
+              </button>
             </p>
           </div>
         )}

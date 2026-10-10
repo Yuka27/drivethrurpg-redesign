@@ -5,7 +5,8 @@
   "actions": {
     "opensInNewTab": "(otwiera się w nowej karcie)",
     "tryAgain": "Spróbuj ponownie",
-    "backHome": "Wróć na stronę główną"
+    "backHome": "Wróć na stronę główną",
+    "close": "Zamknij"
   },
   "header": {
     "search": {
@@ -46,8 +47,7 @@
       "withCount_many": "Koszyk, {{count}} produktów",
       "withCount_other": "Koszyk, {{count}} produktu"
     },
-    "login": "Zaloguj się",
-    "loggingIn": "Logowanie…"
+    "login": "Zaloguj się"
   },
   "account": {
     "tooltip": "Konto",
@@ -96,7 +96,13 @@
     "moreSystems_many": "+{{count}} systemów więcej",
     "moreSystems_other": "+{{count}} systemu więcej",
     "showLess": "Pokaż mniej",
-    "copyright": "© Roll20, LLC — Wszystkie nazwy produktów i firm są znakami towarowymi lub zastrzeżonymi znakami towarowymi ich właścicieli."
+    "copyright": "© Roll20, LLC — Wszystkie nazwy produktów i firm są znakami towarowymi lub zastrzeżonymi znakami towarowymi ich właścicieli.",
+    "testing": {
+      "title": "Testy",
+      "note": "Symuluje linki z e-maili; prawdziwe e-maile nie są wysyłane.",
+      "resetPassword": "Ustaw nowe hasło",
+      "resetPasswordExpired": "Ustaw nowe hasło (wygasły link)"
+    }
   },
   "newsletter": {
     "heading": "Otrzymuj nowości na skrzynkę",
@@ -111,10 +117,6 @@
     "saveFailed": "Nie udało się zapisać preferencji na koncie.",
     "saveFailedDetail": "Nadal obowiązują na tym urządzeniu."
   },
-  "auth": {
-    "loginFailed": "Nie udało się zalogować. Spróbuj ponownie.",
-    "logoutFailed": "Nie udało się wylogować. Spróbuj ponownie."
-  },
   "pages": {
     "notFound": {
       "title": "Krytyczna porażka",
@@ -128,7 +130,7 @@
   "errors": {
     "generic": "Coś poszło nie tak. Spróbuj ponownie.",
     "invalid_credentials": "Nieprawidłowy e-mail lub hasło.",
-    "account_locked": "Twoje konto jest zablokowane. Zresetuj hasło, aby je odblokować.",
+    "account_locked": "Zbyt wiele prób. Odczekaj kilka minut i spróbuj ponownie.",
     "session_expired": "Zaloguj się ponownie.",
     "email_taken": "Konto z tym adresem e-mail już istnieje.",
     "weak_password": "Hasło musi mieć co najmniej 10 znaków.",
@@ -144,5 +146,11 @@
   },
   "toasts": {
     "region": "Powiadomienia"
+  },
+  "validation": {
+    "emailInvalid": "Podaj prawidłowy adres e-mail.",
+    "passwordRequired": "Podaj hasło.",
+    "emailInvalidExample": "Podaj prawidłowy adres e-mail, na przykład imie@przyklad.pl.",
+    "passwordMinLength": "Hasło musi mieć co najmniej 10 znaków."
   }
 }
