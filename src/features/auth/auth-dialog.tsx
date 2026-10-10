@@ -1,8 +1,11 @@
+import { useRouter } from '@tanstack/react-router'
 import { XIcon } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { LoginForm } from './login/login-form'
+import { ForgotPassword } from './password/forgot-password'
+import { ResetPassword } from './password/reset-password'
 import { BenefitsPanel } from './register/benefits-panel'
 import { RegisterForm } from './register/register-form'
 import { RegisterSuccess } from './register/register-success'
@@ -33,18 +36,26 @@ const STEP = { fadeOut: 120, width: 280, height: 280, fadeIn: 150 }
 type Phase = 'idle' | 'leaving' | 'resizing' | 'swapping' | 'entering'
 
 /**
- * Login and create-account modal. Mounted once in the root route; open it with
- * useAuthDialogStore().openAuth('login' | 'register').
+ * Login, create-account and password-reset modal. Mounted once in the root route;
+ * open it with useAuthDialogStore().openAuth('login' | 'register' | 'forgot' | 'reset').
  */
 export function AuthDialog() {
   const { t } = useTranslation()
   const open = useAuthDialogStore((state) => state.open)
   const view = useAuthDialogStore((state) => state.view)
   const email = useAuthDialogStore((state) => state.email)
+  const resetToken = useAuthDialogStore((state) => state.resetToken)
+  const redirectTo = useAuthDialogStore((state) => state.redirectTo)
   const returnFocusTo = useAuthDialogStore((state) => state.returnFocusTo)
   const setOpen = useAuthDialogStore((state) => state.setOpen)
   const showView = useAuthDialogStore((state) => state.showView)
   const close = () => setOpen(false)
+  const router = useRouter()
+  // signed in: close, then continue to the protected page that asked for login
+  const signedIn = () => {
+    close()
+    if (redirectTo) router.history.push(redirectTo)
+  }
   const contentRef = useRef<HTMLDivElement>(null)
   const { registered, mergedCartItems, onRegistered, reset } = useRegisterFlow()
   const reducedMotion = useReducedMotion()
@@ -117,6 +128,7 @@ export function AuthDialog() {
           'max-h-[calc(100dvh-2rem)] gap-0 overflow-y-auto rounded-xl bg-card p-0 shadow-sm motion-safe:transition-[max-width] motion-safe:duration-250 motion-safe:ease-out motion-reduce:transition-none',
           sizeView === 'login' && 'sm:max-w-[430px]',
           sizeView === 'register' && 'sm:max-w-[500px]',
+          (sizeView === 'forgot' || sizeView === 'reset') && 'sm:max-w-[440px]',
           // 460 form + 48 gap + 400 benefits + 2×30 padding + 2×1 border.
           // The breakpoint is in rem, not px: Tailwind only orders it after
           // `sm:` (also rem) when the units match.
@@ -146,16 +158,42 @@ export function AuthDialog() {
                 defaultEmail={email}
                 Title={DialogTitle}
                 Description={DialogDescription}
-                onSuccess={close}
-                onNavigate={close}
+                onSuccess={signedIn}
                 onSwitchToRegister={() => switchView('register')}
+                onForgotPassword={(prefill) =>
+                  switchView('forgot', { email: prefill })
+                }
               />
+            ) : view === 'forgot' || view === 'reset' ? (
+              // same padding and focus colour as the register views
+              <div className="px-[18px] pt-[22px] pb-5 [--ring:var(--primary)] min-[1000px]:p-[30px]">
+                {view === 'forgot' ? (
+                  <ForgotPassword
+                    key={email}
+                    defaultEmail={email}
+                    Title={DialogTitle}
+                    Description={DialogDescription}
+                    onBackToLogin={(prefill) =>
+                      switchView('login', { email: prefill })
+                    }
+                  />
+                ) : (
+                  <ResetPassword
+                    // a new link (another token) starts over
+                    key={resetToken}
+                    token={resetToken}
+                    Title={DialogTitle}
+                    Description={DialogDescription}
+                    onLogin={() => switchView('login')}
+                    onRequestNewLink={() => switchView('forgot')}
+                  />
+                )}
+              </div>
             ) : (
               // inside the register views, focus rings use the primary colour
               <div className="px-[18px] pt-[22px] pb-5 [--ring:var(--primary)] min-[1000px]:p-[30px]">
                 {registered ? (
                   <RegisterSuccess
-                    variant="plain"
                     Title={DialogTitle}
                     Description={DialogDescription}
                     email={registered.email}
@@ -166,17 +204,18 @@ export function AuthDialog() {
                 ) : (
                   <div className="grid items-start gap-[18px] min-[1000px]:grid-cols-[minmax(0,460px)_minmax(0,400px)] min-[1000px]:gap-12">
                     <RegisterForm
-                      variant="plain"
                       Title={DialogTitle}
                       Description={DialogDescription}
                       onSuccess={(_user, details) =>
                         onRegistered(details.email)
                       }
-                      onSocialSuccess={close}
+                      onSocialSuccess={signedIn}
                       onSwitchToLogin={(prefill) =>
                         switchView('login', { email: prefill })
                       }
-                      onNavigate={close}
+                      onForgotPassword={(prefill) =>
+                        switchView('forgot', { email: prefill })
+                      }
                     />
                     <BenefitsPanel />
                   </div>

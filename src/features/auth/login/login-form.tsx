@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import type { ElementType } from 'react'
 import { useForm } from 'react-hook-form'
@@ -35,16 +34,16 @@ const inputClass =
   'h-9 rounded-lg border-border bg-background px-2.5 shadow-none dark:bg-background'
 
 type LoginFormProps = {
-  /** the modal passes DialogTitle/DialogDescription; the /login page keeps h1/p */
+  /** the modal passes DialogTitle/DialogDescription */
   Title?: ElementType
   Description?: ElementType
   /** prefilled email, e.g. from register's "Log in instead" */
   defaultEmail?: string
-  /** in the modal, "Register here" switches view instead of navigating to /register */
-  onSwitchToRegister?: () => void
-  onSuccess?: () => void
-  /** called when a link inside the form navigates away (the modal closes itself) */
-  onNavigate?: () => void
+  /** "Register here" switches the modal to the register view */
+  onSwitchToRegister: () => void
+  /** "Forgot password?" switches the modal to the forgot-password view, keeping the email */
+  onForgotPassword: (email: string) => void
+  onSuccess: () => void
 }
 
 export function LoginForm({
@@ -52,8 +51,8 @@ export function LoginForm({
   Description = 'p',
   defaultEmail = '',
   onSwitchToRegister,
+  onForgotPassword,
   onSuccess,
-  onNavigate,
 }: LoginFormProps) {
   const { t } = useTranslation('auth')
   const login = useLogin()
@@ -81,7 +80,7 @@ export function LoginForm({
   // never blocking the login), then hand over to the caller
   const signedIn = () => {
     if (cartItemCount(cart) > 0) merge.mutate()
-    onSuccess?.()
+    onSuccess()
   }
 
   const onSubmit = form.handleSubmit((request) => {
@@ -146,13 +145,15 @@ export function LoginForm({
                     <FormLabel className="flex-1">
                       {t('login.password')}
                     </FormLabel>
-                    <Link
-                      to="/forgot-password"
-                      onClick={onNavigate}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onForgotPassword(form.getValues('email').trim())
+                      }
                       className="text-sm text-primary hover:underline"
                     >
                       {t('login.forgotPassword')}
-                    </Link>
+                    </button>
                   </div>
                   <FormControl>
                     <Input
@@ -211,23 +212,13 @@ export function LoginForm({
 
             <p className="text-center text-sm">
               {t('login.noAccount')}{' '}
-              {onSwitchToRegister ? (
-                <button
-                  type="button"
-                  onClick={onSwitchToRegister}
-                  className="text-primary hover:underline"
-                >
-                  {t('login.register')}
-                </button>
-              ) : (
-                <Link
-                  to="/register"
-                  onClick={onNavigate}
-                  className="text-primary hover:underline"
-                >
-                  {t('login.register')}
-                </Link>
-              )}
+              <button
+                type="button"
+                onClick={onSwitchToRegister}
+                className="text-primary hover:underline"
+              >
+                {t('login.register')}
+              </button>
             </p>
           </div>
 

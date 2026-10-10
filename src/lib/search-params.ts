@@ -24,21 +24,3 @@ export const languageFilter = searchText(
     .regex(/^[a-z]{2}(,[a-z]{2})*$/)
     .optional(),
 ).catch(undefined)
-
-/**
- * ?redirect= after login/register: same-site paths only, so a crafted link cannot
- * send the user to another site (open redirect). Rejects https://…, //host and
- * /\host (browsers treat a backslash like a slash). Anything else is dropped.
- */
-export const safeRedirect = searchText(
-  z
-    .string()
-    .startsWith('/')
-    .refine((path) => !path.startsWith('//') && !path.startsWith('/\\'))
-    .optional(),
-).catch(undefined)
-
-/** ?email= to prefill a form (e.g. "Log in instead" after email_taken). */
-export const prefillEmail = searchText(z.email().max(254).optional()).catch(
-  undefined,
-)

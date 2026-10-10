@@ -5,7 +5,6 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import { STRENGTH_LEVELS, passwordStrength } from './password-strength'
 import type { PasswordStrength } from './password-strength'
-import type { RegisterRequest } from '@/api/auth'
 import { PASSWORD_MIN_LENGTH } from '@/api/auth'
 import {
   FormControl,
@@ -34,31 +33,36 @@ const TEXT_COLOR: Record<PasswordStrength, string> = {
 }
 
 type PasswordFieldProps = {
-  field: ControllerRenderProps<RegisterRequest, 'password'>
-  /** compared with the password for the "different from your email" check */
-  email: string
+  /** the `password` field of any form (register, reset password) */
+  field: Omit<ControllerRenderProps, 'value'> & { value: string }
+  /** compared with the password for the "different from your email" check; omit when unknown */
+  email?: string
+  /** defaults to "Password" */
+  label?: string
 }
 
 /** Password with show/hide, a strength meter (advice only) and the requirement checklist. */
-export function PasswordField({ field, email }: PasswordFieldProps) {
+export function PasswordField({ field, email, label }: PasswordFieldProps) {
   const { t } = useTranslation('auth')
   const [shown, setShown] = useState(false)
   const value = field.value
-  const strength = passwordStrength(value, email)
+  const strength = passwordStrength(value, email ?? '')
   const level = STRENGTH_LEVELS[strength]
 
-  const requirements = [
+  const requirements: Array<{ key: 'length' | 'notEmail'; met: boolean }> = [
     { key: 'length', met: value.length >= PASSWORD_MIN_LENGTH },
-    {
+  ]
+  if (email !== undefined) {
+    requirements.push({
       key: 'notEmail',
       met: Boolean(value) && value.toLowerCase() !== email.trim().toLowerCase(),
-    },
-  ] as const
+    })
+  }
 
   return (
     <FormItem className="gap-1.5">
       <FormLabel className="text-[0.82rem] font-semibold">
-        {t('register.password')}
+        {label ?? t('register.password')}
       </FormLabel>
       <div className="relative">
         <FormControl>

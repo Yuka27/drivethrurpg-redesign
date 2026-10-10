@@ -1,16 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@tanstack/react-router'
 import { Loader2Icon, TriangleAlertIcon } from 'lucide-react'
-import { useEffect, useId, useState } from 'react'
-import type { ElementType, ReactNode } from 'react'
+import { useId, useState } from 'react'
+import type { ElementType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { FieldPath } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { PasswordField } from './password-field'
-import { registerCardClass, registerInputClass } from './styles'
+import { registerInputClass } from './styles'
 import { CartContextNote } from '../shared/cart-context-note'
+import { FormAlert } from '../shared/form-alert'
 import { SocialButtons } from '../shared/social-buttons'
 import { RegisterRequestSchema, useRegister, useSocialLogin } from '@/api/auth'
 import type { RegisterRequest, SocialProvider } from '@/api/auth'
@@ -32,6 +32,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { TODO_URL } from '@/config/footer'
 import { useApiError } from '@/i18n/use-api-error'
+import { useCountdown } from '@/lib/use-countdown'
 import { cn } from '@/lib/utils'
 
 /** Errors set from API responses; everything else comes from the Zod schema. */
@@ -47,28 +48,22 @@ export type RegisterFormProps = {
   onSuccess: (user: Me, details: { email: string }) => void
   /** social sign-in finished (the account may already have existed) */
   onSocialSuccess?: (user: Me) => void
-  /** kept on the "Log in" links so the user still ends up where they started */
-  redirect?: string
-  /** the modal passes DialogTitle/DialogDescription; the /register page keeps h1/p */
+  /** the modal passes DialogTitle/DialogDescription */
   Title?: ElementType
   Description?: ElementType
-  /** "card" on the /register page; "plain" inside the modal, which is the card */
-  variant?: 'card' | 'plain'
-  /** in the modal, "Log in" / "Log in instead" switch view instead of navigating to /login */
-  onSwitchToLogin?: (email?: string) => void
-  /** a link inside the form navigates away (the modal closes itself) */
-  onNavigate?: () => void
+  /** "Log in" / "Log in instead" switch the modal to the login view (with the typed email) */
+  onSwitchToLogin: (email?: string) => void
+  /** "reset your password" switches the modal to the forgot-password view */
+  onForgotPassword: (email: string) => void
 }
 
 export function RegisterForm({
   onSuccess,
   onSocialSuccess,
-  redirect,
   Title = 'h1',
   Description = 'p',
-  variant = 'card',
   onSwitchToLogin,
-  onNavigate,
+  onForgotPassword,
 }: RegisterFormProps) {
   const { t } = useTranslation('auth')
   const apiError = useApiError()
@@ -151,12 +146,7 @@ export function RegisterForm({
 
   return (
     <Form {...form}>
-      <form
-        noValidate
-        aria-labelledby={titleId}
-        onSubmit={submit}
-        className={cn(variant === 'card' && registerCardClass)}
-      >
+      <form noValidate aria-labelledby={titleId} onSubmit={submit}>
         {/* the id sits on an inner span: DialogTitle keeps its own id, which names the dialog */}
         <Title className="text-[1.4rem] leading-tight font-extrabold min-[1000px]:text-[1.6rem]">
           <span id={titleId}>{t('register.title')}</span>
@@ -178,7 +168,7 @@ export function RegisterForm({
         </p>
 
         {submitCount > 0 && summaryFields.length > 0 && (
-          <Alert>
+          <FormAlert>
             <b className="mb-0.5 block">
               {t('register.summary.title', { count: summaryFields.length })}
             </b>
@@ -198,10 +188,10 @@ export function RegisterForm({
                 </li>
               ))}
             </ul>
-          </Alert>
+          </FormAlert>
         )}
         {serverDown && (
-          <Alert>
+          <FormAlert>
             <b className="mb-0.5 block">{t('register.errors.serverTitle')}</b>
             {t('register.errors.serverBody')}
             <br />
@@ -214,13 +204,13 @@ export function RegisterForm({
             >
               {t('register.errors.tryAgain')}
             </Button>
-          </Alert>
+          </FormAlert>
         )}
         {retryUntil !== null && secondsLeft > 0 && (
           // static text: a ticking role="alert" would be re-read every second
-          <Alert>
+          <FormAlert>
             {t('register.errors.rateLimited', { count: retryAfter })}
-          </Alert>
+          </FormAlert>
         )}
         <FormRootError className="mb-4" />
 
@@ -247,9 +237,8 @@ export function RegisterForm({
                   {fieldState.error?.type === 'email_taken' ? (
                     <EmailTakenMessage
                       email={field.value}
-                      redirect={redirect}
                       onSwitchToLogin={onSwitchToLogin}
-                      onNavigate={onNavigate}
+                      onForgotPassword={onForgotPassword}
                     />
                   ) : (
                     <FormMessage icon={warnIcon} />
@@ -339,55 +328,28 @@ export function RegisterForm({
         </p>
         <p className="mt-[18px] border-t border-border pt-[18px] text-center text-[0.88rem] text-muted-foreground">
           {t('register.haveAccount')}{' '}
-          {onSwitchToLogin ? (
-            <button
-              type="button"
-              onClick={() => onSwitchToLogin()}
-              className="font-bold text-primary hover:underline"
-            >
-              {t('register.login')}
-            </button>
-          ) : (
-            <Link
-              to="/login"
-              search={{ redirect }}
-              className="font-bold text-primary hover:underline"
-            >
-              {t('register.login')}
-            </Link>
-          )}
+          <button
+            type="button"
+            onClick={() => onSwitchToLogin()}
+            className="font-bold text-primary hover:underline"
+          >
+            {t('register.login')}
+          </button>
         </p>
       </form>
     </Form>
   )
 }
 
-function Alert({ children }: { children: ReactNode }) {
-  return (
-    <div
-      role="alert"
-      className="mb-4 flex gap-2.5 rounded-[10px] border border-destructive/55 bg-destructive/[0.12] px-3.5 py-3 text-[0.86rem]"
-    >
-      <TriangleAlertIcon
-        aria-hidden
-        className="mt-px size-4 shrink-0 text-destructive"
-      />
-      <div>{children}</div>
-    </div>
-  )
-}
-
 /** email_taken: the message offers the two ways forward, keeping what was typed. */
 function EmailTakenMessage({
   email,
-  redirect,
   onSwitchToLogin,
-  onNavigate,
+  onForgotPassword,
 }: {
   email: string
-  redirect?: string
-  onSwitchToLogin?: (email?: string) => void
-  onNavigate?: () => void
+  onSwitchToLogin: (email?: string) => void
+  onForgotPassword: (email: string) => void
 }) {
   const { t } = useTranslation('auth')
   const { formMessageId } = useFormField()
@@ -404,23 +366,17 @@ function EmailTakenMessage({
           t={t}
           i18nKey="register.errors.emailTaken"
           components={{
-            login: onSwitchToLogin ? (
+            login: (
               <button
                 type="button"
                 onClick={() => onSwitchToLogin(email.trim())}
                 className={linkClass}
               />
-            ) : (
-              <Link
-                to="/login"
-                search={{ redirect, email: email.trim() }}
-                className={linkClass}
-              />
             ),
             reset: (
-              <Link
-                to="/forgot-password"
-                onClick={onNavigate}
+              <button
+                type="button"
+                onClick={() => onForgotPassword(email.trim())}
                 className={linkClass}
               />
             ),
@@ -429,16 +385,4 @@ function EmailTakenMessage({
       </span>
     </p>
   )
-}
-
-/** Whole seconds left until `until` (epoch ms), ticking once a second. */
-function useCountdown(until: number | null) {
-  const [now, setNow] = useState(() => Date.now())
-  useEffect(() => {
-    if (until === null) return
-    setNow(Date.now())
-    const timer = setInterval(() => setNow(Date.now()), 1000)
-    return () => clearInterval(timer)
-  }, [until])
-  return until === null ? 0 : Math.max(0, Math.ceil((until - now) / 1000))
 }

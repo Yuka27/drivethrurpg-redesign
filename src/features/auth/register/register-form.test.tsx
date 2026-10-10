@@ -7,6 +7,9 @@ import { getAuthToken } from '@/lib/auth-token'
 import { apiError, mockApi, session, user as me } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
+// the modal's view switches; tests that check them pass their own
+const modal = () => ({ onSwitchToLogin: vi.fn(), onForgotPassword: vi.fn() })
+
 const email = () => screen.getByRole('textbox', { name: 'Email' })
 const password = () => screen.getByLabelText('Password')
 const submit = () => screen.getByRole('button', { name: 'Create account' })
@@ -24,7 +27,7 @@ describe('RegisterForm', () => {
   it('lists what to fix, and each item focuses its field', async () => {
     mockApi()
     const { user } = await renderWithProviders(
-      <RegisterForm onSuccess={vi.fn()} />,
+      <RegisterForm {...modal()} onSuccess={vi.fn()} />,
     )
 
     await user.type(password(), 'short')
@@ -54,7 +57,7 @@ describe('RegisterForm', () => {
     })
     const onSuccess = vi.fn()
     const { user } = await renderWithProviders(
-      <RegisterForm onSuccess={onSuccess} />,
+      <RegisterForm {...modal()} onSuccess={onSuccess} />,
     )
 
     await fillIn(user)
@@ -89,7 +92,7 @@ describe('RegisterForm', () => {
         }),
     })
     const { user } = await renderWithProviders(
-      <RegisterForm onSuccess={vi.fn()} />,
+      <RegisterForm {...modal()} onSuccess={vi.fn()} />,
     )
 
     await fillIn(user)
@@ -110,7 +113,11 @@ describe('RegisterForm', () => {
       mockApi({ 'POST /auth/register': apiError(409, 'email_taken') })
       const onSwitchToLogin = vi.fn()
       const { user } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} onSwitchToLogin={onSwitchToLogin} />,
+        <RegisterForm
+          {...modal()}
+          onSuccess={vi.fn()}
+          onSwitchToLogin={onSwitchToLogin}
+        />,
       )
 
       await fillIn(user, {
@@ -130,10 +137,15 @@ describe('RegisterForm', () => {
       expect(onSwitchToLogin).toHaveBeenCalledWith('taken@example.com')
     })
 
-    it('email_taken links to /login with the email on the full page', async () => {
+    it('email_taken "reset your password" switches view in the modal', async () => {
       mockApi({ 'POST /auth/register': apiError(409, 'email_taken') })
+      const onForgotPassword = vi.fn()
       const { user } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} redirect="/cart" />,
+        <RegisterForm
+          {...modal()}
+          onSuccess={vi.fn()}
+          onForgotPassword={onForgotPassword}
+        />,
       )
 
       await fillIn(user, {
@@ -141,18 +153,16 @@ describe('RegisterForm', () => {
         password: 'a long passphrase',
       })
       await user.click(submit())
-
-      const link = await screen.findByRole('link', { name: 'Log in instead' })
-      const href = new URL(link.getAttribute('href') ?? '', 'http://x')
-      expect(href.pathname).toBe('/login')
-      expect(href.searchParams.get('email')).toBe('taken@example.com')
-      expect(href.searchParams.get('redirect')).toBe('/cart')
+      await user.click(
+        await screen.findByRole('button', { name: 'reset your password' }),
+      )
+      expect(onForgotPassword).toHaveBeenCalledWith('taken@example.com')
     })
 
     it('weak_password goes on the password field', async () => {
       mockApi({ 'POST /auth/register': apiError(422, 'weak_password') })
       const { user } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} />,
+        <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
       await fillIn(user)
@@ -171,7 +181,7 @@ describe('RegisterForm', () => {
     it('other 4xx errors are shown form-wide', async () => {
       mockApi({ 'POST /auth/register': apiError(403, 'account_locked') })
       const { user } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} />,
+        <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
       await fillIn(user)
@@ -194,7 +204,7 @@ describe('RegisterForm', () => {
       })
       const onSuccess = vi.fn()
       const { user } = await renderWithProviders(
-        <RegisterForm onSuccess={onSuccess} />,
+        <RegisterForm {...modal()} onSuccess={onSuccess} />,
       )
 
       await fillIn(user)
@@ -217,7 +227,7 @@ describe('RegisterForm', () => {
         'POST /auth/register': () => Promise.reject(new TypeError('offline')),
       })
       const { user } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} />,
+        <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
       await fillIn(user)
@@ -236,7 +246,7 @@ describe('RegisterForm', () => {
         }),
       })
       const { user } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} />,
+        <RegisterForm {...modal()} onSuccess={vi.fn()} />,
         { user: userEvent.setup({ advanceTimers: vi.advanceTimersByTime }) },
       )
 
@@ -266,7 +276,7 @@ describe('RegisterForm', () => {
     it('rates the password and ticks the requirements as the user types', async () => {
       mockApi()
       const { user, container } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} />,
+        <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
       const strength = container.querySelector(
         '[data-slot="password-strength"]',
@@ -291,7 +301,7 @@ describe('RegisterForm', () => {
     it('flags a password that matches the email', async () => {
       mockApi()
       const { user, container } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} />,
+        <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
       await user.type(email(), 'same.address@example.com')
@@ -308,7 +318,7 @@ describe('RegisterForm', () => {
     it('shows and hides the password', async () => {
       mockApi()
       const { user } = await renderWithProviders(
-        <RegisterForm onSuccess={vi.fn()} />,
+        <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
       expect(password()).toHaveAttribute('type', 'password')
@@ -325,7 +335,11 @@ describe('RegisterForm', () => {
     })
     const onSocialSuccess = vi.fn()
     const { user } = await renderWithProviders(
-      <RegisterForm onSuccess={vi.fn()} onSocialSuccess={onSocialSuccess} />,
+      <RegisterForm
+        {...modal()}
+        onSuccess={vi.fn()}
+        onSocialSuccess={onSocialSuccess}
+      />,
     )
 
     await user.click(

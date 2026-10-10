@@ -96,7 +96,13 @@
     "moreSystems_many": "+{{count}} systemów więcej",
     "moreSystems_other": "+{{count}} systemu więcej",
     "showLess": "Pokaż mniej",
-    "copyright": "© Roll20, LLC — Wszystkie nazwy produktów i firm są znakami towarowymi lub zastrzeżonymi znakami towarowymi ich właścicieli."
+    "copyright": "© Roll20, LLC — Wszystkie nazwy produktów i firm są znakami towarowymi lub zastrzeżonymi znakami towarowymi ich właścicieli.",
+    "testing": {
+      "title": "Testy",
+      "note": "Symuluje linki z e-maili; prawdziwe e-maile nie są wysyłane.",
+      "resetPassword": "Ustaw nowe hasło",
+      "resetPasswordExpired": "Ustaw nowe hasło (wygasły link)"
+    }
   },
   "newsletter": {
     "heading": "Otrzymuj nowości na skrzynkę",

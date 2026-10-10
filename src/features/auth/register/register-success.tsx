@@ -7,7 +7,8 @@ import { useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { registerCardClass, registerInputClass } from './styles'
+import { registerInputClass } from './styles'
+import { StatusIcon } from '../shared/status-icon'
 import {
   ChangeEmailRequestSchema,
   useChangeEmail,
@@ -26,23 +27,20 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useApplyApiError } from '@/lib/forms'
-import { cn } from '@/lib/utils'
 
 type RegisterSuccessProps = {
   email: string
   /** cart items moved into the account (null until /account/merge succeeds) */
   mergedCartItems: number | null
   cartHasItems: boolean
-  redirect?: string
-  /** the modal passes DialogTitle/DialogDescription; the /register page keeps h1/p */
+  /** the modal passes DialogTitle/DialogDescription */
   Title?: ElementType
   Description?: ElementType
-  variant?: 'card' | 'plain'
   /**
-   * In the modal: close it. "Continue shopping" then simply closes (the user stays
-   * where they are); the other buttons navigate first.
+   * Close the modal. "Continue shopping" just closes (the user stays where they
+   * are); the other buttons navigate first.
    */
-  onDone?: () => void
+  onDone: () => void
 }
 
 /** Replaces the form after the account is created. */
@@ -50,10 +48,8 @@ export function RegisterSuccess({
   email: initialEmail,
   mergedCartItems,
   cartHasItems,
-  redirect,
   Title = 'h1',
   Description = 'p',
-  variant = 'card',
   onDone,
 }: RegisterSuccessProps) {
   const { t } = useTranslation('auth')
@@ -68,25 +64,15 @@ export function RegisterSuccess({
   // the form the user was in has gone: tell screen readers what happened
   useEffect(() => titleRef.current?.focus(), [])
 
-  // back to where they started; otherwise the cart they just saved, or the shop
-  // (in the modal "the shop" is the page underneath: just close)
-  const next = redirect ?? (cartHasItems ? '/cart' : onDone ? null : '/')
+  // to the cart they just saved; otherwise back to the page underneath
   const onContinue = () => {
-    if (next) router.history.push(next)
-    onDone?.()
+    if (cartHasItems) router.history.push('/cart')
+    onDone()
   }
 
   return (
-    <section
-      aria-labelledby="register-success-title"
-      className={cn(variant === 'card' && registerCardClass)}
-    >
-      <div
-        aria-hidden
-        className="mb-4 grid size-14 place-items-center rounded-full border border-success/50 bg-success/[0.18] text-success"
-      >
-        <CheckIcon className="size-[26px]" strokeWidth={2.4} />
-      </div>
+    <section aria-labelledby="register-success-title">
+      <StatusIcon icon={CheckIcon} tone="success" strokeWidth={2.4} />
       {/* the id sits on an inner span: DialogTitle keeps its own id, which names the dialog */}
       <Title
         ref={titleRef}

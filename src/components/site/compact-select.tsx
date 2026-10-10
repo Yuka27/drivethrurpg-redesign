@@ -44,7 +44,10 @@ export function CompactSelect({
           {options.find((option) => option.value === value)?.short}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent align="end">
+      {/* popper: open below the pill. The default "item-aligned" puts the selected
+          option over the 24px trigger, which near the top of the page scrolls the
+          options above it out of view behind a scroll-up arrow */}
+      <SelectContent position="popper" align="end">
         {options.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}

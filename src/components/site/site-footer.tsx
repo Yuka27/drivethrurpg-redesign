@@ -4,6 +4,7 @@ import { BrandStrip } from './brand-strip'
 import { FooterLink } from './footer-link'
 import { NewsletterForm } from './newsletter-form'
 import { SystemGroups } from './system-groups'
+import { TestingLinks } from './testing-links'
 import {
   brandLinks,
   copyrightKey,
@@ -49,6 +50,8 @@ export function SiteFooter() {
             </ul>
           </nav>
         </div>
+
+        <TestingLinks />
       </div>
     </footer>
   )

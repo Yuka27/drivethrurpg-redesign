@@ -153,6 +153,60 @@ export function useMergeGuestData() {
   })
 }
 
+/** "Forgot your password?" form. */
+export const ForgotPasswordRequestSchema = z.object({
+  email: z
+    .email({ error: message('validation.emailInvalidExample') })
+    .max(254, { error: message('validation.emailInvalidExample') }),
+})
+export type ForgotPasswordRequest = z.infer<typeof ForgotPasswordRequestSchema>
+
+/**
+ * POST /auth/forgot-password (202). Always "sent", whether or not the address has
+ * an account, so the form cannot be used to find out who is registered.
+ */
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (request: ForgotPasswordRequest) =>
+      apiFetch('/auth/forgot-password', {
+        method: 'POST',
+        body: request,
+        schema: z.unknown(),
+      }),
+  })
+}
+
+/** "Set a new password" form; the token comes from the link in the email. */
+export const ResetPasswordRequestSchema = z.object({
+  password: z.string().min(PASSWORD_MIN_LENGTH, {
+    error: message('validation.passwordMinLength'),
+  }),
+})
+export type ResetPasswordRequest = z.infer<typeof ResetPasswordRequestSchema>
+
+/**
+ * Error codes meaning the reset link can no longer be used (too old, already
+ * used, or not a real token). The mock API never returns them (it answers 204 to
+ * anything); they are what a real backend would send.
+ */
+export const DEAD_RESET_LINK_CODES = new Set([
+  'token_expired',
+  'token_invalid',
+  'token_used',
+])
+
+/** POST /auth/reset-password (204). Does not sign in: the user logs in with the new password. */
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (request: ResetPasswordRequest & { token: string }) =>
+      apiFetch('/auth/reset-password', {
+        method: 'POST',
+        body: request,
+        schema: z.null(),
+      }),
+  })
+}
+
 export const ChangeEmailRequestSchema = z.object({
   email: z
     .email({ error: message('validation.emailInvalidExample') })

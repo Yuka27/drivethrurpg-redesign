@@ -88,7 +88,13 @@
     "moreSystems_one": "+{{count}} more system",
     "moreSystems_other": "+{{count}} more systems",
     "showLess": "Show less",
-    "copyright": "© Roll20, LLC — All product and company names are trademarks or registered trademarks of their respective holders."
+    "copyright": "© Roll20, LLC — All product and company names are trademarks or registered trademarks of their respective holders.",
+    "testing": {
+      "title": "Testing",
+      "note": "Simulates links from emails; no real emails are sent.",
+      "resetPassword": "Set new password",
+      "resetPasswordExpired": "Set new password (expired link)"
+    }
   },
   "newsletter": {
     "heading": "Get new releases in your inbox",
