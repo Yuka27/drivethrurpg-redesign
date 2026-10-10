@@ -1,10 +1,11 @@
 import { Link } from '@tanstack/react-router'
-import { ChevronDownIcon, SearchIcon } from 'lucide-react'
-import { useId, useMemo, useState } from 'react'
+import { ChevronDownIcon } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { AccountBreadcrumb } from './account-breadcrumb'
+import { AccountPage } from './account-page'
+import { SearchField } from './search-field'
 import { PreferenceSelect } from './preference-controls'
 import { assetUrl } from '@/api/client'
 import {
@@ -24,7 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { useFormatDate } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
@@ -44,7 +44,6 @@ const SORTS: Record<
 /** Followed publishers: new-release emails per publisher, view, unfollow (with Undo). */
 export function FollowingPage() {
   const { t } = useTranslation('account')
-  const searchId = useId()
   const apiError = useApiError()
   const following = useFollowing()
   // here, not in the row: the row unmounts as soon as it leaves the list, and
@@ -84,91 +83,71 @@ export function FollowingPage() {
     })
 
   return (
-    <div className="flex flex-col gap-2">
-      <AccountBreadcrumb current={t('following.title')} />
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-1">
-          <h1 className="font-sans text-2xl leading-8 font-bold tracking-normal">
-            {t('following.title')}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {t('following.subtitle')}
-          </p>
-        </div>
+    <AccountPage
+      title={t('following.title')}
+      subtitle={t('following.subtitle')}
+    >
+      <div className="flex flex-col gap-4">
+        {!empty && (
+          <div className="flex items-center gap-4">
+            <SearchField
+              label={t('following.search')}
+              // short: it shares the row with the sort button on phones
+              placeholder={t('following.searchPlaceholder')}
+              value={query}
+              onChange={setQuery}
+            />
+            <PreferenceSelect
+              label={t('following.sort')}
+              value={sort}
+              options={(Object.keys(SORTS) as Array<Sort>).map((value) => ({
+                value,
+                label: sortLabels[value],
+              }))}
+              onValueChange={(value) => setSort(value as Sort)}
+              display={t('following.sortDisplay', {
+                option: sortLabels[sort],
+              })}
+              className="h-8 data-[size=default]:h-8"
+            />
+          </div>
+        )}
 
-        <div className="flex flex-col gap-4">
-          {!empty && (
-            <div className="flex items-center gap-4">
-              <div className="relative min-w-0 flex-1">
-                <SearchIcon
-                  aria-hidden
-                  className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+        {following.isError && (
+          <p className="text-sm text-destructive">{t('loadError')}</p>
+        )}
+
+        {empty ? (
+          <div className="rounded-xl bg-card p-6 text-sm">
+            <p>{t('following.empty')}</p>
+            <p className="mt-1 text-muted-foreground">
+              {t('following.emptyHint')}
+            </p>
+          </div>
+        ) : (
+          following.data && (
+            <ul
+              aria-label={t('following.title')}
+              className="flex flex-col gap-3 rounded-xl bg-card p-6"
+            >
+              {visible.length === 0 && (
+                <li className="py-2 text-sm text-muted-foreground">
+                  {t('following.noMatches', { query: query.trim() })}
+                </li>
+              )}
+              {visible.map((item, index) => (
+                <FollowedRow
+                  key={item.publisher.id}
+                  item={item}
+                  first={index === 0}
+                  onUnfollow={() => unfollowWithUndo(item)}
                 />
-                <label htmlFor={searchId} className="sr-only">
-                  {t('following.search')}
-                </label>
-                <Input
-                  id={searchId}
-                  type="search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  // short: it shares the row with the sort button on phones
-                  placeholder={t('following.searchPlaceholder')}
-                  className="h-8 rounded-lg border-border bg-card pl-8 shadow-none dark:bg-card"
-                />
-              </div>
-              <PreferenceSelect
-                label={t('following.sort')}
-                value={sort}
-                options={(Object.keys(SORTS) as Array<Sort>).map((value) => ({
-                  value,
-                  label: sortLabels[value],
-                }))}
-                onValueChange={(value) => setSort(value as Sort)}
-                display={t('following.sortDisplay', {
-                  option: sortLabels[sort],
-                })}
-                className="h-8 data-[size=default]:h-8"
-              />
-            </div>
-          )}
-
-          {following.isError && (
-            <p className="text-sm text-destructive">{t('loadError')}</p>
-          )}
-
-          {empty ? (
-            <div className="rounded-xl bg-card p-6 text-sm">
-              <p>{t('following.empty')}</p>
-              <p className="mt-1 text-muted-foreground">
-                {t('following.emptyHint')}
-              </p>
-            </div>
-          ) : (
-            following.data && (
-              <ul
-                aria-label={t('following.title')}
-                className="flex flex-col gap-3 rounded-xl bg-card p-6"
-              >
-                {visible.length === 0 && (
-                  <li className="py-2 text-sm text-muted-foreground">
-                    {t('following.noMatches', { query: query.trim() })}
-                  </li>
-                )}
-                {visible.map((item, index) => (
-                  <FollowedRow
-                    key={item.publisher.id}
-                    item={item}
-                    first={index === 0}
-                    onUnfollow={() => unfollowWithUndo(item)}
-                  />
-                ))}
-              </ul>
-            )
-          )}
-        </div>
+              ))}
+            </ul>
+          )
+        )}
       </div>
-    </div>
+    </AccountPage>
   )
 }
 

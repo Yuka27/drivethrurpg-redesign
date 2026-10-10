@@ -3,6 +3,7 @@ import type { LinkProps } from '@tanstack/react-router'
 import { ChevronRightIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { useLastOrdersSearch } from './orders-search'
 import { cn } from '@/lib/utils'
 
 type NavItem = {
@@ -35,6 +36,12 @@ const SECTIONS: Array<{
   },
 ]
 
+/** "Orders" goes back to the list as the user left it (filters, page). */
+function useLinkSearch() {
+  const ordersSearch = useLastOrdersSearch((state) => state.search)
+  return (to: string) => (to === '/orders' ? ordersSearch : undefined)
+}
+
 /** "Account" is also what /account shows on desktop. */
 function useIsCurrent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -49,6 +56,7 @@ function useIsCurrent() {
 export function AccountSidebarNav() {
   const { t } = useTranslation('account')
   const isCurrent = useIsCurrent()
+  const linkSearch = useLinkSearch()
 
   return (
     <nav aria-label={t('nav.label')} className="flex flex-col gap-4">
@@ -64,6 +72,7 @@ export function AccountSidebarNav() {
                 <li key={to} className="border-b border-muted">
                   <Link
                     to={to}
+                    search={linkSearch(to)}
                     aria-current={current ? 'page' : undefined}
                     className={cn(
                       'block py-2.5 text-sm font-medium hover:text-primary',
@@ -85,6 +94,7 @@ export function AccountSidebarNav() {
 /** Mobile "My account": each section is a card of rows with a chevron. */
 export function AccountHubNav() {
   const { t } = useTranslation('account')
+  const linkSearch = useLinkSearch()
 
   return (
     <nav aria-label={t('nav.label')} className="flex flex-col gap-4">
@@ -99,7 +109,11 @@ export function AccountHubNav() {
                 key={to}
                 className={cn(index > 0 && 'border-t border-muted pt-2')}
               >
-                <Link to={to} className="flex items-center gap-2.5">
+                <Link
+                  to={to}
+                  search={linkSearch(to)}
+                  className="flex items-center gap-2.5"
+                >
                   <span className="flex min-w-0 flex-1 flex-col gap-1">
                     <span className="text-sm font-semibold">
                       {t(`nav.${label}`)}

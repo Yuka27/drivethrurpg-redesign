@@ -49,15 +49,45 @@ const OrderLineSchema = z.object({
 })
 export type OrderLine = z.infer<typeof OrderLineSchema>
 
-const OrderDetailSchema = z.object({
-  id: z.string(),
+const AddressSchema = z.object({
+  fullName: z.string(),
+  line1: z.string(),
+  line2: z.string().nullish(),
+  city: z.string(),
+  postalCode: z.string(),
+  country: z.string(),
+})
+
+const OrderDetailSchema = OrderSummarySchema.omit({
+  total: true,
+  itemCount: true,
+}).extend({
   lines: z.array(OrderLineSchema),
+  totals: z.object({
+    subtotal: z.number().int(),
+    /** discounts and sale prices together */
+    savings: z.number().int(),
+    shipping: z.number().int(),
+    tax: z.number().int(),
+    total: z.number().int(),
+    currency: z.string(),
+  }),
+  /** VAT already inside the prices (EU), in minor units */
+  vatIncluded: z.number().int().nullish(),
   payment: z.object({ brand: z.string(), last4: z.string() }).nullish(),
+  /** physical items only */
+  shippingAddress: AddressSchema.nullish(),
+  shippingRate: z
+    .object({ label: z.string(), eta: z.string().nullish() })
+    .nullish(),
+  /** the digital files are in the library */
+  digitalReady: z.boolean(),
 })
 export type OrderDetail = z.infer<typeof OrderDetailSchema>
 
 /**
- * GET /orders/{id}: the lines and the payment card of one order card.
+ * GET /orders/{id} (by id or by number, DT-48612903): lines, totals, payment,
+ * shipping. The order cards and the order page use it.
  * TODO(api): the order list should carry these (and each line's title name and
  * publisher), so a page of orders is one request instead of one per order and
  * one per line.
@@ -87,6 +117,17 @@ export function useTitleSummary(id: string) {
     queryFn: ({ signal }) =>
       apiFetch(`/titles/${id}`, { schema: TitleSummarySchema, prefs, signal }),
     staleTime: 60 * 60 * 1000,
+  })
+}
+
+/** POST /orders/{id}/resend-email (202): sends the receipt to the account's email again. */
+export function useResendReceipt() {
+  return useMutation({
+    mutationFn: (id: string) =>
+      apiFetch(`/orders/${id}/resend-email`, {
+        method: 'POST',
+        schema: z.unknown(),
+      }),
   })
 }
 

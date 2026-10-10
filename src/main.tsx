@@ -21,16 +21,11 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const rootElement = document.getElementById('app')!
+// load the UI text for the detected language before the first render
+await initI18n(detectInitialLanguage())
 
-if (!rootElement.innerHTML) {
-  // load the UI text for the detected language before the first render
-  await initI18n(detectInitialLanguage())
-
-  const root = ReactDOM.createRoot(rootElement)
-  root.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>,
-  )
-}
+ReactDOM.createRoot(document.getElementById('app')!).render(
+  <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router} />
+  </QueryClientProvider>,
+)

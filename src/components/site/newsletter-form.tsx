@@ -58,7 +58,7 @@ export function NewsletterForm() {
         noValidate
         aria-labelledby={headingId}
         onSubmit={onSubmit}
-        className="lg:w-[549px]"
+        className="lg:w-[560px]"
       >
         <FormField
           control={form.control}
@@ -66,7 +66,7 @@ export function NewsletterForm() {
           render={({ field }) => (
             // one item for the whole row, so the hint on the left is the input's description
             <FormItem className="flex flex-col gap-2 lg:flex-row lg:items-start lg:gap-3">
-              <div className="lg:w-[221px] lg:shrink-0">
+              <div className="lg:w-[224px] lg:shrink-0">
                 <p id={headingId} className="text-sm font-semibold">
                   {t('newsletter.heading')}
                 </p>

@@ -1,23 +1,24 @@
 import { Link } from '@tanstack/react-router'
-import { DownloadIcon, SearchIcon } from 'lucide-react'
-import { useId, useMemo, useRef, useState } from 'react'
+import { DownloadIcon } from 'lucide-react'
+import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 
-import { AccountBreadcrumb } from './account-breadcrumb'
+import { AccountPage } from './account-page'
+import { SearchField } from './search-field'
 import { brandName } from './card-brand'
+import { useStatusLabel } from './order-status'
+import type { OrdersSearch, Period } from './orders-search'
 import { PreferenceSelect } from './preference-controls'
+import { useOpenInvoice } from './use-open-invoice'
 import { assetUrl } from '@/api/client'
-import { useOrder, useOrders, useReceipt, useTitleSummary } from '@/api/orders'
+import { useOrder, useOrders, useTitleSummary } from '@/api/orders'
 import type { OrderLine, OrderSummary } from '@/api/orders'
 import { Pagination } from '@/components/site/pagination'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { useFormatDate, useFormatMoney } from '@/i18n/format'
 
 const PAGE_SIZE = 5
 
-type Period = 'month' | 'quarter' | 'year' | 'all'
 const PERIOD_MONTHS: Record<Period, number | null> = {
   month: 1,
   quarter: 3,
@@ -25,34 +26,26 @@ const PERIOD_MONTHS: Record<Period, number | null> = {
   all: null,
 }
 
-/** Statuses with a translation; anything else the API sends is shown as it comes. */
-const STATUS_KEYS = {
-  paid: 'orders.statusPaid',
-  shipped: 'orders.statusShipped',
-  pending: 'orders.statusPending',
-  refunded: 'orders.statusRefunded',
-  cancelled: 'orders.statusCancelled',
-} as const
-
 const filterClass =
   'h-8 data-[size=default]:h-8 max-lg:flex-1 max-lg:justify-between'
 
-/** Order history: filter by date and status, search by order number, 5 orders a page. */
-export function OrdersPage() {
+/**
+ * Order history: filter by date and status, search by order number, 5 orders a
+ * page. The filters come from the URL (see orders-search.ts) through the route.
+ */
+export function OrdersPage({
+  search,
+  onSearchChange,
+}: {
+  search: OrdersSearch
+  onSearchChange: (patch: Partial<OrdersSearch>) => void
+}) {
   const { t } = useTranslation('account')
-  const searchId = useId()
   const listRef = useRef<HTMLUListElement>(null)
   const orders = useOrders()
-  const [query, setQuery] = useState('')
-  // Figma: "Last month" is what the page opens on
-  const [period, setPeriod] = useState<Period>('month')
-  const [status, setStatus] = useState('all')
-  const [page, setPage] = useState(1)
+  const { q: query, period, status, page } = search
 
-  const statusLabel = (value: string) =>
-    value in STATUS_KEYS
-      ? t(STATUS_KEYS[value as keyof typeof STATUS_KEYS])
-      : value.charAt(0).toUpperCase() + value.slice(1)
+  const statusLabel = useStatusLabel()
   const statuses = [...new Set((orders.data ?? []).map((o) => o.status))].sort()
 
   const filtered = useMemo(() => {
@@ -72,18 +65,10 @@ export function OrdersPage() {
   const visible = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
 
   // a new filter starts from the first page
-  const filterBy =
-    <T,>(set: (value: T) => void) =>
-    (value: T) => {
-      set(value)
-      setPage(1)
-    }
-  const clearFilters = () => {
-    setQuery('')
-    setPeriod('all')
-    setStatus('all')
-    setPage(1)
-  }
+  const filterBy = (patch: Partial<OrdersSearch>) =>
+    onSearchChange({ ...patch, page: 1 })
+  const clearFilters = () =>
+    onSearchChange({ q: '', period: 'all', status: 'all', page: 1 })
 
   const periodLabels: Record<Period, string> = {
     month: t('orders.periodMonth'),
@@ -93,106 +78,81 @@ export function OrdersPage() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <AccountBreadcrumb current={t('orders.title')} />
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-1">
-          <h1 className="font-sans text-2xl leading-8 font-bold tracking-normal">
-            {t('orders.title')}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {t('orders.subtitle')}
-          </p>
-        </div>
-
-        {orders.data?.length === 0 ? (
-          <p className="rounded-xl bg-card p-6 text-sm">{t('orders.empty')}</p>
-        ) : (
-          <div className="flex flex-col gap-4">
-            {/* Figma: one row on desktop; on mobile the search, then both filters side by side */}
-            <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
-              <div className="relative min-w-0 flex-1">
-                <SearchIcon
-                  aria-hidden
-                  className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
-                />
-                <label htmlFor={searchId} className="sr-only">
-                  {t('orders.search')}
-                </label>
-                <Input
-                  id={searchId}
-                  type="search"
-                  value={query}
-                  onChange={(event) => filterBy(setQuery)(event.target.value)}
-                  placeholder={t('orders.searchPlaceholder')}
-                  className="h-8 rounded-lg border-border bg-card pl-8 shadow-none dark:bg-card"
-                />
-              </div>
-              <div className="flex gap-2">
-                <PreferenceSelect
-                  label={t('orders.period')}
-                  value={period}
-                  options={(Object.keys(PERIOD_MONTHS) as Array<Period>).map(
-                    (value) => ({ value, label: periodLabels[value] }),
-                  )}
-                  onValueChange={(value) =>
-                    filterBy(setPeriod)(value as Period)
-                  }
-                  className={filterClass}
-                />
-                <PreferenceSelect
-                  label={t('orders.status')}
-                  value={status}
-                  options={[
-                    { value: 'all', label: t('orders.statusAll') },
-                    ...statuses.map((value) => ({
-                      value,
-                      label: statusLabel(value),
-                    })),
-                  ]}
-                  onValueChange={filterBy(setStatus)}
-                  className={filterClass}
-                />
-              </div>
-            </div>
-
-            {orders.isError && (
-              <p className="text-sm text-destructive">{t('loadError')}</p>
-            )}
-
-            {orders.data && filtered.length === 0 && (
-              <div className="flex flex-col items-start gap-3 rounded-xl bg-card p-6 text-sm">
-                <p>{t('orders.noMatches')}</p>
-                <Button variant="secondary" size="sm" onClick={clearFilters}>
-                  {t('orders.clearFilters')}
-                </Button>
-              </div>
-            )}
-
-            {visible.length > 0 && (
-              <ul
-                ref={listRef}
-                aria-label={t('orders.title')}
-                className="flex scroll-mt-24 flex-col gap-2"
-              >
-                {visible.map((order) => (
-                  <OrderCard key={order.id} order={order} />
-                ))}
-              </ul>
-            )}
-
-            <Pagination
-              page={current}
-              pageCount={pageCount}
-              onPageChange={(next) => {
-                setPage(next)
-                listRef.current?.scrollIntoView({ block: 'start' })
-              }}
+    <AccountPage title={t('orders.title')} subtitle={t('orders.subtitle')}>
+      {orders.data?.length === 0 ? (
+        <p className="rounded-xl bg-card p-6 text-sm">{t('orders.empty')}</p>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {/* Figma: one row on desktop; on mobile the search, then both filters side by side */}
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+            <SearchField
+              label={t('orders.search')}
+              placeholder={t('orders.searchPlaceholder')}
+              value={query}
+              onChange={(q) => filterBy({ q })}
             />
+            <div className="flex gap-2">
+              <PreferenceSelect
+                label={t('orders.period')}
+                value={period}
+                options={(Object.keys(PERIOD_MONTHS) as Array<Period>).map(
+                  (value) => ({ value, label: periodLabels[value] }),
+                )}
+                onValueChange={(value) => filterBy({ period: value as Period })}
+                className={filterClass}
+              />
+              <PreferenceSelect
+                label={t('orders.status')}
+                value={status}
+                options={[
+                  { value: 'all', label: t('orders.statusAll') },
+                  ...statuses.map((value) => ({
+                    value,
+                    label: statusLabel(value),
+                  })),
+                ]}
+                onValueChange={(value) => filterBy({ status: value })}
+                className={filterClass}
+              />
+            </div>
           </div>
-        )}
-      </div>
-    </div>
+
+          {orders.isError && (
+            <p className="text-sm text-destructive">{t('loadError')}</p>
+          )}
+
+          {orders.data && filtered.length === 0 && (
+            <div className="flex flex-col items-start gap-3 rounded-xl bg-card p-6 text-sm">
+              <p>{t('orders.noMatches')}</p>
+              <Button variant="secondary" size="sm" onClick={clearFilters}>
+                {t('orders.clearFilters')}
+              </Button>
+            </div>
+          )}
+
+          {visible.length > 0 && (
+            <ul
+              ref={listRef}
+              aria-label={t('orders.title')}
+              className="flex scroll-mt-24 flex-col gap-2"
+            >
+              {visible.map((order) => (
+                <OrderCard key={order.id} order={order} />
+              ))}
+            </ul>
+          )}
+
+          <Pagination
+            page={current}
+            pageCount={pageCount}
+            onPageChange={(next) => {
+              onSearchChange({ page: next })
+              listRef.current?.scrollIntoView({ block: 'start' })
+            }}
+          />
+        </div>
+      )}
+    </AccountPage>
   )
 }
 
@@ -211,24 +171,7 @@ function OrderCard({ order }: { order: OrderSummary }) {
   })
   const formatMoney = useFormatMoney()
   const { data: detail } = useOrder(order.id)
-  const receipt = useReceipt()
-
-  const openInvoice = () => {
-    // open the tab now (inside the click) so pop-up blockers allow it, then
-    // point it at the PDF once the API says where it is
-    const tab = window.open('', '_blank')
-    if (tab) tab.opener = null
-    receipt.mutate(order.id, {
-      onSuccess: ({ pdfUrl }) => {
-        if (tab) tab.location.href = assetUrl(pdfUrl)
-        else window.location.assign(assetUrl(pdfUrl))
-      },
-      onError: () => {
-        tab?.close()
-        toast.error(t('orders.invoiceFailed'))
-      },
-    })
-  }
+  const invoice = useOpenInvoice()
 
   const fields = [
     [t('orders.order'), order.number],
@@ -275,8 +218,8 @@ function OrderCard({ order }: { order: OrderSummary }) {
           size="sm"
           className="border border-accent"
           aria-label={t('orders.invoiceLabel', { number: order.number })}
-          disabled={receipt.isPending}
-          onClick={openInvoice}
+          disabled={invoice.pending}
+          onClick={() => void invoice.open(order.id)}
         >
           <DownloadIcon aria-hidden />
           {t('orders.invoice')}

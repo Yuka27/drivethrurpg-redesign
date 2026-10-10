@@ -12,7 +12,6 @@ const ConnectedAccountSchema = z.object({
   email: z.string(),
   connectedAt: z.string(),
 })
-export type ConnectedAccount = z.infer<typeof ConnectedAccountSchema>
 
 /** GET /account/connected: only the providers that are linked. */
 export function useConnectedAccounts() {

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 import { LoginForm } from './login-form'
 import { getAuthToken } from '@/lib/auth-token'
 import { apiError, cart, mockApi, session } from '@/test/api'
-import { renderWithProviders } from '@/test/render'
+import { renderInDialog } from '@/test/render'
 
 const TOKEN_KEY = 'dtrpg-auth-token'
 
@@ -22,7 +22,7 @@ const submit = () => screen.getByRole('button', { name: 'Log in' })
 describe('LoginForm', () => {
   it('validates in the browser and focuses the first invalid field', async () => {
     const { fetchMock } = mockApi()
-    const { user } = await renderWithProviders(<LoginForm {...modal()} />)
+    const { user } = await renderInDialog(<LoginForm {...modal()} />)
 
     await user.click(submit())
 
@@ -41,7 +41,7 @@ describe('LoginForm', () => {
   it('logs in, remembers the session and reports success', async () => {
     const { bodies } = mockApi({ 'POST /auth/login': { body: session } })
     const onSuccess = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <LoginForm {...modal()} onSuccess={onSuccess} />,
     )
 
@@ -65,7 +65,7 @@ describe('LoginForm', () => {
   it('keeps the session for this tab only when "Remember me" is off', async () => {
     const { bodies } = mockApi({ 'POST /auth/login': { body: session } })
     const onSuccess = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <LoginForm {...modal()} onSuccess={onSuccess} />,
     )
 
@@ -85,7 +85,7 @@ describe('LoginForm', () => {
   it('shows a wrong password form-wide and clears it once the user edits', async () => {
     mockApi({ 'POST /auth/login': apiError(401, 'invalid_credentials') })
     const onSuccess = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <LoginForm {...modal()} onSuccess={onSuccess} />,
     )
 
@@ -107,7 +107,7 @@ describe('LoginForm', () => {
     mockApi({
       'POST /auth/login': apiError(422, 'invalid_email', { field: 'email' }),
     })
-    const { user } = await renderWithProviders(<LoginForm {...modal()} />)
+    const { user } = await renderInDialog(<LoginForm {...modal()} />)
 
     await user.type(email(), 'test@example.com')
     await user.type(password(), 'whatever')
@@ -128,7 +128,7 @@ describe('LoginForm', () => {
           finish = () => resolve({ body: session })
         }),
     })
-    const { user } = await renderWithProviders(<LoginForm {...modal()} />)
+    const { user } = await renderInDialog(<LoginForm {...modal()} />)
 
     await user.type(email(), 'test@example.com')
     await user.type(password(), 'correct-password')
@@ -152,7 +152,7 @@ describe('LoginForm', () => {
         'POST /account/merge': { body: { merged: { cart: 2 } } },
       })
       const onSuccess = vi.fn()
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <LoginForm {...modal()} onSuccess={onSuccess} />,
       )
 
@@ -170,7 +170,7 @@ describe('LoginForm', () => {
     it('does not merge an empty cart', async () => {
       const { bodies } = mockApi({ 'POST /auth/login': { body: session } })
       const onSuccess = vi.fn()
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <LoginForm {...modal()} onSuccess={onSuccess} />,
       )
 
@@ -189,7 +189,7 @@ describe('LoginForm', () => {
       'POST /auth/social/google': { body: { ...session, isNew: false } },
     })
     const onSuccess = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <LoginForm {...modal()} onSuccess={onSuccess} />,
     )
 
@@ -204,7 +204,7 @@ describe('LoginForm', () => {
   it('prefills the email and switches to register inside the modal', async () => {
     mockApi()
     const onSwitchToRegister = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <LoginForm
         {...modal()}
         defaultEmail="from@register.com"
@@ -220,7 +220,7 @@ describe('LoginForm', () => {
   it('"Forgot password?" switches view in the modal, keeping the email', async () => {
     mockApi()
     const onForgotPassword = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <LoginForm {...modal()} onForgotPassword={onForgotPassword} />,
     )
 

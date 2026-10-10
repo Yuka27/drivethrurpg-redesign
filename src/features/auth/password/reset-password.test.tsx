@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { ResetPassword } from './reset-password'
 import { apiError, mockApi } from '@/test/api'
-import { renderWithProviders } from '@/test/render'
+import { renderInDialog } from '@/test/render'
 
 // the modal's view switches; tests that check them pass their own
 const modal = () => ({ onLogin: vi.fn(), onRequestNewLink: vi.fn() })
@@ -14,7 +14,7 @@ const submit = () => screen.getByRole('button', { name: 'Update password' })
 describe('ResetPassword', () => {
   it('only asks for length: the email is unknown here', async () => {
     mockApi()
-    await renderWithProviders(<ResetPassword {...modal()} token="t1" />)
+    await renderInDialog(<ResetPassword {...modal()} token="t1" />)
 
     expect(
       screen.getByRole('heading', { name: 'Set a new password' }),
@@ -29,7 +29,7 @@ describe('ResetPassword', () => {
 
   it('checks the length in the browser first', async () => {
     const { bodies } = mockApi()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <ResetPassword {...modal()} token="t1" />,
     )
 
@@ -46,7 +46,7 @@ describe('ResetPassword', () => {
       'POST /auth/reset-password': { status: 204 },
     })
     const onLogin = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <ResetPassword {...modal()} token="t1" onLogin={onLogin} />,
     )
 
@@ -69,7 +69,7 @@ describe('ResetPassword', () => {
     const { fetchMock } = mockApi()
     const onRequestNewLink = vi.fn()
     const onLogin = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <ResetPassword
         {...modal()}
         token=""
@@ -98,7 +98,7 @@ describe('ResetPassword', () => {
     'a dead link from the API (%s) shows the expired screen',
     async (code, status) => {
       mockApi({ 'POST /auth/reset-password': apiError(status, code) })
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <ResetPassword {...modal()} token="old" />,
       )
 
@@ -114,7 +114,7 @@ describe('ResetPassword', () => {
 
   it('weak_password goes on the password field', async () => {
     mockApi({ 'POST /auth/reset-password': apiError(422, 'weak_password') })
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <ResetPassword {...modal()} token="t1" />,
     )
 
@@ -129,7 +129,7 @@ describe('ResetPassword', () => {
 
   it('shows other API errors under the form', async () => {
     mockApi({ 'POST /auth/reset-password': apiError(503, 'unavailable') })
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <ResetPassword {...modal()} token="t1" />,
     )
 

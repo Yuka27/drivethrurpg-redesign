@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
-import type { ElementType } from 'react'
 import { useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { CartContextNote } from '../shared/cart-context-note'
 import { SocialButtons } from '../shared/social-buttons'
+import { DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import {
   LoginRequestSchema,
   useLogin,
@@ -34,9 +34,6 @@ const inputClass =
   'h-9 rounded-lg border-border bg-background px-2.5 shadow-none dark:bg-background'
 
 type LoginFormProps = {
-  /** the modal passes DialogTitle/DialogDescription */
-  Title?: ElementType
-  Description?: ElementType
   /** prefilled email, e.g. from register's "Log in instead" */
   defaultEmail?: string
   /** "Register here" switches the modal to the register view */
@@ -47,8 +44,6 @@ type LoginFormProps = {
 }
 
 export function LoginForm({
-  Title = 'h1',
-  Description = 'p',
   defaultEmail = '',
   onSwitchToRegister,
   onForgotPassword,
@@ -98,12 +93,12 @@ export function LoginForm({
       <div className="flex flex-col gap-2 px-4">
         <img src={logo} alt="DriveThruRPG" width={141} height={24} />
         <div>
-          <Title className="font-sans text-2xl leading-8 font-bold tracking-normal">
+          <DialogTitle className="font-sans text-2xl leading-8 font-bold tracking-normal">
             {t('login.title')}
-          </Title>
-          <Description className="text-sm text-muted-foreground">
+          </DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
             {t('login.description')}
-          </Description>
+          </DialogDescription>
         </div>
       </div>
 

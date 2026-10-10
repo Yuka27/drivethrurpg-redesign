@@ -18,7 +18,6 @@ export const LocalesSchema = z.object({
     theme: z.enum(['dark', 'light', 'system']),
   }),
 })
-export type Locales = z.infer<typeof LocalesSchema>
 
 /** GET /meta/locales: currency and language lists. They never change during a session. */
 export function useLocales() {

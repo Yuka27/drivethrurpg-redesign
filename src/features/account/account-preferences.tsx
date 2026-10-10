@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { ArrowRightIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { AccountBreadcrumb } from './account-breadcrumb'
+import { AccountPage } from './account-page'
 import { PreferenceSelect, SwitchRow } from './preference-controls'
 import { SettingsCard, SettingsRow, rowButtonClass } from './settings-card'
 import { useLocales } from '@/api/meta'
@@ -44,114 +44,105 @@ export function AccountPreferencesPage({
     update.mutate({ email: { [key]: value } })
 
   return (
-    <div className="flex flex-col gap-2">
-      {breadcrumb && <AccountBreadcrumb current={t('preferencesPage.title')} />}
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-1">
-          <h1 className="font-sans text-2xl leading-8 font-bold tracking-normal">
-            {t('preferencesPage.title')}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {t('preferencesPage.subtitle')}
-          </p>
-        </div>
-        {isError && (
-          <p className="text-sm text-destructive">{t('loadError')}</p>
-        )}
+    <AccountPage
+      title={t('preferencesPage.title')}
+      subtitle={t('preferencesPage.subtitle')}
+      breadcrumb={breadcrumb}
+    >
+      {isError && <p className="text-sm text-destructive">{t('loadError')}</p>}
 
-        <div className="flex flex-col gap-4">
-          <SettingsCard
-            id="email-notifications"
-            title={t('preferencesPage.email.title')}
-            description={t('preferencesPage.email.subtitle')}
-          >
-            <SwitchRow
-              label={t('preferencesPage.email.pauseMarketing')}
-              hint={t('preferencesPage.email.pauseMarketingHint')}
-              checked={email?.pauseMarketing}
-              onCheckedChange={(on) => setEmail('pauseMarketing', on)}
-            />
-            {MARKETING.map((key) => (
-              <SwitchRow
-                key={key}
-                label={t(`preferencesPage.email.${key}`)}
-                hint={
-                  paused
-                    ? t('preferencesPage.email.paused')
-                    : t(`preferencesPage.email.${key}Hint`)
-                }
-                checked={email?.[key]}
-                disabled={paused}
-                onCheckedChange={(on) => setEmail(key, on)}
-              />
-            ))}
-            <SwitchRow
-              label={t('preferencesPage.email.libraryFileUpdates')}
-              hint={t('preferencesPage.email.libraryFileUpdatesHint')}
-              checked={email?.libraryFileUpdates}
-              onCheckedChange={(on) => setEmail('libraryFileUpdates', on)}
-            />
-            <SettingsRow
-              label={
-                <span className="max-lg:text-xs">
-                  {t('preferencesPage.email.followed')}
-                </span>
-              }
-              hint={t('preferencesPage.email.followedHint')}
-              actions={
-                <Button
-                  asChild
-                  variant="secondary"
-                  size="sm"
-                  className={rowButtonClass}
-                >
-                  <Link
-                    to="/following"
-                    aria-label={t('preferencesPage.email.manageLabel')}
-                  >
-                    {t('preferencesPage.email.manage')}
-                    <ArrowRightIcon aria-hidden />
-                  </Link>
-                </Button>
-              }
-            />
-          </SettingsCard>
-
-          <SettingsCard
-            id="publisher-contact"
-            title={t('preferencesPage.publishers.title')}
-            description={t('preferencesPage.publishers.subtitle')}
-          >
-            <SwitchRow
-              label={t('preferencesPage.publishers.notifications')}
-              hint={t('preferencesPage.publishers.notificationsHint')}
-              checked={saved?.notifications.publisherUpdates}
-              onCheckedChange={(on) =>
-                update.mutate({ notifications: { publisherUpdates: on } })
-              }
-            />
-            <SwitchRow
-              label={t('preferencesPage.publishers.shareEmail')}
-              hint={t('preferencesPage.publishers.shareEmailHint')}
-              checked={email?.publisherContact}
-              onCheckedChange={(on) => setEmail('publisherContact', on)}
-            />
-          </SettingsCard>
-
-          <DownloadsCard
-            saveTo={saved?.downloads.saveTo}
-            onChange={(saveTo) => update.mutate({ downloads: { saveTo } })}
+      <div className="flex flex-col gap-4">
+        <SettingsCard
+          id="email-notifications"
+          title={t('preferencesPage.email.title')}
+          description={t('preferencesPage.email.subtitle')}
+        >
+          <SwitchRow
+            label={t('preferencesPage.email.pauseMarketing')}
+            hint={t('preferencesPage.email.pauseMarketingHint')}
+            checked={email?.pauseMarketing}
+            onCheckedChange={(on) => setEmail('pauseMarketing', on)}
           />
-
-          <ContentCard
-            showAdult={saved?.content.showAdult}
-            onShowAdultChange={(on) =>
-              update.mutate({ content: { showAdult: on } })
+          {MARKETING.map((key) => (
+            <SwitchRow
+              key={key}
+              label={t(`preferencesPage.email.${key}`)}
+              hint={
+                paused
+                  ? t('preferencesPage.email.paused')
+                  : t(`preferencesPage.email.${key}Hint`)
+              }
+              checked={email?.[key]}
+              disabled={paused}
+              onCheckedChange={(on) => setEmail(key, on)}
+            />
+          ))}
+          <SwitchRow
+            label={t('preferencesPage.email.libraryFileUpdates')}
+            hint={t('preferencesPage.email.libraryFileUpdatesHint')}
+            checked={email?.libraryFileUpdates}
+            onCheckedChange={(on) => setEmail('libraryFileUpdates', on)}
+          />
+          <SettingsRow
+            label={
+              <span className="max-lg:text-xs">
+                {t('preferencesPage.email.followed')}
+              </span>
+            }
+            hint={t('preferencesPage.email.followedHint')}
+            actions={
+              <Button
+                asChild
+                variant="secondary"
+                size="sm"
+                className={rowButtonClass}
+              >
+                <Link
+                  to="/following"
+                  aria-label={t('preferencesPage.email.manageLabel')}
+                >
+                  {t('preferencesPage.email.manage')}
+                  <ArrowRightIcon aria-hidden />
+                </Link>
+              </Button>
             }
           />
-        </div>
+        </SettingsCard>
+
+        <SettingsCard
+          id="publisher-contact"
+          title={t('preferencesPage.publishers.title')}
+          description={t('preferencesPage.publishers.subtitle')}
+        >
+          <SwitchRow
+            label={t('preferencesPage.publishers.notifications')}
+            hint={t('preferencesPage.publishers.notificationsHint')}
+            checked={saved?.notifications.publisherUpdates}
+            onCheckedChange={(on) =>
+              update.mutate({ notifications: { publisherUpdates: on } })
+            }
+          />
+          <SwitchRow
+            label={t('preferencesPage.publishers.shareEmail')}
+            hint={t('preferencesPage.publishers.shareEmailHint')}
+            checked={email?.publisherContact}
+            onCheckedChange={(on) => setEmail('publisherContact', on)}
+          />
+        </SettingsCard>
+
+        <DownloadsCard
+          saveTo={saved?.downloads.saveTo}
+          onChange={(saveTo) => update.mutate({ downloads: { saveTo } })}
+        />
+
+        <ContentCard
+          showAdult={saved?.content.showAdult}
+          onShowAdultChange={(on) =>
+            update.mutate({ content: { showAdult: on } })
+          }
+        />
       </div>
-    </div>
+    </AccountPage>
   )
 }
 

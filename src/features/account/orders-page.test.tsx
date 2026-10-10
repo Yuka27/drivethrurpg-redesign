@@ -1,8 +1,11 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import { toast } from 'sonner'
+import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
 import { OrdersPage } from './orders-page'
+import { ORDERS_SEARCH_DEFAULTS, OrdersSearchSchema } from './orders-search'
+import type { OrdersSearch } from './orders-search'
 import { assetUrl } from '@/api/client'
 import { Pagination } from '@/components/site/pagination'
 import { apiError, mockApi } from '@/test/api'
@@ -37,7 +40,16 @@ const orders = [
 ]
 
 const detail = (id: string) => ({
-  id,
+  ...orders.find((o) => o.id === id),
+  totals: {
+    subtotal: 0,
+    savings: 0,
+    shipping: 0,
+    tax: 0,
+    total: 0,
+    currency: 'USD',
+  },
+  digitalReady: true,
   lines:
     id === 'ord_DT-0000001'
       ? [
@@ -93,13 +105,26 @@ function mockOrdersApi(overrides: Record<string, Handler> = {}) {
   return mockApi({ ...handlers, ...overrides })
 }
 
+/** The page with its search held in state, the way the route holds it in the URL. */
+function Page() {
+  const [search, setSearch] = useState<OrdersSearch>(ORDERS_SEARCH_DEFAULTS)
+  return (
+    <OrdersPage
+      search={search}
+      onSearchChange={(patch) =>
+        setSearch((previous) => ({ ...previous, ...patch }))
+      }
+    />
+  )
+}
+
 const shownOrders = () =>
   within(screen.getByRole('list', { name: 'Orders' }))
     .getAllByText(/^DT-/)
     .map((el) => el.textContent)
 
 async function renderPage() {
-  const result = await renderWithProviders(<OrdersPage />)
+  const result = await renderWithProviders(<Page />)
   await screen.findByRole('list', { name: 'Orders' })
   return result
 }
@@ -245,7 +270,7 @@ describe('OrdersPage', () => {
 
   it('says so when there are no orders yet', async () => {
     mockApi({ 'GET /orders': { body: { items: [] } } })
-    await renderWithProviders(<OrdersPage />)
+    await renderWithProviders(<Page />)
 
     expect(
       await screen.findByText('You have not ordered anything yet.'),
@@ -269,5 +294,22 @@ describe('Pagination', () => {
     rerender(<Pagination page={6} pageCount={12} onPageChange={onPageChange} />)
     expect(pages()).toEqual(['1', '5', '6', '7', '12'])
     expect(screen.getAllByText('…')).toHaveLength(2)
+  })
+})
+
+describe('OrdersSearchSchema (the /orders URL)', () => {
+  it('reads the filters, and falls back to the defaults for anything invalid', () => {
+    expect(
+      OrdersSearchSchema.parse({
+        period: 'all',
+        status: 'shipped',
+        q: 486,
+        page: 2,
+      }),
+    ).toEqual({ period: 'all', status: 'shipped', q: '486', page: 2 })
+    expect(
+      OrdersSearchSchema.parse({ period: 'decade', status: '', page: -1 }),
+    ).toEqual(ORDERS_SEARCH_DEFAULTS)
+    expect(OrdersSearchSchema.parse({})).toEqual(ORDERS_SEARCH_DEFAULTS)
   })
 })

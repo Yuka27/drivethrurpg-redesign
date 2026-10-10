@@ -2,13 +2,18 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useRouter } from '@tanstack/react-router'
 import { CheckIcon, MailIcon } from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
-import type { ElementType } from 'react'
 import { useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { registerInputClass } from './styles'
+import {
+  bigButtonClass,
+  inputClass,
+  subtitleClass,
+  titleClass,
+} from '../shared/styles'
 import { StatusIcon } from '../shared/status-icon'
+import { DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import {
   ChangeEmailRequestSchema,
   useChangeEmail,
@@ -27,15 +32,13 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useApplyApiError } from '@/lib/forms'
+import { cn } from '@/lib/utils'
 
 type RegisterSuccessProps = {
   email: string
   /** cart items moved into the account (null until /account/merge succeeds) */
   mergedCartItems: number | null
   cartHasItems: boolean
-  /** the modal passes DialogTitle/DialogDescription */
-  Title?: ElementType
-  Description?: ElementType
   /**
    * Close the modal. "Continue shopping" just closes (the user stays where they
    * are); the other buttons navigate first.
@@ -48,8 +51,6 @@ export function RegisterSuccess({
   email: initialEmail,
   mergedCartItems,
   cartHasItems,
-  Title = 'h1',
-  Description = 'p',
   onDone,
 }: RegisterSuccessProps) {
   const { t } = useTranslation('auth')
@@ -74,16 +75,12 @@ export function RegisterSuccess({
     <section aria-labelledby="register-success-title">
       <StatusIcon icon={CheckIcon} tone="success" strokeWidth={2.4} />
       {/* the id sits on an inner span: DialogTitle keeps its own id, which names the dialog */}
-      <Title
-        ref={titleRef}
-        tabIndex={-1}
-        className="text-[1.4rem] leading-tight font-extrabold outline-none min-[1000px]:text-[1.6rem]"
-      >
+      <DialogTitle ref={titleRef} tabIndex={-1} className={titleClass}>
         <span id="register-success-title">{t('register.success.title')}</span>
-      </Title>
-      <Description className="mt-1.5 text-[0.9rem] text-muted-foreground">
+      </DialogTitle>
+      <DialogDescription className={subtitleClass}>
         {t('register.success.subtitle')}
-      </Description>
+      </DialogDescription>
 
       <p className="my-[18px] flex items-center gap-2.5 rounded-[10px] border border-border bg-background px-3.5 py-3 text-[0.88rem] [overflow-wrap:anywhere]">
         <MailIcon
@@ -117,11 +114,7 @@ export function RegisterSuccess({
       )}
 
       <div className="mt-5 grid gap-2.5">
-        <Button
-          type="button"
-          className="h-[50px] rounded-[10px] text-[0.98rem] font-bold"
-          onClick={onContinue}
-        >
+        <Button type="button" className={bigButtonClass} onClick={onContinue}>
           {t(
             cartHasItems
               ? 'register.success.toCart'
@@ -131,7 +124,7 @@ export function RegisterSuccess({
         <Button
           asChild
           variant="secondary"
-          className="h-[50px] rounded-[10px] border border-border text-[0.98rem] font-bold"
+          className={cn(bigButtonClass, 'border border-border')}
         >
           <Link to="/account" onClick={onDone}>
             {t('register.success.toAccount')}
@@ -222,7 +215,7 @@ function ChangeEmailForm({
                   type="email"
                   inputMode="email"
                   autoComplete="email"
-                  className={registerInputClass}
+                  className={inputClass}
                   {...field}
                 />
               </FormControl>

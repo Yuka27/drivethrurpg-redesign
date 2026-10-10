@@ -6,16 +6,21 @@ import {
   TriangleAlertIcon,
 } from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
-import type { ElementType } from 'react'
 import { useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { registerInputClass } from '../register/styles'
+import {
+  bigButtonClass,
+  inputClass,
+  subtitleClass,
+  titleClass,
+} from '../shared/styles'
 import { BackToLogin } from '../shared/back-to-login'
 import { FormAlert } from '../shared/form-alert'
 import { StatusIcon } from '../shared/status-icon'
 import { TipsBox } from '../shared/tips-box'
+import { DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { ForgotPasswordRequestSchema, useForgotPassword } from '@/api/auth'
 import type { ForgotPasswordRequest } from '@/api/auth'
 import { ApiError } from '@/api/client'
@@ -37,17 +42,9 @@ import { cn } from '@/lib/utils'
 /** The user may ask for another email this long after the last one. */
 const RESEND_AFTER_SECONDS = 30
 
-const titleClass =
-  'text-[1.4rem] leading-tight font-extrabold outline-none min-[1000px]:text-[1.6rem]'
-const subtitleClass = 'mt-1.5 text-[0.9rem] text-muted-foreground'
-const bigButtonClass = 'h-[50px] w-full rounded-[10px] text-[0.98rem] font-bold'
-
 type ForgotPasswordProps = {
   /** prefilled from the login or register form */
   defaultEmail?: string
-  /** the modal passes DialogTitle/DialogDescription */
-  Title?: ElementType
-  Description?: ElementType
   /** back to the login view, with the email typed so far */
   onBackToLogin: (email: string) => void
 }
@@ -55,8 +52,6 @@ type ForgotPasswordProps = {
 /** "Forgot your password?": ask for a reset link, then "Check your email". */
 export function ForgotPassword({
   defaultEmail = '',
-  Title = 'h1',
-  Description = 'p',
   onBackToLogin,
 }: ForgotPasswordProps) {
   const { t } = useTranslation('auth')
@@ -152,10 +147,10 @@ export function ForgotPassword({
       <section aria-labelledby={titleId}>
         <StatusIcon icon={MailIcon} tone="success" />
         {/* the id sits on an inner span: DialogTitle keeps its own id, which names the dialog */}
-        <Title ref={titleRef} tabIndex={-1} className={titleClass}>
+        <DialogTitle ref={titleRef} tabIndex={-1} className={titleClass}>
           <span id={titleId}>{t('forgot.sent.title')}</span>
-        </Title>
-        <Description className={subtitleClass}>
+        </DialogTitle>
+        <DialogDescription className={subtitleClass}>
           <Trans
             t={t}
             i18nKey="forgot.sent.subtitle"
@@ -166,7 +161,7 @@ export function ForgotPassword({
               ),
             }}
           />
-        </Description>
+        </DialogDescription>
 
         <TipsBox title={t('forgot.sent.tipsTitle')}>
           <li>{t('forgot.sent.tipSpam')}</li>
@@ -208,12 +203,12 @@ export function ForgotPassword({
     <Form {...form}>
       <form noValidate aria-labelledby={titleId} onSubmit={submit}>
         <StatusIcon icon={KeyRoundIcon} />
-        <Title ref={titleRef} tabIndex={-1} className={titleClass}>
+        <DialogTitle ref={titleRef} tabIndex={-1} className={titleClass}>
           <span id={titleId}>{t('forgot.title')}</span>
-        </Title>
-        <Description className={subtitleClass}>
+        </DialogTitle>
+        <DialogDescription className={subtitleClass}>
           {t('forgot.subtitle')}
-        </Description>
+        </DialogDescription>
 
         {retryUntil !== null && secondsLeft > 0 && (
           // static text: a ticking role="alert" would be re-read every second
@@ -237,7 +232,7 @@ export function ForgotPassword({
                   inputMode="email"
                   autoComplete="email"
                   placeholder={t('forgot.emailPlaceholder')}
-                  className={registerInputClass}
+                  className={inputClass}
                   {...field}
                   disabled={forgot.isPending}
                 />

@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckIcon, ClockIcon, KeyRoundIcon, Loader2Icon } from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
-import type { ElementType } from 'react'
 import { useForm } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 
@@ -9,6 +8,8 @@ import { PasswordField } from '../register/password-field'
 import { BackToLogin } from '../shared/back-to-login'
 import { StatusIcon } from '../shared/status-icon'
 import { TipsBox } from '../shared/tips-box'
+import { bigButtonClass, subtitleClass, titleClass } from '../shared/styles'
+import { DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import {
   DEAD_RESET_LINK_CODES,
   ResetPasswordRequestSchema,
@@ -24,17 +25,9 @@ import { cn } from '@/lib/utils'
 
 type Stage = 'form' | 'expired' | 'done'
 
-const titleClass =
-  'text-[1.4rem] leading-tight font-extrabold outline-none min-[1000px]:text-[1.6rem]'
-const subtitleClass = 'mt-1.5 text-[0.9rem] text-muted-foreground'
-const bigButtonClass = 'h-[50px] w-full rounded-[10px] text-[0.98rem] font-bold'
-
 type ResetPasswordProps = {
   /** from the email link; empty means the link is unusable (shown as expired) */
   token: string
-  /** the modal passes DialogTitle/DialogDescription */
-  Title?: ElementType
-  Description?: ElementType
   /** switch the modal to the login view */
   onLogin: () => void
   /** switch the modal to "Forgot your password?" */
@@ -44,8 +37,6 @@ type ResetPasswordProps = {
 /** Opened from the reset email: choose a new password, or ask for a new link if this one is dead. */
 export function ResetPassword({
   token,
-  Title = 'h1',
-  Description = 'p',
   onLogin,
   onRequestNewLink,
 }: ResetPasswordProps) {
@@ -103,9 +94,9 @@ export function ResetPassword({
 
   const heading = (text: string) => (
     // the id sits on an inner span: DialogTitle keeps its own id, which names the dialog
-    <Title ref={titleRef} tabIndex={-1} className={titleClass}>
+    <DialogTitle ref={titleRef} tabIndex={-1} className={titleClass}>
       <span id={titleId}>{text}</span>
-    </Title>
+    </DialogTitle>
   )
 
   if (stage === 'expired') {
@@ -113,9 +104,9 @@ export function ResetPassword({
       <section aria-labelledby={titleId}>
         <StatusIcon icon={ClockIcon} tone="warning" />
         {heading(t('reset.expired.title'))}
-        <Description className={subtitleClass}>
+        <DialogDescription className={subtitleClass}>
           {t('reset.expired.subtitle')}
-        </Description>
+        </DialogDescription>
         <div className="mt-[22px]">
           <Button
             type="button"
@@ -135,9 +126,9 @@ export function ResetPassword({
       <section aria-labelledby={titleId}>
         <StatusIcon icon={CheckIcon} tone="success" strokeWidth={2.4} />
         {heading(t('reset.done.title'))}
-        <Description className={subtitleClass}>
+        <DialogDescription className={subtitleClass}>
           {t('reset.done.subtitle')}
-        </Description>
+        </DialogDescription>
         <div className="mt-[22px]">
           <Button type="button" onClick={onLogin} className={bigButtonClass}>
             {t('reset.done.login')}
@@ -169,9 +160,9 @@ export function ResetPassword({
       <form noValidate aria-labelledby={titleId} onSubmit={submit}>
         <StatusIcon icon={KeyRoundIcon} />
         {heading(t('reset.title'))}
-        <Description className={subtitleClass}>
+        <DialogDescription className={subtitleClass}>
           {t('reset.subtitle')}
-        </Description>
+        </DialogDescription>
 
         <fieldset disabled={reset.isPending} className="contents">
           <div className="mt-5">
