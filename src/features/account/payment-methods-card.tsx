@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
+import { brandName } from './card-brand'
 import { useComingSoon } from './coming-soon'
 import { ConfirmDialog } from './confirm-dialog'
 import {
@@ -16,16 +17,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useFormatDate } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
-
-// card network names are never translated
-const BRANDS: Record<string, string> = {
-  visa: 'Visa',
-  mastercard: 'Mastercard',
-  amex: 'American Express',
-  discover: 'Discover',
-}
-const brandName = (brand: string) =>
-  BRANDS[brand] ?? brand.charAt(0).toUpperCase() + brand.slice(1)
 
 /** Saved cards: last 4 digits only. Cards are saved at checkout. */
 export function PaymentMethodsCard() {

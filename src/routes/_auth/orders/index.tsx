@@ -1,9 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_auth/orders/')({
-  component: RouteComponent,
-})
+import { AccountShell } from '@/features/account/account-shell'
+import { OrdersPage } from '@/features/account/orders-page'
 
-function RouteComponent() {
-  return <div>Hello "/orders"!</div>
-}
+export const Route = createFileRoute('/_auth/orders/')({
+  component: () => (
+    <AccountShell>
+      <OrdersPage />
+    </AccountShell>
+  ),
+})

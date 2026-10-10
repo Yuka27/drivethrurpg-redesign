@@ -42,6 +42,9 @@ export const queryKeys = {
       ['titles', 'list', filters, prefs] as const,
     detail: (id: string, prefs: Preferences) =>
       ['titles', 'detail', id, prefs] as const,
+    /** name and publisher only (order lines); its own key so it never replaces a full detail */
+    summary: (id: string, prefs: Preferences) =>
+      ['titles', 'summary', id, prefs] as const,
     facets: (filters: Record<string, unknown>, prefs: Preferences) =>
       ['titles', 'facets', filters, prefs] as const,
   },
@@ -54,6 +57,12 @@ export const queryKeys = {
   publishers: {
     detail: (id: string, prefs: Preferences) =>
       ['publishers', 'detail', id, prefs] as const,
+  },
+  orders: {
+    all: ['orders'] as const,
+    list: (prefs: Preferences) => ['orders', 'list', prefs] as const,
+    detail: (id: string, prefs: Preferences) =>
+      ['orders', 'detail', id, prefs] as const,
   },
   following: {
     all: ['following'] as const,

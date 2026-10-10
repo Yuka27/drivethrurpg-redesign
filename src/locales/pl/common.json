@@ -152,5 +152,11 @@
     "passwordRequired": "Podaj hasło.",
     "emailInvalidExample": "Podaj prawidłowy adres e-mail, na przykład imie@przyklad.pl.",
     "passwordMinLength": "Hasło musi mieć co najmniej 10 znaków."
+  },
+  "pagination": {
+    "label": "Stronicowanie",
+    "prev": "Wstecz",
+    "next": "Dalej",
+    "page": "Strona {{page}}"
   }
 }
