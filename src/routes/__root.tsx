@@ -7,6 +7,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 
 import { usePreferencesSync } from '@/api/preferences'
+import { LoginDialog } from '@/components/auth/login-dialog'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
@@ -51,6 +52,7 @@ function RootComponent() {
   return (
     <TooltipProvider delayDuration={300}>
       <Outlet />
+      <LoginDialog />
       <Toaster containerAriaLabel={t('toasts.region')} />
       <TanStackDevtools
         config={{

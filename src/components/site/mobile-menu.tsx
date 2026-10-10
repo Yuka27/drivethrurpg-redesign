@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { MenuIcon, PanelLeftCloseIcon } from 'lucide-react'
-import { useId, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ReactNode } from 'react'
 
@@ -28,6 +28,7 @@ export function MobileMenu() {
   const setAiContent = usePreferencesStore((state) => state.setAiContent)
   const aiSwitchId = useId()
   const [open, setOpen] = useState(false)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const close = () => setOpen(false)
   const { data: me } = useMe()
   const logout = useLogout()
@@ -36,6 +37,7 @@ export function MobileMenu() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
+          ref={triggerRef}
           variant="outline"
           size="icon-sm"
           aria-label={t('menu.open')}
@@ -118,7 +120,12 @@ export function MobileMenu() {
           </div>
         ) : (
           <div className="flex flex-col gap-2 p-5">
-            <LoginButton className="w-full" onLoggedIn={close}>
+            <LoginButton
+              className="w-full"
+              onOpen={close}
+              // this button leaves with the menu; return focus to the ☰ button instead
+              returnFocusTo={triggerRef.current}
+            >
               {t('menu.login')}
             </LoginButton>
             <p className="text-center text-sm text-muted-foreground">

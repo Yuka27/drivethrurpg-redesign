@@ -5,7 +5,8 @@
   "actions": {
     "opensInNewTab": "(opens in a new tab)",
     "tryAgain": "Try again",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "close": "Close"
   },
   "header": {
     "search": {
@@ -40,8 +41,7 @@
       "withCount_one": "Cart, {{count}} item",
       "withCount_other": "Cart, {{count}} items"
     },
-    "login": "Log In",
-    "loggingIn": "Logging in…"
+    "login": "Log In"
   },
   "account": {
     "tooltip": "Account",
@@ -104,7 +104,6 @@
     "saveFailedDetail": "They are still applied on this device."
   },
   "auth": {
-    "loginFailed": "Could not log you in. Please try again.",
     "logoutFailed": "Could not log you out. Please try again."
   },
   "pages": {
@@ -120,7 +119,7 @@
   "errors": {
     "generic": "Something went wrong. Please try again.",
     "invalid_credentials": "Wrong email or password.",
-    "account_locked": "Your account is locked. Reset your password to unlock it.",
+    "account_locked": "Too many attempts. Wait a few minutes and try again.",
     "session_expired": "Please sign in again.",
     "email_taken": "An account with this email already exists.",
     "weak_password": "Use at least 10 characters for your password.",
@@ -136,5 +135,9 @@
   },
   "toasts": {
     "region": "Notifications"
+  },
+  "validation": {
+    "emailInvalid": "Enter a valid email address.",
+    "passwordRequired": "Enter your password."
   }
 }

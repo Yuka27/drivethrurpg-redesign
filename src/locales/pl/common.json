@@ -5,7 +5,8 @@
   "actions": {
     "opensInNewTab": "(otwiera się w nowej karcie)",
     "tryAgain": "Spróbuj ponownie",
-    "backHome": "Wróć na stronę główną"
+    "backHome": "Wróć na stronę główną",
+    "close": "Zamknij"
   },
   "header": {
     "search": {
@@ -46,8 +47,7 @@
       "withCount_many": "Koszyk, {{count}} produktów",
       "withCount_other": "Koszyk, {{count}} produktu"
     },
-    "login": "Zaloguj się",
-    "loggingIn": "Logowanie…"
+    "login": "Zaloguj się"
   },
   "account": {
     "tooltip": "Konto",
@@ -112,7 +112,6 @@
     "saveFailedDetail": "Nadal obowiązują na tym urządzeniu."
   },
   "auth": {
-    "loginFailed": "Nie udało się zalogować. Spróbuj ponownie.",
     "logoutFailed": "Nie udało się wylogować. Spróbuj ponownie."
   },
   "pages": {
@@ -128,7 +127,7 @@
   "errors": {
     "generic": "Coś poszło nie tak. Spróbuj ponownie.",
     "invalid_credentials": "Nieprawidłowy e-mail lub hasło.",
-    "account_locked": "Twoje konto jest zablokowane. Zresetuj hasło, aby je odblokować.",
+    "account_locked": "Zbyt wiele prób. Odczekaj kilka minut i spróbuj ponownie.",
     "session_expired": "Zaloguj się ponownie.",
     "email_taken": "Konto z tym adresem e-mail już istnieje.",
     "weak_password": "Hasło musi mieć co najmniej 10 znaków.",
@@ -144,5 +143,9 @@
   },
   "toasts": {
     "region": "Powiadomienia"
+  },
+  "validation": {
+    "emailInvalid": "Podaj prawidłowy adres e-mail.",
+    "passwordRequired": "Podaj hasło."
   }
 }
