@@ -1,11 +1,11 @@
 import { GiftIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { useComingSoon } from './coming-soon'
 import { useMe } from '@/api/me'
 import { Button } from '@/components/ui/button'
 import { useFormatMoney } from '@/i18n/format'
 import { cn } from '@/lib/utils'
+import { useComingSoon } from '@/lib/use-coming-soon'
 
 /**
  * Store credit and "Redeem gift card".

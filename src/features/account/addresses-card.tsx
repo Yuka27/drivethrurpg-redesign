@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { useComingSoon } from './coming-soon'
 import { ConfirmDialog } from './confirm-dialog'
 import { SettingsCard, SettingsRow, badgeClass } from './settings-card'
 import { useAddresses, useRemoveAddress } from '@/api/account'
@@ -12,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useRegionName } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
+import { useComingSoon } from '@/lib/use-coming-soon'
 
 /** Billing addresses (invoices and tax); digital titles are never shipped. */
 export function AddressesCard() {

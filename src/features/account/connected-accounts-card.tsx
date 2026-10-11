@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { useComingSoon } from './coming-soon'
 import {
   SettingsCard,
   SettingsRow,
@@ -17,6 +16,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
+import { useComingSoon } from '@/lib/use-coming-soon'
 
 // Figma order; brand names are never translated
 const PROVIDERS: Array<{ id: SocialProvider; name: string; icon: string }> = [

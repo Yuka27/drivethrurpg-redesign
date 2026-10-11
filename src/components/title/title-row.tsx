@@ -4,6 +4,7 @@ import { RatingStars } from './rating-stars'
 import { CartButton, WishlistButton } from './title-actions'
 import { TitleCover, TitleHeading } from './title-card'
 import { TitlePrice } from './title-price'
+import { useFacetLabel } from './use-facet-label'
 import type { TitleCard as Title } from '@/api/titles'
 import { cn } from '@/lib/utils'
 
@@ -15,15 +16,10 @@ import { cn } from '@/lib/utils'
  */
 export function TitleRow({ title }: { title: Title }) {
   const { t } = useTranslation('listing')
+  const facetLabel = useFacetLabel()
   const tags = [
-    title.type &&
-      t(`facets.type.${title.type}`, {
-        defaultValue: title.type.replaceAll('_', ' '),
-      }),
-    title.ruleSystem &&
-      t(`facets.system.${title.ruleSystem}`, {
-        defaultValue: title.ruleSystem.replaceAll('_', ' '),
-      }),
+    title.type && facetLabel('type', title.type),
+    title.ruleSystem && facetLabel('system', title.ruleSystem),
   ].filter(Boolean)
 
   return (

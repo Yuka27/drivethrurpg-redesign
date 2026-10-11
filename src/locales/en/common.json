@@ -167,5 +167,6 @@
     "applied": "Applied filters",
     "remove": "Remove filter: {{filter}}",
     "quick": "Quick filters"
-  }
+  },
+  "comingSoon": "This is not available yet."
 }

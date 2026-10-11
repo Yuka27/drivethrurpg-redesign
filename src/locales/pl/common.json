@@ -181,5 +181,6 @@
     "applied": "Zastosowane filtry",
     "remove": "Usuń filtr: {{filter}}",
     "quick": "Szybkie filtry"
-  }
+  },
+  "comingSoon": "Ta funkcja nie jest jeszcze dostępna."
 }

@@ -2,5 +2,101 @@
   "contentLanguage": {
     "shownIn": "Shown in {{language}}",
     "cardTooltip": "This title is shown in {{language}}"
+  },
+  "backHome": "Back to Home",
+  "aside": "Buying and publisher",
+  "notFound": "We could not find this title.",
+  "loadError": "We could not load this title. Try again later.",
+  "browse": "Browse all titles",
+  "by": "by",
+  "tags": "Tags",
+  "humanMade": "Human-centered without AI",
+  "aiGenerated": "Contains AI-generated content",
+  "rating": {
+    "stars": "Rated {{average}} out of 5",
+    "verdict": {
+      "veryPositive": "Very Positive",
+      "positive": "Positive",
+      "mixed": "Mixed",
+      "negative": "Negative"
+    },
+    "count_one": "({{formatted}} Rating)",
+    "count_other": "({{formatted}} Ratings)"
+  },
+  "buy": {
+    "label": "Buy",
+    "editions": "Edition",
+    "instant": "Instant download",
+    "shipsFrom": "Ships from {{place}}",
+    "outOfStock": "Out of stock",
+    "addToCart": "Add to Cart - {{price}}",
+    "inLibrary": "In your library",
+    "unavailable": "No longer available",
+    "gift": "Buy as a gift",
+    "added": "{{title}} is in your cart.",
+    "addedGift": "{{title}} is in your cart, as a gift. Add who it is for at checkout.",
+    "viewCart": "View cart"
+  },
+  "facts": {
+    "system": "Rule System",
+    "format": "Format",
+    "pages": "Page Count",
+    "language": "Language"
+  },
+  "publisher": {
+    "titles_one": "{{formatted}} title",
+    "titles_other": "{{formatted}} titles"
+  },
+  "follow": {
+    "label": "Follow",
+    "hint": "Follow your favorite publisher to get a weekly email of new releases.",
+    "publisher": "Follow",
+    "followed": "You follow {{name}}.",
+    "unfollowed": "You no longer follow {{name}}."
+  },
+  "alsoBought": "Customers also bought",
+  "moreRecommendations": "See more recommendations",
+  "tabs": {
+    "label": "Sections",
+    "overview": "Overview",
+    "details": "Details",
+    "reviews_one": "Reviews & Discussions ({{count}})",
+    "reviews_other": "Reviews & Discussions ({{count}})"
+  },
+  "samples": {
+    "heading": "Sample pages",
+    "download": "Download sample",
+    "page": "Preview page",
+    "caption": "{{name}} · {{index}} / {{total}}"
+  },
+  "details": {
+    "authors": "Author(s)",
+    "publisher": "Publisher",
+    "creation": "Creation method",
+    "categories": "Categories",
+    "released": "Released",
+    "pages": "Pages",
+    "fileSize": "File size",
+    "megabytes": "{{size}} MB",
+    "languages": "Available in",
+    "isbn": "ISBN"
+  },
+  "reviews": {
+    "heading_one": "Reviews & Discussions ({{count}})",
+    "heading_other": "Reviews & Discussions ({{count}})",
+    "startDiscussion": "Start New Discussion",
+    "outOf": "out of 5",
+    "ratings_one": "{{formatted}} rating",
+    "ratings_other": "{{formatted}} ratings",
+    "breakdown": "Ratings by stars",
+    "starsShare_one": "{{count}} star",
+    "starsShare_other": "{{count}} stars",
+    "purchaser": "Purchaser",
+    "rated_one": "Rated {{count}} star out of 5",
+    "rated_other": "Rated {{count}} stars out of 5",
+    "replies_one": "{{count}} reply",
+    "replies_other": "{{count}} replies",
+    "reply": "Reply",
+    "flag": "Report"
   }
 }

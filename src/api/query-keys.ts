@@ -47,6 +47,12 @@ export const queryKeys = {
       ['titles', 'summary', id, prefs] as const,
     facets: (filters: Record<string, unknown>, prefs: Preferences) =>
       ['titles', 'facets', filters, prefs] as const,
+    /** a title's reviews, discussions, similar titles, samples: apart from its detail */
+    related: (
+      id: string,
+      kind: 'reviews' | 'discussions' | 'similar' | 'samples',
+      prefs: Preferences,
+    ) => ['titles', 'related', id, kind, prefs] as const,
   },
   search: {
     results: (params: Record<string, unknown>, prefs: Preferences) =>

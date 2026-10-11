@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 
-import { useComingSoon } from './coming-soon'
 import { SettingsCard, SettingsRow, rowButtonClass } from './settings-card'
 import { Button } from '@/components/ui/button'
+import { useComingSoon } from '@/lib/use-coming-soon'
 
 /**
  * Keys for apps that read the library.

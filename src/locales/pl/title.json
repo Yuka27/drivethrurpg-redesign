@@ -2,5 +2,117 @@
   "contentLanguage": {
     "shownIn": "Wyświetlane w języku: {{language}}",
     "cardTooltip": "Ten tytuł jest wyświetlany w języku: {{language}}"
+  },
+  "backHome": "Strona główna",
+  "aside": "Zakup i wydawca",
+  "notFound": "Nie znaleźliśmy tego tytułu.",
+  "loadError": "Nie udało się wczytać tytułu. Spróbuj później.",
+  "browse": "Przeglądaj tytuły",
+  "by": "autorstwa",
+  "tags": "Tagi",
+  "humanMade": "Stworzone przez ludzi, bez AI",
+  "aiGenerated": "Zawiera treści wygenerowane przez AI",
+  "rating": {
+    "stars": "Ocena {{average}} na 5",
+    "verdict": {
+      "veryPositive": "Bardzo dobre",
+      "positive": "Dobre",
+      "mixed": "Mieszane",
+      "negative": "Słabe"
+    },
+    "count_one": "({{formatted}} ocena)",
+    "count_few": "({{formatted}} oceny)",
+    "count_many": "({{formatted}} ocen)",
+    "count_other": "({{formatted}} oceny)"
+  },
+  "buy": {
+    "label": "Zakup",
+    "editions": "Wydanie",
+    "instant": "Pobierasz od razu",
+    "shipsFrom": "Wysyłka z: {{place}}",
+    "outOfStock": "Brak w magazynie",
+    "addToCart": "Do koszyka - {{price}}",
+    "inLibrary": "Masz w bibliotece",
+    "unavailable": "Niedostępne",
+    "gift": "Kup jako prezent",
+    "added": "{{title}} jest w koszyku.",
+    "addedGift": "{{title}} jest w koszyku jako prezent. Odbiorcę podasz przy płatności.",
+    "viewCart": "Zobacz koszyk"
+  },
+  "facts": {
+    "system": "System",
+    "format": "Format",
+    "pages": "Liczba stron",
+    "language": "Język"
+  },
+  "publisher": {
+    "titles_one": "{{formatted}} tytuł",
+    "titles_few": "{{formatted}} tytuły",
+    "titles_many": "{{formatted}} tytułów",
+    "titles_other": "{{formatted}} tytułu"
+  },
+  "follow": {
+    "label": "Obserwuj",
+    "hint": "Obserwuj ulubionego wydawcę, a co tydzień dostaniesz e-mail z nowościami.",
+    "publisher": "Obserwuj",
+    "followed": "Obserwujesz: {{name}}.",
+    "unfollowed": "Już nie obserwujesz: {{name}}."
+  },
+  "alsoBought": "Klienci kupili też",
+  "moreRecommendations": "Więcej poleceń",
+  "tabs": {
+    "label": "Sekcje",
+    "overview": "Opis",
+    "details": "Szczegóły",
+    "reviews_one": "Opinie i dyskusje ({{count}})",
+    "reviews_few": "Opinie i dyskusje ({{count}})",
+    "reviews_many": "Opinie i dyskusje ({{count}})",
+    "reviews_other": "Opinie i dyskusje ({{count}})"
+  },
+  "samples": {
+    "heading": "Przykładowe strony",
+    "download": "Pobierz próbkę",
+    "page": "Strona podglądu",
+    "caption": "{{name}} · {{index}} / {{total}}"
+  },
+  "details": {
+    "authors": "Autorzy",
+    "publisher": "Wydawca",
+    "creation": "Sposób powstania",
+    "categories": "Kategorie",
+    "released": "Data wydania",
+    "pages": "Strony",
+    "fileSize": "Rozmiar pliku",
+    "megabytes": "{{size}} MB",
+    "languages": "Dostępne w",
+    "isbn": "ISBN"
+  },
+  "reviews": {
+    "heading_one": "Opinie i dyskusje ({{count}})",
+    "heading_few": "Opinie i dyskusje ({{count}})",
+    "heading_many": "Opinie i dyskusje ({{count}})",
+    "heading_other": "Opinie i dyskusje ({{count}})",
+    "startDiscussion": "Rozpocznij dyskusję",
+    "outOf": "na 5",
+    "ratings_one": "{{formatted}} ocena",
+    "ratings_few": "{{formatted}} oceny",
+    "ratings_many": "{{formatted}} ocen",
+    "ratings_other": "{{formatted}} oceny",
+    "breakdown": "Oceny według gwiazdek",
+    "starsShare_one": "{{count}} gwiazdka",
+    "starsShare_few": "{{count}} gwiazdki",
+    "starsShare_many": "{{count}} gwiazdek",
+    "starsShare_other": "{{count}} gwiazdki",
+    "purchaser": "Kupujący",
+    "rated_one": "Ocena: {{count}} gwiazdka na 5",
+    "rated_few": "Ocena: {{count}} gwiazdki na 5",
+    "rated_many": "Ocena: {{count}} gwiazdek na 5",
+    "rated_other": "Ocena: {{count}} gwiazdki na 5",
+    "replies_one": "{{count}} odpowiedź",
+    "replies_few": "{{count}} odpowiedzi",
+    "replies_many": "{{count}} odpowiedzi",
+    "replies_other": "{{count}} odpowiedzi",
+    "reply": "Odpowiedz",
+    "flag": "Zgłoś"
   }
 }
