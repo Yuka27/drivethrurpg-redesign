@@ -22,6 +22,7 @@ import { useMe } from '@/api/me'
 import type { Me } from '@/api/me'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useLastLibrarySearch } from '@/features/library/library-search'
 import { useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
@@ -87,6 +88,7 @@ function GuestActions({ loading }: { loading: boolean }) {
 /** Figma "logged in": My Library + wishlist | notifications + cart | avatar menu (desktop). */
 function UserActions({ user }: { user: Me }) {
   const { t } = useTranslation()
+  const librarySearch = useLastLibrarySearch((state) => state.search)
   const { counts } = user
   return (
     <div className="ml-auto flex items-center gap-1 lg:gap-3">
@@ -97,7 +99,11 @@ function UserActions({ user }: { user: Me }) {
           asChild
           className="size-8 px-0 lg:w-auto lg:px-2.5"
         >
-          <Link to="/library" aria-label={t('header.myLibrary')}>
+          <Link
+            to="/library"
+            search={librarySearch}
+            aria-label={t('header.myLibrary')}
+          >
             <LibraryBigIcon aria-hidden />
             <span className="hidden lg:inline">{t('header.myLibrary')}</span>
           </Link>

@@ -158,5 +158,25 @@
     "prev": "Wstecz",
     "next": "Dalej",
     "page": "Strona {{page}}"
+  },
+  "filters": {
+    "title": "Filtry",
+    "description": "Zawęź listę. Zmiany działają od razu.",
+    "clearAll": "Wyczyść wszystko",
+    "active": "aktywne filtry",
+    "selected_one": "{{count}} wybrany",
+    "selected_few": "{{count}} wybrane",
+    "selected_many": "{{count}} wybranych",
+    "selected_other": "{{count}} wybranego",
+    "more_one": "+ {{count}} więcej",
+    "more_few": "+ {{count}} więcej",
+    "more_many": "+ {{count}} więcej",
+    "more_other": "+ {{count}} więcej",
+    "showLess": "Pokaż mniej",
+    "noMatches": "Brak dopasowań.",
+    "showResults_one": "Pokaż {{count}} wynik",
+    "showResults_few": "Pokaż {{count}} wyniki",
+    "showResults_many": "Pokaż {{count}} wyników",
+    "showResults_other": "Pokaż {{count}} wyniku"
   }
 }

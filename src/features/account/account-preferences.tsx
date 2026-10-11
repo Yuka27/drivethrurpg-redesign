@@ -3,7 +3,8 @@ import { ArrowRightIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { AccountPage } from './account-page'
-import { PreferenceSelect, SwitchRow } from './preference-controls'
+import { SwitchRow } from './preference-controls'
+import { OptionSelect } from '@/components/site/option-select'
 import { SettingsCard, SettingsRow, rowButtonClass } from './settings-card'
 import { useLocales } from '@/api/meta'
 import {
@@ -174,7 +175,7 @@ function DownloadsCard({
           </span>
         </div>
         {saveTo && (
-          <PreferenceSelect
+          <OptionSelect
             label={t('preferencesPage.downloads.saveTo')}
             value={saveTo}
             options={[...options]}
@@ -235,7 +236,7 @@ function ContentCard({
         label={t('preferencesPage.content.language')}
         actions={
           locales && (
-            <PreferenceSelect
+            <OptionSelect
               label={t('preferencesPage.content.language')}
               value={language}
               options={locales.languages.map((l) => ({
@@ -251,7 +252,7 @@ function ContentCard({
         label={t('preferencesPage.content.currency')}
         actions={
           locales && (
-            <PreferenceSelect
+            <OptionSelect
               label={t('preferencesPage.content.currency')}
               value={currency}
               options={currencies.map((c) => ({

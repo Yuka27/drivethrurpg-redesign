@@ -3,5 +3,28 @@
   "filters": {
     "language": "Language",
     "anyLanguage": "Any language"
+  },
+  "facets": {
+    "type": {
+      "adventure": "Adventure",
+      "setting": "Setting",
+      "bestiary": "Bestiary",
+      "map_pack": "Map pack",
+      "zine": "Zine",
+      "tool": "Tool",
+      "core_rulebook": "Core rulebook",
+      "supplement": "Supplement"
+    },
+    "system": {
+      "d20_5e": "D20 / 5e",
+      "system_neutral": "System neutral",
+      "osr": "OSR",
+      "pathfinder": "Pathfinder"
+    },
+    "format": {
+      "pdf": "PDF",
+      "print_pdf": "Print + PDF",
+      "vtt": "VTT"
+    }
   }
 }

@@ -1,0 +1,60 @@
+{
+  "title": "Moja biblioteka",
+  "getApp": "Pobierz aplikację",
+  "search": "Szukaj w bibliotece",
+  "searchPlaceholder": "Szukaj w bibliotece",
+  "selectAll": "Zaznacz wszystko",
+  "showing": "Pozycje {{from}}–{{to}} z {{total}}",
+  "sort": "Sortowanie",
+  "sortDisplay": "Sortuj: {{option}}",
+  "sorts": {
+    "added": "Ostatnio dodane",
+    "updated": "Ostatnio zaktualizowane",
+    "title": "Tytuł A–Z",
+    "publisher": "Wydawca A–Z"
+  },
+  "status": {
+    "title": "Status",
+    "all": "Wszystkie",
+    "updated": "Zaktualizowane",
+    "gifts": "Prezenty"
+  },
+  "facets": {
+    "system": "System",
+    "type": "Rodzaj produktu",
+    "format": "Format",
+    "publisher": "Wydawca"
+  },
+  "searchFacet": {
+    "system": "Szukaj systemów",
+    "systemPlaceholder": "Szukaj systemów...",
+    "publisher": "Szukaj wydawców",
+    "publisherPlaceholder": "Szukaj wydawców..."
+  },
+  "card": {
+    "updated": "Aktualizacja",
+    "purchased": "Kupiono {{date}}",
+    "giftFrom": "Prezent od {{name}}",
+    "files_one": "{{count}} plik, {{size}} MB",
+    "files_few": "{{count}} pliki, {{size}} MB",
+    "files_many": "{{count}} plików, {{size}} MB",
+    "files_other": "{{count}} pliku, {{size}} MB",
+    "select": "Zaznacz: {{title}}",
+    "download": "Pobierz",
+    "downloadLabel": "Pobierz: {{title}}",
+    "downloadFile": "Pobierz {{name}}",
+    "more": "Więcej działań: {{title}}",
+    "viewProduct": "Strona produktu",
+    "viewPublisher": "Strona wydawcy",
+    "markSeen": "Oznacz aktualizację jako przejrzaną"
+  },
+  "downloadSelected_one": "Pobierz {{count}} tytuł",
+  "downloadSelected_few": "Pobierz {{count}} tytuły",
+  "downloadSelected_many": "Pobierz {{count}} tytułów",
+  "downloadSelected_other": "Pobierz {{count}} tytułu",
+  "downloadFailed": "Nie udało się przygotować pobierania. Spróbuj ponownie.",
+  "empty": "Twoja biblioteka jest pusta. Tu pojawią się kupione tytuły i prezenty.",
+  "noResults": "Żaden tytuł nie pasuje do tych filtrów.",
+  "clearFilters": "Wyczyść filtry",
+  "loadError": "Nie udało się wczytać biblioteki. Spróbuj później."
+}
