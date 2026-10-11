@@ -12,6 +12,19 @@ function useLocale() {
   return apiLanguage(usePreferencesStore((state) => state.language))
 }
 
+/** The display currency's symbol ("$", "zł") in the current language, for price inputs. */
+export function useCurrencySymbol() {
+  const locale = useLocale()
+  const currency = usePreferencesStore((state) => state.currency)
+  return useMemo(
+    () =>
+      new Intl.NumberFormat(locale, { style: 'currency', currency })
+        .formatToParts(0)
+        .find((part) => part.type === 'currency')?.value ?? currency,
+    [locale, currency],
+  )
+}
+
 /** Money amounts from the API are integer minor units (cents): 1999 = 19.99. */
 export function useFormatMoney() {
   const locale = useLocale()

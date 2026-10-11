@@ -6,7 +6,10 @@ type Reply = { status?: number; body?: unknown }
 /** What one "METHOD /path" answers: a reply, or a function returning one (sync or async) */
 export type Handler =
   | Reply
-  | ((request: { body: unknown }) => Reply | Promise<Reply>)
+  | ((request: {
+      body: unknown
+      params: URLSearchParams
+    }) => Reply | Promise<Reply>)
 /** `"POST /auth/login"` → its handler */
 type Handlers = Partial<Record<string, Handler>>
 type FetchArgs = Parameters<typeof fetch>
@@ -16,6 +19,9 @@ function requestKey([input, init]: FetchArgs) {
   const url = new URL(input instanceof Request ? input.url : input)
   return `${init?.method ?? 'GET'} ${url.pathname.replace(/^\/api\/v1/, '')}`
 }
+
+const requestParams = ([input]: FetchArgs) =>
+  new URL(input instanceof Request ? input.url : input).searchParams
 
 const requestBody = ([, init]: FetchArgs): unknown =>
   typeof init?.body === 'string' ? JSON.parse(init.body) : undefined
@@ -36,7 +42,10 @@ export function mockApi(handlers: Handlers = {}) {
     if (!handler) throw new Error(`mockApi: no handler for ${key}`)
     const reply =
       typeof handler === 'function'
-        ? await handler({ body: requestBody(args) })
+        ? await handler({
+            body: requestBody(args),
+            params: requestParams(args),
+          })
         : handler
     return new Response(
       reply.body === undefined ? null : JSON.stringify(reply.body),
@@ -50,7 +59,12 @@ export function mockApi(handlers: Handlers = {}) {
     fetchMock.mock.calls
       .filter((args) => requestKey(args) === key)
       .map(requestBody)
-  return { fetchMock, bodies }
+  /** query parameters sent to "METHOD /path", in order */
+  const params = (key: string) =>
+    fetchMock.mock.calls
+      .filter((args) => requestKey(args) === key)
+      .map(requestParams)
+  return { fetchMock, bodies, params }
 }
 
 /** The API's error body: { error: { code, message, field?, retryAfter? } } */

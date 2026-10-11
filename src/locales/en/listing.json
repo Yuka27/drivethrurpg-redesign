@@ -1,8 +1,75 @@
 {
   "heading": "All titles",
-  "filters": {
-    "language": "Language",
-    "anyLanguage": "Any language"
+  "backHome": "Back to Home",
+  "banner": {
+    "featured": "Featured"
+  },
+  "groups": {
+    "promotions": "Promotions",
+    "system": "Rule System",
+    "type": "Product Type",
+    "price": "Price",
+    "format": "Format",
+    "publisher": "Publisher",
+    "language": "Language"
+  },
+  "onSale": "On sale",
+  "searchFacet": {
+    "system": "Search rule systems",
+    "systemPlaceholder": "Search rule systems...",
+    "publisher": "Search publishers",
+    "publisherPlaceholder": "Search publishers..."
+  },
+  "price": {
+    "any": "Any price",
+    "free": "Free",
+    "under": "Under {{price}}",
+    "upTo": "Up to {{price}}",
+    "upToLabel": "Highest price",
+    "upToPlaceholder": "Up to",
+    "go": "Go"
+  },
+  "quick": {
+    "d20_5e": "D&D 5e",
+    "year_zero": "Year Zero Engine",
+    "pdf": "Digital (PDF)"
+  },
+  "showing": "Showing {{from}}–{{to}} of {{total}}",
+  "sort": "Sort",
+  "sortDisplay": "Sort: {{option}}",
+  "sorts": {
+    "match": "Best Match",
+    "bestselling": "Bestselling",
+    "newest": "Newest",
+    "price_asc": "Price: low to high",
+    "price_desc": "Price: high to low"
+  },
+  "view": {
+    "label": "View",
+    "grid": "Cards",
+    "list": "List"
+  },
+  "loadError": "We could not load the titles. Try again later.",
+  "noResults": "No titles match these filters.",
+  "clearFilters": "Clear filters",
+  "rating": {
+    "label_one": "Rated {{average}} out of 5, {{count}} review",
+    "label_other": "Rated {{average}} out of 5, {{count}} reviews",
+    "reviews_one": "({{formatted}} review)",
+    "reviews_other": "({{formatted}} reviews)"
+  },
+  "card": {
+    "wishlist": "Wishlist: {{title}}",
+    "wishlistAdded": "{{title}} is on your wishlist.",
+    "wishlistRemoved": "{{title}} is off your wishlist.",
+    "owned": "In your library: {{title}}",
+    "inLibrary": "In library",
+    "addToCart": "Add to Cart: {{title}}",
+    "addToCartShort": "Add to Cart",
+    "added": "{{title}} is in your cart.",
+    "viewCart": "View cart",
+    "was": "was",
+    "tags": "Tags"
   },
   "facets": {
     "type": {
@@ -19,7 +86,10 @@
       "d20_5e": "D20 / 5e",
       "system_neutral": "System neutral",
       "osr": "OSR",
-      "pathfinder": "Pathfinder"
+      "pathfinder": "Pathfinder",
+      "year_zero": "Year Zero Engine",
+      "imperium_maledictum": "Imperium Maledictum",
+      "coriolis": "Coriolis"
     },
     "format": {
       "pdf": "PDF",

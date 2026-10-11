@@ -1,8 +1,79 @@
 {
   "heading": "Wszystkie tytuły",
-  "filters": {
-    "language": "Język",
-    "anyLanguage": "Dowolny język"
+  "backHome": "Strona główna",
+  "banner": {
+    "featured": "Polecamy"
+  },
+  "groups": {
+    "promotions": "Promocje",
+    "system": "System",
+    "type": "Rodzaj produktu",
+    "price": "Cena",
+    "format": "Format",
+    "publisher": "Wydawca",
+    "language": "Język"
+  },
+  "onSale": "W promocji",
+  "searchFacet": {
+    "system": "Szukaj systemów",
+    "systemPlaceholder": "Szukaj systemów...",
+    "publisher": "Szukaj wydawców",
+    "publisherPlaceholder": "Szukaj wydawców..."
+  },
+  "price": {
+    "any": "Dowolna cena",
+    "free": "Za darmo",
+    "under": "Poniżej {{price}}",
+    "upTo": "Do {{price}}",
+    "upToLabel": "Najwyższa cena",
+    "upToPlaceholder": "Do",
+    "go": "OK"
+  },
+  "quick": {
+    "d20_5e": "D&D 5e",
+    "year_zero": "Year Zero Engine",
+    "pdf": "Cyfrowe (PDF)"
+  },
+  "showing": "Pozycje {{from}}–{{to}} z {{total}}",
+  "sort": "Sortowanie",
+  "sortDisplay": "Sortuj: {{option}}",
+  "sorts": {
+    "match": "Najtrafniejsze",
+    "bestselling": "Bestsellery",
+    "newest": "Najnowsze",
+    "price_asc": "Cena: od najniższej",
+    "price_desc": "Cena: od najwyższej"
+  },
+  "view": {
+    "label": "Widok",
+    "grid": "Karty",
+    "list": "Lista"
+  },
+  "loadError": "Nie udało się wczytać tytułów. Spróbuj później.",
+  "noResults": "Żaden tytuł nie pasuje do tych filtrów.",
+  "clearFilters": "Wyczyść filtry",
+  "rating": {
+    "label_one": "Ocena {{average}} na 5, {{count}} opinia",
+    "label_few": "Ocena {{average}} na 5, {{count}} opinie",
+    "label_many": "Ocena {{average}} na 5, {{count}} opinii",
+    "label_other": "Ocena {{average}} na 5, {{count}} opinii",
+    "reviews_one": "({{formatted}} opinia)",
+    "reviews_few": "({{formatted}} opinie)",
+    "reviews_many": "({{formatted}} opinii)",
+    "reviews_other": "({{formatted}} opinii)"
+  },
+  "card": {
+    "wishlist": "Lista życzeń: {{title}}",
+    "wishlistAdded": "{{title}} jest na liście życzeń.",
+    "wishlistRemoved": "Usunięto {{title}} z listy życzeń.",
+    "owned": "W bibliotece: {{title}}",
+    "inLibrary": "W bibliotece",
+    "addToCart": "Do koszyka: {{title}}",
+    "addToCartShort": "Do koszyka",
+    "added": "{{title}} jest w koszyku.",
+    "viewCart": "Zobacz koszyk",
+    "was": "wcześniej",
+    "tags": "Tagi"
   },
   "facets": {
     "type": {
@@ -19,7 +90,10 @@
       "d20_5e": "D20 / 5e",
       "system_neutral": "Uniwersalny",
       "osr": "OSR",
-      "pathfinder": "Pathfinder"
+      "pathfinder": "Pathfinder",
+      "year_zero": "Year Zero Engine",
+      "imperium_maledictum": "Imperium Maledictum",
+      "coriolis": "Coriolis"
     },
     "format": {
       "pdf": "PDF",

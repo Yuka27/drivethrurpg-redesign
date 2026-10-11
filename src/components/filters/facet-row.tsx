@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { useFormatNumber } from '@/i18n/format'
 
-/** One option: the control, its label, and the count on the right. */
+/** One option: the control, its label, and the count on the right (when known). */
 export function FacetRow({
   id,
   control,
@@ -12,7 +12,7 @@ export function FacetRow({
   id: string
   control: ReactNode
   label: string
-  count: number
+  count?: number
 }) {
   const formatNumber = useFormatNumber()
 
@@ -25,9 +25,11 @@ export function FacetRow({
       >
         {label}
       </label>
-      <span className="w-8 shrink-0 text-right text-sm font-medium text-muted-foreground">
-        {formatNumber(count)}
-      </span>
+      {count !== undefined && (
+        <span className="w-8 shrink-0 text-right text-sm font-medium text-muted-foreground">
+          {formatNumber(count)}
+        </span>
+      )}
     </div>
   )
 }

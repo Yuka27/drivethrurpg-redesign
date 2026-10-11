@@ -177,6 +177,9 @@
     "showResults_one": "Pokaż {{count}} wynik",
     "showResults_few": "Pokaż {{count}} wyniki",
     "showResults_many": "Pokaż {{count}} wyników",
-    "showResults_other": "Pokaż {{count}} wyniku"
+    "showResults_other": "Pokaż {{count}} wyniku",
+    "applied": "Zastosowane filtry",
+    "remove": "Usuń filtr: {{filter}}",
+    "quick": "Szybkie filtry"
   }
 }

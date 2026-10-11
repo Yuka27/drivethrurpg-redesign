@@ -163,6 +163,9 @@
     "showLess": "Show less",
     "noMatches": "Nothing matches.",
     "showResults_one": "Show {{count}} result",
-    "showResults_other": "Show {{count}} results"
+    "showResults_other": "Show {{count}} results",
+    "applied": "Applied filters",
+    "remove": "Remove filter: {{filter}}",
+    "quick": "Quick filters"
   }
 }
