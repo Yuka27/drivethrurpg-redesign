@@ -68,6 +68,7 @@
     "addToCart": "Add to Cart: {{title}}",
     "addToCartShort": "Add to Cart",
     "added": "{{title}} is in your cart.",
+    "undo": "Undo",
     "viewCart": "View cart",
     "was": "was",
     "tags": "Tags",

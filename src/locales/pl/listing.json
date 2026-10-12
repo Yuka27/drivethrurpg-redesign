@@ -72,6 +72,7 @@
     "addToCart": "Do koszyka: {{title}}",
     "addToCartShort": "Do koszyka",
     "added": "{{title}} jest w koszyku.",
+    "undo": "Cofnij",
     "viewCart": "Zobacz koszyk",
     "was": "wcześniej",
     "tags": "Tagi",

@@ -76,7 +76,12 @@ export const queryKeys = {
     feed: (prefs: Preferences) => ['following', 'feed', prefs] as const,
   },
   cart: (prefs: Preferences) => ['cart', prefs] as const,
+  /** "Customers also bought" for the cart; under 'cart' so cart changes refetch it */
+  cartRecommendations: (prefs: Preferences) =>
+    ['cart', 'recommendations', prefs] as const,
   wishlist: (prefs: Preferences) => ['wishlist', prefs] as const,
+  wishlistSettings: (prefs: Preferences) =>
+    ['wishlist', 'settings', prefs] as const,
   library: (filters: Record<string, unknown>, prefs: Preferences) =>
     ['library', filters, prefs] as const,
 }

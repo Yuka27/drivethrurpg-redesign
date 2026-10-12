@@ -6,18 +6,16 @@ import { ListingFilterPanel } from './listing-filter-panel'
 import {
   activeFilterCount,
   CLEARED_FILTERS,
-  LISTING_FACETS,
   LISTING_SORTS,
   toTitleFilters,
   toTitleSort,
 } from './listing-search'
 import type { ListingFacet, ListingSearch, ListingSort } from './listing-search'
 import { PromoBanner } from '@/components/site/promo-banner'
+import { useAppliedFilters } from './use-applied-filters'
 import { useListingFacets } from './use-listing-facets'
-import { usePriceLabel } from './use-price-label'
 import { useTitles } from '@/api/titles'
 import { AppliedFilters } from '@/components/filters/applied-filters'
-import type { AppliedFilter } from '@/components/filters/applied-filters'
 import { FilterSheet } from '@/components/filters/filter-sheet'
 import { QuickFilters } from '@/components/filters/quick-filters'
 import { OptionSelect } from '@/components/site/option-select'
@@ -27,8 +25,8 @@ import { TitleCard } from '@/components/title/title-card'
 import { TitleRow } from '@/components/title/title-row'
 import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { useFormatNumber, useLanguageName } from '@/i18n/format'
-import { joinList, splitList } from '@/lib/search-params'
+import { useFormatNumber } from '@/i18n/format'
+import { splitList } from '@/lib/search-params'
 import { useIsDesktop } from '@/lib/use-media-query'
 import { cn } from '@/lib/utils'
 
@@ -56,8 +54,6 @@ export function ListingPage({
 }) {
   const { t } = useTranslation(['listing', 'common'])
   const formatNumber = useFormatNumber()
-  const languageName = useLanguageName()
-  const priceLabel = usePriceLabel()
   const [sheetOpen, setSheetOpen] = useState(false)
   const resultsRef = useRef<HTMLDivElement>(null)
   const isDesktop = useIsDesktop()
@@ -82,60 +78,11 @@ export function ListingPage({
   const from = total === 0 ? 0 : (search.page - 1) * PAGE_SIZE + 1
   const to = Math.min(search.page * PAGE_SIZE, total)
 
-  const togglePick = (facet: ListingFacet, value: string) => {
-    const picked = splitList(search[facet])
-    onSearchChange({
-      [facet]: joinList(
-        picked.includes(value)
-          ? picked.filter((item) => item !== value)
-          : [...picked, value],
-      ),
-      page: 1,
-    })
-  }
-
-  // every value that is on, as a chip: "Rule System: OSR"
-  const applied: Array<AppliedFilter> = [
-    ...(search.onSale
-      ? [
-          {
-            key: 'onSale',
-            label: `${t('groups.promotions')}: ${t('onSale')}`,
-            onRemove: () => onSearchChange({ onSale: false, page: 1 }),
-          },
-        ]
-      : []),
-    ...LISTING_FACETS.flatMap((facet) =>
-      splitList(search[facet]).map((value) => ({
-        key: `${facet}:${value}`,
-        label: `${t(`groups.${facet}`)}: ${
-          facets.options(facet).find((option) => option.value === value)
-            ?.label ?? value
-        }`,
-        onRemove: () => togglePick(facet, value),
-      })),
-    ),
-    ...(search.priceMax === undefined
-      ? []
-      : [
-          {
-            key: 'price',
-            label: `${t('groups.price')}: ${priceLabel(search.priceMax)}`,
-            onRemove: () => onSearchChange({ priceMax: undefined, page: 1 }),
-          },
-        ]),
-    ...splitList(search.language).map((code) => ({
-      key: `language:${code}`,
-      label: `${t('groups.language')}: ${languageName(code)}`,
-      onRemove: () =>
-        onSearchChange({
-          language: joinList(
-            splitList(search.language).filter((item) => item !== code),
-          ),
-          page: 1,
-        }),
-    })),
-  ]
+  const { applied, togglePick } = useAppliedFilters(
+    search,
+    onSearchChange,
+    facets.options,
+  )
 
   const quick = [
     ...QUICK.map(({ key, facet, value }) => ({

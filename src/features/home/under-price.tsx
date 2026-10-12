@@ -2,9 +2,8 @@ import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
 import { SectionHeading } from './section-heading'
-import { assetUrl } from '@/api/client'
 import { useTitles } from '@/api/titles'
-import { TitlePrice } from '@/components/title/title-price'
+import { ShelfCard } from '@/components/title/shelf-card'
 import { usePriceLabel } from '@/features/listing/use-price-label'
 import { cn } from '@/lib/utils'
 
@@ -51,31 +50,7 @@ export function UnderPrice({ className }: { className?: string }) {
       <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-1">
         {titles.map((title) => (
           <li key={title.id} className="w-[200px] shrink-0 snap-start">
-            <Link
-              to="/titles/$titleId"
-              params={{ titleId: title.id }}
-              className="group flex flex-col overflow-hidden rounded-xl border border-muted bg-card"
-            >
-              <span className="block h-[200px] bg-muted">
-                {title.cover && (
-                  <img
-                    src={assetUrl(title.cover.url)}
-                    alt=""
-                    loading="lazy"
-                    className="size-full object-cover"
-                  />
-                )}
-              </span>
-              <span className="flex flex-col px-3 py-2">
-                <span className="truncate text-sm group-hover:underline">
-                  {title.title}
-                </span>
-                <TitlePrice
-                  title={title}
-                  className="flex-row-reverse justify-end text-xs"
-                />
-              </span>
-            </Link>
+            <ShelfCard title={title} />
           </li>
         ))}
       </ul>

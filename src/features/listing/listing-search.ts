@@ -61,6 +61,14 @@ export const ListingSearchSchema = z.object({
 })
 export type ListingSearch = z.infer<typeof ListingSearchSchema>
 
+/** Just the filters (no sort, view or page): what the filter panel edits. */
+export type FilterSearch = Pick<
+  ListingSearch,
+  'onSale' | ListingFacet | 'language' | 'priceMax'
+>
+/** A change from the filter panel; filters send the reader back to page 1. */
+export type FilterPatch = Partial<FilterSearch> & { page?: number }
+
 /** The API's filters for this search; `except` leaves one facet out (for its counts). */
 export function toTitleFilters(
   search: ListingSearch,
@@ -99,7 +107,7 @@ export const CLEARED_FILTERS = {
   page: 1,
 } satisfies Partial<ListingSearch>
 
-export const activeFilterCount = (search: ListingSearch) =>
+export const activeFilterCount = (search: FilterSearch) =>
   (search.onSale ? 1 : 0) +
   (search.priceMax === undefined ? 0 : 1) +
   splitList(search.language).length +

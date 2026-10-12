@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { useMe } from '@/api/me'
-import { useAddTitleToCart, useToggleWishlist } from '@/api/titles'
+import {
+  useAddTitleToCart,
+  useToggleWishlist,
+  useUndoWishlistRemove,
+} from '@/api/titles'
 import type { TitleCard } from '@/api/titles'
 import { Button } from '@/components/ui/button'
 import { useApiError } from '@/i18n/use-api-error'
@@ -24,6 +28,7 @@ export function WishlistButton({
   const { data: me } = useMe()
   const openAuth = useAuthDialogStore((state) => state.openAuth)
   const toggle = useToggleWishlist()
+  const undo = useUndoWishlistRemove()
   const on = title.inWishlist
 
   return (
@@ -40,12 +45,26 @@ export function WishlistButton({
         toggle.mutate(
           { titleId: title.id, on: !on },
           {
-            onSuccess: () =>
+            onSuccess: (result) => {
+              // taken off: offer it back
+              const token = result?.undoToken
               toast.success(
                 t(on ? 'card.wishlistRemoved' : 'card.wishlistAdded', {
                   title: title.title,
                 }),
-              ),
+                token
+                  ? {
+                      action: {
+                        label: t('card.undo'),
+                        onClick: () =>
+                          undo.mutate(token, {
+                            onError: (error) => toast.error(apiError(error)),
+                          }),
+                      },
+                    }
+                  : undefined,
+              )
+            },
             onError: (error) => toast.error(apiError(error)),
           },
         )

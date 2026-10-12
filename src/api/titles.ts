@@ -12,7 +12,7 @@ import { queryKeys } from './query-keys'
 const ImageSchema = z.object({ url: z.string(), alt: z.string().catch('') })
 
 /** A title as GET /titles lists it: enough for a card. */
-const TitleCardSchema = z.object({
+export const TitleCardSchema = z.object({
   id: z.string(),
   title: z.string(),
   publisher: z
@@ -372,6 +372,24 @@ export function useAddEditionToCart() {
   })
 }
 
+/** POST /wishlist/undo: puts back the title the last removal took off. */
+export function useUndoWishlistRemove() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (undoToken: string) =>
+      apiFetch('/wishlist/undo', {
+        method: 'POST',
+        body: { undoToken },
+        schema: z.unknown(),
+      }),
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: ['wishlist'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.titles.all })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.me.all })
+    },
+  })
+}
+
 /**
  * Wishlist heart: POST /wishlist/items or DELETE /wishlist/items/{titleId}.
  * Optimistic over every listed page and the title's own page; rolled back on
@@ -383,17 +401,24 @@ export function useToggleWishlist() {
   const details = { queryKey: ['titles', 'detail'] }
 
   return useMutation({
-    mutationFn: ({ titleId, on }: { titleId: string; on: boolean }) =>
-      on
-        ? apiFetch('/wishlist/items', {
-            method: 'POST',
-            body: { titleId },
-            schema: z.unknown(),
-          })
-        : apiFetch(`/wishlist/items/${titleId}`, {
-            method: 'DELETE',
-            schema: z.unknown(),
-          }),
+    mutationFn: async ({ titleId, on }: { titleId: string; on: boolean }) => {
+      if (on) {
+        await apiFetch('/wishlist/items', {
+          method: 'POST',
+          body: { titleId },
+          schema: z.unknown(),
+        })
+        return null
+      }
+      // removed: the token POST /wishlist/undo takes to put it back
+      return apiFetch(`/wishlist/items/${titleId}`, {
+        method: 'DELETE',
+        schema: z
+          .object({ undoToken: z.string().optional() })
+          .nullable()
+          .catch(null),
+      })
+    },
     onMutate: async ({ titleId, on }) => {
       await queryClient.cancelQueries(lists)
       await queryClient.cancelQueries(details)

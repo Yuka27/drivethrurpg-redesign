@@ -170,6 +170,8 @@
     "region": "Powiadomienia"
   },
   "validation": {
+    "codeRequired": "Wpisz kod.",
+    "recipientEmailRequired": "Podaj e-mail odbiorcy.",
     "emailInvalid": "Podaj prawidłowy adres e-mail.",
     "passwordRequired": "Podaj hasło.",
     "emailInvalidExample": "Podaj prawidłowy adres e-mail, na przykład imie@przyklad.pl.",

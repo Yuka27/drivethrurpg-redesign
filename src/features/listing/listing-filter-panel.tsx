@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PRICE_BANDS } from './listing-search'
-import type { ListingFacet, ListingSearch } from './listing-search'
+import type { FilterPatch, FilterSearch, ListingFacet } from './listing-search'
 import { usePriceLabel } from './use-price-label'
 import { useLocales } from '@/api/meta'
 import { CheckboxFacet } from '@/components/filters/checkbox-facet'
@@ -29,18 +29,22 @@ const SEARCH_BOX = {
 /**
  * The listing's filters, for the desktop sidebar and the mobile sheet alike:
  * Promotions, Genre (when the API has genres), Rule System, Product Type,
- * Price, Format, Publisher, Language.
+ * Price, Format, Publisher, Language. A facet without options is left out;
+ * the wishlist reuses it without Language (`languages={false}`).
  */
 export function ListingFilterPanel({
   search,
   onSearchChange,
   facetOptions,
   variant,
+  languages: showLanguages = true,
 }: {
-  search: ListingSearch
-  onSearchChange: (patch: Partial<ListingSearch>) => void
+  search: FilterSearch
+  onSearchChange: (patch: FilterPatch) => void
   facetOptions: (facet: ListingFacet) => Array<FacetOption>
   variant: 'sidebar' | 'sheet'
+  /** false: no Language group (data without a text language) */
+  languages?: boolean
 }) {
   const { t } = useTranslation('listing')
   const locales = useLocales()
@@ -75,10 +79,12 @@ export function ListingFilterPanel({
     )
   }
 
-  const languages = (locales.data?.languages ?? []).map((language) => ({
-    value: language.code,
-    label: languageName(language.code),
-  }))
+  const languages = (showLanguages ? (locales.data?.languages ?? []) : []).map(
+    (language) => ({
+      value: language.code,
+      label: languageName(language.code),
+    }),
+  )
   const pickedLanguages = splitList(search.language)
 
   return (

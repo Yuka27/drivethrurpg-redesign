@@ -26,8 +26,9 @@ const itemClass =
 /**
  * Desktop: the row under the header. Each catalogue menu lists the values with
  * the most titles; each opens the listing filtered by that value
- * (/titles?genre=horror). On the listing itself the catalogue menus give way
- * to "Back to Home": its sidebar filters do their job there. The right-hand
+ * (/titles?genre=horror). On the listing, the cart and the wishlist the catalogue menus
+ * give way to "Back to Home" (Figma); the listing's sidebar filters do their
+ * job there. The right-hand
  * menus link out to the main site; a product page shows them in its own sticky
  * menu instead (ProductStickyNav), so not here.
  */
@@ -35,6 +36,8 @@ export function SiteNav() {
   const { t } = useTranslation(['common', 'listing'])
   const groups = useBrowseGroups()
   const onListing = useMatch({ from: '/_site/titles/', shouldThrow: false })
+  const onCart = useMatch({ from: '/_site/cart', shouldThrow: false })
+  const onWishlist = useMatch({ from: '/_auth/wishlist', shouldThrow: false })
   const onTitle = useMatch({
     from: '/_site/titles/$titleId',
     shouldThrow: false,
@@ -42,7 +45,7 @@ export function SiteNav() {
 
   return (
     <div className="flex h-12 items-center justify-between max-lg:hidden">
-      {onListing ? (
+      {onListing || onCart || onWishlist ? (
         <Link
           to="/"
           className="flex items-center gap-1 rounded-full px-2 text-xs font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"

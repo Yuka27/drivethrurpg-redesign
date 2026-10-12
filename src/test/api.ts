@@ -74,9 +74,36 @@ export const apiError = (
   extra: { field?: string; retryAfter?: number } = {},
 ): Reply => ({ status, body: { error: { code, message: code, ...extra } } })
 
+const usd = (amount: number) => ({ amount, currency: 'USD' })
+
+/** A GET /cart body: `items` copies of one PDF (none for 0). */
 export const cart = (items: number) => ({
   id: 'cart_test',
-  lines: items > 0 ? [{ lineId: 'line_1', qty: items }] : [],
+  lines:
+    items > 0
+      ? [
+          {
+            lineId: 'line_1',
+            title: { id: 'ttl_test', name: 'Test Title', cover: null },
+            sku: 'sku_test_pdf',
+            formatLabel: 'PDF',
+            qty: items,
+            unitPrice: usd(1000),
+            listPrice: usd(1000),
+            requiresShipping: false,
+            alreadyOwned: false,
+          },
+        ]
+      : [],
+  promo: null,
+  gift: { enabled: false },
+  totals: {
+    subtotal: usd(1000 * items),
+    saleSavings: usd(0),
+    promoDiscount: usd(0),
+    total: usd(1000 * items),
+    taxAndShippingNote: 'Calculated at checkout',
+  },
 })
 
 export const user: Me = {

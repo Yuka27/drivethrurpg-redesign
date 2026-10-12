@@ -162,6 +162,8 @@
     "region": "Notifications"
   },
   "validation": {
+    "codeRequired": "Enter a code.",
+    "recipientEmailRequired": "Enter the recipient's email.",
     "emailInvalid": "Enter a valid email address.",
     "passwordRequired": "Enter your password.",
     "emailInvalidExample": "Enter a valid email address, for example name@example.com.",

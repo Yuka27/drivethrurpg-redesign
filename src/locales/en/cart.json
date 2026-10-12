@@ -1,10 +1,65 @@
 {
-  "heading": "Cart",
+  "heading": "Shopping cart",
+  "backHome": "Back to Home",
+  "loadError": "We could not load your cart. Try again later.",
   "empty": {
-    "title": "Your cart is empty"
+    "title": "Your cart is empty",
+    "text": "Find your next adventure in the catalog.",
+    "browse": "Browse titles"
   },
   "summary": {
     "itemCount_one": "{{count}} item",
-    "itemCount_other": "{{count}} items"
-  }
+    "itemCount_other": "{{count}} items",
+    "title": "Order summary",
+    "subtotal_one": "Subtotal ({{count}} item)",
+    "subtotal_other": "Subtotal ({{count}} items)",
+    "saleSavings": "Sale savings",
+    "promo": "Promo code {{code}}",
+    "removePromo": "Remove code {{code}}",
+    "taxShipping": "Tax & shipping",
+    "taxShippingNote": "Calculated at checkout",
+    "promoLabel": "Promo code",
+    "promoPlaceholder": "Promo code",
+    "apply": "Apply",
+    "applied": "Code {{code}} applied.",
+    "total": "Total",
+    "checkout": "Proceed to checkout",
+    "checkoutShort": "Checkout",
+    "secure": "Secure checkout",
+    "giftNeedsEmail": "Add the recipient's email to send this gift.",
+    "perks": {
+      "instant": "Instant download after payment",
+      "library": "Every PDF is re-downloadable from your Library",
+      "updates": "Free file updates when publishers fix errata"
+    },
+    "payments": "VISA · MASTERCARD · AMEX · PAYPAL · APPLE PAY"
+  },
+  "line": {
+    "instant": "Instant download",
+    "ships": "Ships to you",
+    "owned": "You already own this title",
+    "discount": "Discount",
+    "was": "Was",
+    "quantity": "Quantity of {{title}}",
+    "decrease": "One fewer {{title}}",
+    "increase": "One more {{title}}",
+    "remove": "Remove",
+    "removeLabel": "Remove {{title}}",
+    "removed": "{{title}} was removed from your cart.",
+    "undo": "Undo"
+  },
+  "gift": {
+    "title": "This order is a gift",
+    "text": "Digital titles go to the recipient’s library. Print items still ship to you.",
+    "name": "Recipient name",
+    "email": "Recipient email",
+    "message": "Message",
+    "optional": "(optional)",
+    "namePlaceholder": "Jon Snow",
+    "emailPlaceholder": "jon@snow.com",
+    "messagePlaceholder": "Happy birthday! Time to start a campaign.",
+    "note": "We email them a link to claim it. Nothing is added to your library."
+  },
+  "alsoBought": "Customers also bought",
+  "add": "Add"
 }
