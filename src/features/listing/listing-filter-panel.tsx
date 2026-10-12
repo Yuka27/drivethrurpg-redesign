@@ -28,7 +28,8 @@ const SEARCH_BOX = {
 
 /**
  * The listing's filters, for the desktop sidebar and the mobile sheet alike:
- * Promotions, Rule System, Product Type, Price, Format, Publisher, Language.
+ * Promotions, Genre (when the API has genres), Rule System, Product Type,
+ * Price, Format, Publisher, Language.
  */
 export function ListingFilterPanel({
   search,
@@ -98,6 +99,7 @@ export function ListingFilterPanel({
         />
       </FilterGroup>
 
+      {facetGroup('genre')}
       {facetGroup('system')}
       {facetGroup('type')}
 

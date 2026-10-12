@@ -242,7 +242,7 @@ describe('FollowingPage', () => {
     )
     expect(
       await screen.findByRole('menuitem', { name: 'View publisher' }),
-    ).toHaveAttribute('href', '/publishers/pub_cubicle7')
+    ).toHaveAttribute('href', '/titles?publisher=pub_cubicle7')
   })
 
   it('shows initials when a logo is missing or fails to load', async () => {

@@ -49,7 +49,7 @@ export function DetailsSection({ title }: { title: TitleDetail }) {
     <section
       id="details"
       aria-labelledby="details-heading"
-      className="flex scroll-mt-20 flex-col gap-2"
+      className="flex scroll-mt-[calc(var(--header-h,0px)+var(--stick-h,0px)+12px)] flex-col gap-2"
     >
       <h2
         id="details-heading"

@@ -13,7 +13,13 @@ export const LISTING_SORTS = [
 export type ListingSort = (typeof LISTING_SORTS)[number]
 
 /** The multi-select facets the API counts, in the sidebar's order. */
-export const LISTING_FACETS = ['system', 'type', 'format', 'publisher'] as const
+export const LISTING_FACETS = [
+  'genre',
+  'system',
+  'type',
+  'format',
+  'publisher',
+] as const
 export type ListingFacet = (typeof LISTING_FACETS)[number]
 
 /** Figma "Price": bands, as the highest price (in whole currency units). */
@@ -22,6 +28,7 @@ export const PRICE_BANDS = [0, 5, 10, 20, 50] as const
 /** What the listing opens on. Figma: "Sort: Best Match", cards. Defaults stay out of the URL. */
 export const LISTING_SEARCH_DEFAULTS = {
   onSale: false,
+  genre: '',
   system: '',
   type: '',
   format: '',
@@ -34,12 +41,13 @@ export const LISTING_SEARCH_DEFAULTS = {
 }
 
 /**
- * /titles?system=osr,d20_5e&priceMax=10&onSale=true&sort=newest&view=list&page=2.
+ * /titles?genre=horror&system=osr,d20_5e&priceMax=10&onSale=true&sort=newest&view=list&page=2.
  * Filters, sort, view and page live in the URL (Back, reload and shared links
  * keep them); anything invalid falls back to its default.
  */
 export const ListingSearchSchema = z.object({
   onSale: z.boolean().default(false).catch(false),
+  genre: listParam.default(''),
   system: listParam.default(''),
   type: listParam.default(''),
   format: listParam.default(''),
@@ -60,6 +68,7 @@ export function toTitleFilters(
 ): TitleFilters {
   return {
     onSale: search.onSale,
+    genre: except === 'genre' ? undefined : search.genre,
     system: except === 'system' ? undefined : search.system,
     type: except === 'type' ? undefined : search.type,
     format: except === 'format' ? undefined : search.format,
@@ -80,6 +89,7 @@ export const toTitleSort = (sort: ListingSort): TitleSort | undefined =>
 /** Everything that narrows the list, cleared; sort and view stay. */
 export const CLEARED_FILTERS = {
   onSale: false,
+  genre: '',
   system: '',
   type: '',
   format: '',

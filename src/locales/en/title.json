@@ -56,6 +56,16 @@
   },
   "alsoBought": "Customers also bought",
   "moreRecommendations": "See more recommendations",
+  "stickyNav": {
+    "breadcrumb": "Breadcrumb",
+    "sections": "Product sections",
+    "more": "More",
+    "reviews": "Reviews & Discussions",
+    "addToCart": "Add to Cart",
+    "adding": "Adding to cart…",
+    "added": "Added ✓",
+    "listPrice": "List price"
+  },
   "tabs": {
     "label": "Sections",
     "overview": "Overview",

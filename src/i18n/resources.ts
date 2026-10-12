@@ -6,6 +6,7 @@ import cart from '@/locales/en/cart.json'
 import checkout from '@/locales/en/checkout.json'
 import common from '@/locales/en/common.json'
 import library from '@/locales/en/library.json'
+import home from '@/locales/en/home.json'
 import listing from '@/locales/en/listing.json'
 import title from '@/locales/en/title.json'
 
@@ -18,6 +19,7 @@ export const NAMESPACES = [
   'account',
   'auth',
   'library',
+  'home',
 ] as const
 export type Namespace = (typeof NAMESPACES)[number]
 
@@ -30,4 +32,5 @@ export const enResources = {
   account,
   auth,
   library,
+  home,
 } satisfies Record<Namespace, unknown>

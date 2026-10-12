@@ -50,7 +50,7 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
     <section
       id="reviews"
       aria-labelledby="reviews-heading"
-      className="flex scroll-mt-20 flex-col gap-4"
+      className="flex scroll-mt-[calc(var(--header-h,0px)+var(--stick-h,0px)+12px)] flex-col gap-4"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2

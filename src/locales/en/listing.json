@@ -6,6 +6,7 @@
   },
   "groups": {
     "promotions": "Promotions",
+    "genre": "Genre",
     "system": "Rule System",
     "type": "Product Type",
     "price": "Price",
@@ -69,7 +70,8 @@
     "added": "{{title}} is in your cart.",
     "viewCart": "View cart",
     "was": "was",
-    "tags": "Tags"
+    "tags": "Tags",
+    "discount": "Discount"
   },
   "facets": {
     "type": {
@@ -96,5 +98,6 @@
       "print_pdf": "Print + PDF",
       "vtt": "VTT"
     }
-  }
+  },
+  "recentlyViewed": "Recently Viewed"
 }

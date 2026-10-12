@@ -6,6 +6,7 @@ import {
   ShoppingCartIcon,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { useRef } from 'react'
 import type { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -17,6 +18,7 @@ import { Logo } from './logo'
 import { MobileMenu } from './mobile-menu'
 import { CurrencySelect, LanguageSelect } from './preference-selects'
 import { SearchBar } from './search-bar'
+import { SiteNav } from './site-nav'
 import { ThemeToggle } from './theme-toggle'
 import { useMe } from '@/api/me'
 import type { Me } from '@/api/me'
@@ -24,6 +26,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useLastLibrarySearch } from '@/features/library/library-search'
 import { useFormatNumber } from '@/i18n/format'
+import { useHeightVar } from '@/lib/use-height-var'
 import { cn } from '@/lib/utils'
 
 type SiteHeaderProps = {
@@ -33,9 +36,12 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
   const { data: me, isPending } = useMe()
+  const headerRef = useRef<HTMLElement>(null)
+  // sticky parts below it (the product page's menu) stick under this height
+  useHeightVar(headerRef, '--header-h')
 
   return (
-    <header className="sticky top-0 z-40 bg-background">
+    <header ref={headerRef} className="sticky top-0 z-40 bg-background">
       <div className="container">
         {variant === 'focus' ? (
           <div className="flex h-12 items-center border-b">
@@ -56,6 +62,7 @@ export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
             )}
           </div>
         )}
+        {variant === 'full' && <SiteNav />}
       </div>
     </header>
   )

@@ -175,10 +175,7 @@ export function LibraryCard({
               </DropdownMenuItem>
               {item.publisher && (
                 <DropdownMenuItem asChild>
-                  <Link
-                    to="/publishers/$publisherId"
-                    params={{ publisherId: item.publisher.id }}
-                  >
+                  <Link to="/titles" search={{ publisher: item.publisher.id }}>
                     {t('card.viewPublisher')}
                   </Link>
                 </DropdownMenuItem>

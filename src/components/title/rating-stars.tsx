@@ -4,6 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
+/** Figma's verdict next to the stars ("Very Positive"), from the average rating: a title:rating.verdict key. */
+export function ratingVerdict(average: number) {
+  if (average >= 4.5) return 'veryPositive'
+  if (average >= 4) return 'positive'
+  if (average >= 3) return 'mixed'
+  return 'negative'
+}
+
 /** Five 12px stars, `value` of them filled yellow, read out as `label`. */
 export function Stars({
   value,

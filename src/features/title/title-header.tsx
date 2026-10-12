@@ -1,21 +1,14 @@
 import { BotIcon, CheckIcon } from 'lucide-react'
+import type { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { assetUrl } from '@/api/client'
 import type { TitleDetail } from '@/api/titles'
 import { ContentLanguageBadge } from '@/components/title/content-language-note'
-import { Stars } from '@/components/title/rating-stars'
+import { ratingVerdict, Stars } from '@/components/title/rating-stars'
 import { useFacetLabel } from '@/components/title/use-facet-label'
 import { useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
-
-/** Figma's verdict next to the stars, from the average rating. */
-function verdict(average: number) {
-  if (average >= 4.5) return 'veryPositive'
-  if (average >= 4) return 'positive'
-  if (average >= 3) return 'mixed'
-  return 'negative'
-}
 
 const tagClass =
   'inline-flex h-[22px] items-center gap-1 rounded-sm px-2 text-xs font-medium'
@@ -24,7 +17,14 @@ const tagClass =
  * Cover, title, who made it, rating, tags and the first lines of the
  * description. Figma: side by side on desktop, centred under the cover on phones.
  */
-export function TitleHeader({ title }: { title: TitleDetail }) {
+export function TitleHeader({
+  title,
+  headingRef,
+}: {
+  title: TitleDetail
+  /** the sticky bar shows once this <h1> has scrolled away */
+  headingRef?: RefObject<HTMLHeadingElement | null>
+}) {
   const { t } = useTranslation('title')
   const facetLabel = useFacetLabel()
   const formatNumber = useFormatNumber()
@@ -45,7 +45,10 @@ export function TitleHeader({ title }: { title: TitleDetail }) {
       </div>
       <div className="flex min-w-0 flex-col items-center gap-2 py-2 lg:items-start lg:px-3">
         <div>
-          <h1 className="font-sans text-2xl leading-8 font-bold tracking-normal">
+          <h1
+            ref={headingRef}
+            className="font-sans text-2xl leading-8 font-bold tracking-normal"
+          >
             {title.title}
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -65,7 +68,7 @@ export function TitleHeader({ title }: { title: TitleDetail }) {
               })}
             />
             <span className="font-semibold text-success">
-              {t(`rating.verdict.${verdict(title.rating.average)}`)}
+              {t(`rating.verdict.${ratingVerdict(title.rating.average)}`)}
             </span>
             {t('rating.count', {
               count: title.rating.count,

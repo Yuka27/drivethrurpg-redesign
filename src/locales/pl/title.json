@@ -60,6 +60,16 @@
   },
   "alsoBought": "Klienci kupili też",
   "moreRecommendations": "Więcej poleceń",
+  "stickyNav": {
+    "breadcrumb": "Ścieżka nawigacji",
+    "sections": "Sekcje produktu",
+    "more": "Więcej",
+    "reviews": "Opinie i dyskusje",
+    "addToCart": "Do koszyka",
+    "adding": "Dodawanie do koszyka…",
+    "added": "Dodano ✓",
+    "listPrice": "Cena regularna"
+  },
   "tabs": {
     "label": "Sekcje",
     "overview": "Opis",

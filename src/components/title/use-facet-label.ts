@@ -6,6 +6,6 @@ import { useTranslation } from 'react-i18next'
  */
 export function useFacetLabel() {
   const { t } = useTranslation('listing')
-  return (facet: 'type' | 'system' | 'format', value: string) =>
+  return (facet: 'genre' | 'type' | 'system' | 'format', value: string) =>
     t(`facets.${facet}.${value}`, { defaultValue: value.replaceAll('_', ' ') })
 }

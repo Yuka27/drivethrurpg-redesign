@@ -1,11 +1,10 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { GiftIcon, LibraryBigIcon } from 'lucide-react'
 import { RadioGroup as RadioGroupPrimitive } from 'radix-ui'
 import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 
-import { useAddEditionToCart } from '@/api/titles'
+import { chosenEdition, useAddToCart } from './use-buy'
 import type { Edition, TitleDetail } from '@/api/titles'
 import { WishlistButton } from '@/components/title/title-actions'
 import { useFacetLabel } from '@/components/title/use-facet-label'
@@ -17,34 +16,32 @@ import {
   useLanguageName,
   useRegionName,
 } from '@/i18n/format'
-import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
 
 /**
  * Figma "Buy card": the editions to choose from (PDF, print, bundle), a few
- * facts, then "Add to Cart - $19.99", the heart and "Buy as a gift".
+ * facts, then "Add to Cart - $19.99", the heart and "Buy as a gift". The
+ * chosen edition is the page's (`sku`), shared with the sticky bar.
  */
-export function BuyCard({ title }: { title: TitleDetail }) {
+export function BuyCard({
+  title,
+  sku,
+  onSkuChange,
+}: {
+  title: TitleDetail
+  sku: string | undefined
+  onSkuChange: (sku: string) => void
+}) {
   const { t } = useTranslation('title')
-  const apiError = useApiError()
-  const navigate = useNavigate()
   const formatMoney = useFormatMoney()
   const formatNumber = useFormatNumber()
   const facetLabel = useFacetLabel()
   const languageName = useLanguageName()
   const regionName = useRegionName()
   const giftId = useId()
-  const add = useAddEditionToCart()
-
-  const buyable = title.editions.filter(
-    (edition) => edition.stock !== 'out_of_stock',
-  )
-  const [sku, setSku] = useState(buyable[0]?.sku ?? title.editions[0]?.sku)
+  const add = useAddToCart(title)
   const [gift, setGift] = useState(false)
-  const edition = title.editions.find((item) => item.sku === sku)
-  // a digital edition of a title the user owns is already in their library
-  const owned =
-    title.owned && edition !== undefined && edition.shipsFrom === null
+  const { edition, owned } = chosenEdition(title, sku)
 
   const subtitle = (item: Edition) =>
     item.stock === 'out_of_stock'
@@ -64,23 +61,7 @@ export function BuyCard({ title }: { title: TitleDetail }) {
   ].filter((fact): fact is [string, string] => Boolean(fact))
 
   const addToCart = () => {
-    if (!edition) return
-    add.mutate(
-      { sku: edition.sku, gift },
-      {
-        onSuccess: () =>
-          toast.success(
-            t(gift ? 'buy.addedGift' : 'buy.added', { title: title.title }),
-            {
-              action: {
-                label: t('buy.viewCart'),
-                onClick: () => void navigate({ to: '/cart' }),
-              },
-            },
-          ),
-        onError: (error) => toast.error(apiError(error)),
-      },
-    )
+    if (edition) add.addToCart(edition, { gift })
   }
 
   return (
@@ -92,7 +73,7 @@ export function BuyCard({ title }: { title: TitleDetail }) {
         <RadioGroupPrimitive.Root
           aria-label={t('buy.editions')}
           value={sku}
-          onValueChange={setSku}
+          onValueChange={onSkuChange}
           className="flex flex-col gap-1"
         >
           {title.editions.map((item) => (

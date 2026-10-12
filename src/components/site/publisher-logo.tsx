@@ -31,7 +31,12 @@ export function PublisherLogo({
     return (
       <span
         aria-hidden
-        className={cn(tile, 'grid place-items-center text-xs font-semibold')}
+        // the caller's classes last: a bigger tile can ask for bigger initials
+        className={cn(
+          'size-10 shrink-0 rounded-xl border border-muted bg-card',
+          'grid place-items-center text-xs font-semibold',
+          className,
+        )}
       >
         {initials}
       </span>

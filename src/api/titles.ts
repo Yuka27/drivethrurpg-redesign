@@ -51,6 +51,7 @@ type TitleList = z.infer<typeof TitleListSchema>
  */
 export type TitleFilters = {
   q?: string
+  genre?: string
   format?: string
   type?: string
   system?: string
@@ -95,6 +96,8 @@ const FacetValueSchema = z.object({
   count: z.number().int(),
 })
 const FacetsSchema = z.object({
+  /** empty (and hidden everywhere) until the API has genre data */
+  genres: z.array(FacetValueSchema).catch([]),
   formats: z.array(FacetValueSchema).catch([]),
   types: z.array(FacetValueSchema).catch([]),
   ruleSystems: z.array(FacetValueSchema).catch([]),
@@ -135,20 +138,39 @@ const BannerSchema = z.object({
 })
 export type Banner = z.infer<typeof BannerSchema>
 
-/** GET /home, for its promotional banners (the listing shows the first). */
-export function useHomeBanners() {
+const HomeSectionSchema = z.object({
+  /** "bestselling", "new", "sale", "free" */
+  id: z.string(),
+  title: z.string(),
+  titles: z.array(TitleCardSchema).catch([]),
+})
+export type HomeSection = z.infer<typeof HomeSectionSchema>
+
+/** GET /home: one schema for its one cache entry, read through the selectors below. */
+const HomeSchema = z.object({
+  hero: z.array(BannerSchema).catch([]),
+  sections: z.array(HomeSectionSchema).catch([]),
+})
+
+function useHome<T>(select: (home: z.infer<typeof HomeSchema>) => T) {
   const prefs = useRequestPrefs()
   return useQuery({
     queryKey: queryKeys.home(prefs),
     queryFn: ({ signal }) =>
-      apiFetch('/home', {
-        schema: z.object({ hero: z.array(BannerSchema).catch([]) }).loose(),
-        prefs,
-        signal,
-      }),
-    select: (home) => home.hero,
+      apiFetch('/home', { schema: HomeSchema, prefs, signal }),
+    select,
   })
 }
+
+const banners = (home: z.infer<typeof HomeSchema>) => home.hero
+const sections = (home: z.infer<typeof HomeSchema>) =>
+  new Map(home.sections.map((section) => [section.id, section] as const))
+
+/** The promotional banners (the home page and the listing show the first). */
+export const useHomeBanners = () => useHome(banners)
+
+/** The home page's title lists, by id. */
+export const useHomeSections = () => useHome(sections)
 
 const EditionSchema = z.object({
   sku: z.string(),
@@ -316,7 +338,11 @@ export function useAddTitleToCart() {
         schema: z.unknown(),
       })
     },
-    onSettled: () => void queryClient.invalidateQueries({ queryKey: ['cart'] }),
+    // the header's cart badge counts from GET /me
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: ['cart'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.me.all })
+    },
   })
 }
 
@@ -338,7 +364,11 @@ export function useAddEditionToCart() {
           schema: z.unknown(),
         })
     },
-    onSettled: () => void queryClient.invalidateQueries({ queryKey: ['cart'] }),
+    // the header's cart badge counts from GET /me
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: ['cart'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.me.all })
+    },
   })
 }
 

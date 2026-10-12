@@ -21,7 +21,7 @@ export function OverviewSection({ title }: { title: TitleDetail }) {
     <section
       id="overview"
       aria-labelledby="overview-heading"
-      className="flex scroll-mt-20 flex-col gap-6"
+      className="flex scroll-mt-[calc(var(--header-h,0px)+var(--stick-h,0px)+12px)] flex-col gap-6"
     >
       <h2 id="overview-heading" className="sr-only">
         {t('tabs.overview')}

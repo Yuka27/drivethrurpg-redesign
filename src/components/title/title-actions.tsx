@@ -72,10 +72,13 @@ export function WishlistButton({
 export function CartButton({
   title,
   labelClassName,
+  text,
   className,
 }: {
   title: TitleCard
   labelClassName?: string
+  /** Replaces the "Add" label (and its icon), e.g. "Add to Cart - $2.47". */
+  text?: string
   className?: string
 }) {
   const { t } = useTranslation('listing')
@@ -126,9 +129,11 @@ export function CartButton({
       }
       className={cn('rounded-lg', className)}
     >
-      <ShoppingCartIcon aria-hidden />
+      {text === undefined && <ShoppingCartIcon aria-hidden />}
       {label && (
-        <span className={labelClassName}>{t('card.addToCartShort')}</span>
+        <span className={labelClassName}>
+          {text ?? t('card.addToCartShort')}
+        </span>
       )}
     </Button>
   )

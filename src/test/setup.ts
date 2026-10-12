@@ -18,6 +18,19 @@ globalThis.ResizeObserver = class {
   unobserve() {}
   disconnect() {}
 }
+// the product page's sticky bar; tests that need it stub their own
+globalThis.IntersectionObserver = class {
+  readonly root = null
+  readonly rootMargin = ''
+  readonly scrollMargin = ''
+  readonly thresholds = []
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+  takeRecords() {
+    return []
+  }
+}
 window.matchMedia = (query: string) =>
   ({
     matches: false,

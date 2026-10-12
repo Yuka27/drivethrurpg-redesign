@@ -26,8 +26,8 @@ export function PublisherCard({
 
   return (
     <Link
-      to="/publishers/$publisherId"
-      params={{ publisherId }}
+      to="/titles"
+      search={{ publisher: publisherId }}
       className="group flex items-center gap-2 rounded-xl bg-card px-4 py-1 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
       <PublisherLogo

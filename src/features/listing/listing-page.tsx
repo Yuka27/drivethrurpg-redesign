@@ -1,5 +1,4 @@
-import { Link } from '@tanstack/react-router'
-import { ArrowLeftIcon, LayoutGridIcon, ListIcon } from 'lucide-react'
+import { LayoutGridIcon, ListIcon } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -13,7 +12,7 @@ import {
   toTitleSort,
 } from './listing-search'
 import type { ListingFacet, ListingSearch, ListingSort } from './listing-search'
-import { PromoBanner } from './promo-banner'
+import { PromoBanner } from '@/components/site/promo-banner'
 import { useListingFacets } from './use-listing-facets'
 import { usePriceLabel } from './use-price-label'
 import { useTitles } from '@/api/titles'
@@ -23,6 +22,7 @@ import { FilterSheet } from '@/components/filters/filter-sheet'
 import { QuickFilters } from '@/components/filters/quick-filters'
 import { OptionSelect } from '@/components/site/option-select'
 import { Pagination } from '@/components/site/pagination'
+import { RecentlyViewed } from '@/components/title/recently-viewed'
 import { TitleCard } from '@/components/title/title-card'
 import { TitleRow } from '@/components/title/title-row'
 import { Button } from '@/components/ui/button'
@@ -162,14 +162,8 @@ export function ListingPage({
 
   return (
     <div className="container flex flex-col gap-6 pt-4 pb-8 lg:gap-8">
+      {/* desktop "Back to Home": in the header's nav row (SiteNav) */}
       <div className="flex flex-col gap-4">
-        <Link
-          to="/"
-          className="flex items-center gap-1 self-start text-xs text-muted-foreground hover:text-foreground max-lg:hidden"
-        >
-          <ArrowLeftIcon aria-hidden className="size-3" />
-          {t('backHome')}
-        </Link>
         <h1 className="sr-only">{t('heading')}</h1>
         <PromoBanner />
       </div>
@@ -320,6 +314,8 @@ export function ListingPage({
           />
         </div>
       </div>
+
+      <RecentlyViewed />
     </div>
   )
 }

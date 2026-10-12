@@ -6,6 +6,7 @@ import type { FacetOption } from '@/components/filters/facet-option'
 import { splitList } from '@/lib/search-params'
 
 const RESPONSE_KEY: Record<ListingFacet, keyof TitleFacets> = {
+  genre: 'genres',
   system: 'ruleSystems',
   type: 'types',
   format: 'formats',
@@ -24,6 +25,7 @@ export function useListingFacets(
 ) {
   const base = useTitleFacets(toTitleFilters(search))
   const without = {
+    genre: useTitleFacets(toTitleFilters(search, 'genre'), search.genre !== ''),
     system: useTitleFacets(
       toTitleFilters(search, 'system'),
       search.system !== '',

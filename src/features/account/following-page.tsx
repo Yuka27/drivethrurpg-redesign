@@ -243,10 +243,7 @@ function FollowedRow({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Link
-                to="/publishers/$publisherId"
-                params={{ publisherId: publisher.id }}
-              >
+              <Link to="/titles" search={{ publisher: publisher.id }}>
                 {t('following.viewPublisher')}
               </Link>
             </DropdownMenuItem>

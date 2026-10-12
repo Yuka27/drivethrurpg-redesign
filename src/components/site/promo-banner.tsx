@@ -6,7 +6,7 @@ import { useHomeBanners } from '@/api/titles'
 import { Button } from '@/components/ui/button'
 
 /**
- * Figma: the promotion above the listing. Its content is the API's (the first
+ * Figma: the promotion at the top of the home page and the listing. Its content is the API's (the first
  * GET /home banner), on its image with a dark gradient for the text: from the
  * left on desktop, from the bottom on phones. Nothing while it loads or fails.
  */

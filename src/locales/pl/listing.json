@@ -6,6 +6,7 @@
   },
   "groups": {
     "promotions": "Promocje",
+    "genre": "Gatunek",
     "system": "System",
     "type": "Rodzaj produktu",
     "price": "Cena",
@@ -73,7 +74,8 @@
     "added": "{{title}} jest w koszyku.",
     "viewCart": "Zobacz koszyk",
     "was": "wcześniej",
-    "tags": "Tagi"
+    "tags": "Tagi",
+    "discount": "Zniżka"
   },
   "facets": {
     "type": {
@@ -100,5 +102,6 @@
       "print_pdf": "Druk + PDF",
       "vtt": "VTT"
     }
-  }
+  },
+  "recentlyViewed": "Ostatnio oglądane"
 }
