@@ -1,17 +1,22 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon, TriangleAlertIcon } from 'lucide-react'
 import { useId, useState } from 'react'
-import type { ElementType } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import type { FieldPath } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { PasswordField } from './password-field'
-import { registerInputClass } from './styles'
+import {
+  bigButtonClass,
+  inputClass,
+  subtitleClass,
+  titleClass,
+} from '../shared/styles'
 import { CartContextNote } from '../shared/cart-context-note'
 import { FormAlert } from '../shared/form-alert'
 import { SocialButtons } from '../shared/social-buttons'
+import { DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { RegisterRequestSchema, useRegister, useSocialLogin } from '@/api/auth'
 import type { RegisterRequest, SocialProvider } from '@/api/auth'
 import { ApiError } from '@/api/client'
@@ -48,9 +53,6 @@ export type RegisterFormProps = {
   onSuccess: (user: Me, details: { email: string }) => void
   /** social sign-in finished (the account may already have existed) */
   onSocialSuccess?: (user: Me) => void
-  /** the modal passes DialogTitle/DialogDescription */
-  Title?: ElementType
-  Description?: ElementType
   /** "Log in" / "Log in instead" switch the modal to the login view (with the typed email) */
   onSwitchToLogin: (email?: string) => void
   /** "reset your password" switches the modal to the forgot-password view */
@@ -60,8 +62,6 @@ export type RegisterFormProps = {
 export function RegisterForm({
   onSuccess,
   onSocialSuccess,
-  Title = 'h1',
-  Description = 'p',
   onSwitchToLogin,
   onForgotPassword,
 }: RegisterFormProps) {
@@ -148,12 +148,12 @@ export function RegisterForm({
     <Form {...form}>
       <form noValidate aria-labelledby={titleId} onSubmit={submit}>
         {/* the id sits on an inner span: DialogTitle keeps its own id, which names the dialog */}
-        <Title className="text-[1.4rem] leading-tight font-extrabold min-[1000px]:text-[1.6rem]">
+        <DialogTitle className={titleClass}>
           <span id={titleId}>{t('register.title')}</span>
-        </Title>
-        <Description className="mt-1.5 text-[0.9rem] text-muted-foreground">
+        </DialogTitle>
+        <DialogDescription className={subtitleClass}>
           {t('register.subtitle')}
-        </Description>
+        </DialogDescription>
         <CartContextNote context="register" className="mt-4" />
 
         <div className="mt-5">
@@ -230,7 +230,7 @@ export function RegisterForm({
                       inputMode="email"
                       autoComplete="email"
                       placeholder={t('register.emailPlaceholder')}
-                      className={registerInputClass}
+                      className={inputClass}
                       {...field}
                     />
                   </FormControl>
@@ -290,7 +290,7 @@ export function RegisterForm({
           type="submit"
           aria-disabled={pending || secondsLeft > 0 || undefined}
           disabled={pending || secondsLeft > 0}
-          className="h-[50px] w-full rounded-[10px] text-[0.98rem] font-bold disabled:opacity-85"
+          className={cn(bigButtonClass, 'disabled:opacity-85')}
         >
           {pending && (
             <Loader2Icon

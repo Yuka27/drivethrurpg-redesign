@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import { registerInputClass } from './styles'
+import { inputClass } from '../shared/styles'
 
 const BAR_COLOR: Record<PasswordStrength, string> = {
   0: '',
@@ -70,7 +70,7 @@ export function PasswordField({ field, email, label }: PasswordFieldProps) {
             type={shown ? 'text' : 'password'}
             autoComplete="new-password"
             placeholder={t('register.passwordPlaceholder')}
-            className={cn(registerInputClass, 'pr-12')}
+            className={cn(inputClass, 'pr-12')}
             {...field}
           />
         </FormControl>

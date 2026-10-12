@@ -12,13 +12,7 @@ import { RegisterSuccess } from './register/register-success'
 import { useRegisterFlow } from './register/use-register-flow'
 import { AnimatedHeight } from '#/components/animations/animated-height'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent } from '@/components/ui/dialog'
 import { useReducedMotion } from '@/lib/use-reduced-motion'
 import { cn } from '@/lib/utils'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
@@ -156,8 +150,6 @@ export function AuthDialog() {
                 // remount when "Log in instead" brings a different email
                 key={email}
                 defaultEmail={email}
-                Title={DialogTitle}
-                Description={DialogDescription}
                 onSuccess={signedIn}
                 onSwitchToRegister={() => switchView('register')}
                 onForgotPassword={(prefill) =>
@@ -171,8 +163,6 @@ export function AuthDialog() {
                   <ForgotPassword
                     key={email}
                     defaultEmail={email}
-                    Title={DialogTitle}
-                    Description={DialogDescription}
                     onBackToLogin={(prefill) =>
                       switchView('login', { email: prefill })
                     }
@@ -182,8 +172,6 @@ export function AuthDialog() {
                     // a new link (another token) starts over
                     key={resetToken}
                     token={resetToken}
-                    Title={DialogTitle}
-                    Description={DialogDescription}
                     onLogin={() => switchView('login')}
                     onRequestNewLink={() => switchView('forgot')}
                   />
@@ -194,8 +182,6 @@ export function AuthDialog() {
               <div className="px-[18px] pt-[22px] pb-5 [--ring:var(--primary)] min-[1000px]:p-[30px]">
                 {registered ? (
                   <RegisterSuccess
-                    Title={DialogTitle}
-                    Description={DialogDescription}
                     email={registered.email}
                     mergedCartItems={mergedCartItems}
                     cartHasItems={registered.cartItems > 0}
@@ -204,8 +190,6 @@ export function AuthDialog() {
                 ) : (
                   <div className="grid items-start gap-[18px] min-[1000px]:grid-cols-[minmax(0,460px)_minmax(0,400px)] min-[1000px]:gap-12">
                     <RegisterForm
-                      Title={DialogTitle}
-                      Description={DialogDescription}
                       onSuccess={(_user, details) =>
                         onRegistered(details.email)
                       }

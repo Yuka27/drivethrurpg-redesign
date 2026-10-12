@@ -27,8 +27,13 @@ export const queryKeys = {
     locales: (prefs: Preferences) => ['meta', 'locales', prefs] as const,
   },
   account: {
+    all: ['account'] as const,
     preferences: (prefs: Preferences) =>
       ['account', 'preferences', prefs] as const,
+    connected: (prefs: Preferences) => ['account', 'connected', prefs] as const,
+    addresses: (prefs: Preferences) => ['account', 'addresses', prefs] as const,
+    paymentMethods: (prefs: Preferences) =>
+      ['account', 'payment-methods', prefs] as const,
   },
   home: (prefs: Preferences) => ['home', prefs] as const,
   titles: {
@@ -37,6 +42,9 @@ export const queryKeys = {
       ['titles', 'list', filters, prefs] as const,
     detail: (id: string, prefs: Preferences) =>
       ['titles', 'detail', id, prefs] as const,
+    /** name and publisher only (order lines); its own key so it never replaces a full detail */
+    summary: (id: string, prefs: Preferences) =>
+      ['titles', 'summary', id, prefs] as const,
     facets: (filters: Record<string, unknown>, prefs: Preferences) =>
       ['titles', 'facets', filters, prefs] as const,
   },
@@ -49,6 +57,17 @@ export const queryKeys = {
   publishers: {
     detail: (id: string, prefs: Preferences) =>
       ['publishers', 'detail', id, prefs] as const,
+  },
+  orders: {
+    all: ['orders'] as const,
+    list: (prefs: Preferences) => ['orders', 'list', prefs] as const,
+    detail: (id: string, prefs: Preferences) =>
+      ['orders', 'detail', id, prefs] as const,
+  },
+  following: {
+    all: ['following'] as const,
+    list: (prefs: Preferences) => ['following', 'list', prefs] as const,
+    feed: (prefs: Preferences) => ['following', 'feed', prefs] as const,
   },
   cart: (prefs: Preferences) => ['cart', prefs] as const,
   wishlist: (prefs: Preferences) => ['wishlist', prefs] as const,

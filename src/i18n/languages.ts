@@ -1,9 +1,6 @@
 /** Languages the API lists (GET /meta/locales). Only some have UI translation files. */
 export const SUPPORTED_LANGUAGES = ['en', 'pl', 'it', 'de', 'ja'] as const
 
-/** Languages with files in src/locales; the rest fall back to English UI text. */
-export const TRANSLATED_LANGUAGES = ['en', 'pl'] as const
-
 export const DEFAULT_LANGUAGE = 'en'
 
 /** Dev-only pseudo-locale (?lng=en-XA): accented, 30% longer, wrapped in [ ]. */

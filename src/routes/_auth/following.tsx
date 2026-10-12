@@ -1,9 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_auth/following')({
-  component: RouteComponent,
-})
+import { AccountShell } from '@/features/account/account-shell'
+import { FollowingPage } from '@/features/account/following-page'
 
-function RouteComponent() {
-  return <div>Hello "/following"!</div>
-}
+export const Route = createFileRoute('/_auth/following')({
+  component: () => (
+    <AccountShell>
+      <FollowingPage />
+    </AccountShell>
+  ),
+})

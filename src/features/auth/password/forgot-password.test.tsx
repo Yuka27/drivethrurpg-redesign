@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { ForgotPassword } from './forgot-password'
 import { apiError, mockApi } from '@/test/api'
-import { renderWithProviders } from '@/test/render'
+import { renderInDialog } from '@/test/render'
 
 // the modal's view switch; tests that check it pass their own
 const modal = () => ({ onBackToLogin: vi.fn() })
@@ -15,7 +15,7 @@ const submit = () => screen.getByRole('button', { name: 'Send reset link' })
 describe('ForgotPassword', () => {
   it('checks the email in the browser first', async () => {
     const { bodies } = mockApi()
-    const { user } = await renderWithProviders(<ForgotPassword {...modal()} />)
+    const { user } = await renderInDialog(<ForgotPassword {...modal()} />)
 
     await user.type(email(), 'arya@example')
     await user.click(submit())
@@ -33,7 +33,7 @@ describe('ForgotPassword', () => {
     const { bodies } = mockApi({
       'POST /auth/forgot-password': { status: 202, body: {} },
     })
-    const { user } = await renderWithProviders(<ForgotPassword {...modal()} />)
+    const { user } = await renderInDialog(<ForgotPassword {...modal()} />)
 
     await user.type(email(), 'arya@example.com')
     await user.click(submit())
@@ -57,12 +57,9 @@ describe('ForgotPassword', () => {
     const { bodies } = mockApi({
       'POST /auth/forgot-password': { status: 202, body: {} },
     })
-    const { user } = await renderWithProviders(
-      <ForgotPassword {...modal()} />,
-      {
-        user: userEvent.setup({ advanceTimers: vi.advanceTimersByTime }),
-      },
-    )
+    const { user } = await renderInDialog(<ForgotPassword {...modal()} />, {
+      user: userEvent.setup({ advanceTimers: vi.advanceTimersByTime }),
+    })
 
     await user.type(email(), 'arya@example.com')
     await user.click(submit())
@@ -81,7 +78,7 @@ describe('ForgotPassword', () => {
 
   it('"Use a different email" goes back to the form with the email kept', async () => {
     mockApi({ 'POST /auth/forgot-password': { status: 202, body: {} } })
-    const { user } = await renderWithProviders(<ForgotPassword {...modal()} />)
+    const { user } = await renderInDialog(<ForgotPassword {...modal()} />)
 
     await user.type(email(), 'arya@example.com')
     await user.click(submit())
@@ -103,12 +100,9 @@ describe('ForgotPassword', () => {
         retryAfter: 5,
       }),
     })
-    const { user } = await renderWithProviders(
-      <ForgotPassword {...modal()} />,
-      {
-        user: userEvent.setup({ advanceTimers: vi.advanceTimersByTime }),
-      },
-    )
+    const { user } = await renderInDialog(<ForgotPassword {...modal()} />, {
+      user: userEvent.setup({ advanceTimers: vi.advanceTimersByTime }),
+    })
 
     await user.type(email(), 'arya@example.com')
     await user.click(submit())
@@ -127,7 +121,7 @@ describe('ForgotPassword', () => {
 
   it('shows other API errors under the form', async () => {
     mockApi({ 'POST /auth/forgot-password': apiError(503, 'unavailable') })
-    const { user } = await renderWithProviders(<ForgotPassword {...modal()} />)
+    const { user } = await renderInDialog(<ForgotPassword {...modal()} />)
 
     await user.type(email(), 'arya@example.com')
     await user.click(submit())
@@ -142,7 +136,7 @@ describe('ForgotPassword', () => {
   it('goes back to log in with the email typed so far', async () => {
     mockApi()
     const onBackToLogin = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <ForgotPassword
         {...modal()}
         defaultEmail="from@login.com"

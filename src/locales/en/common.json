@@ -144,5 +144,11 @@
     "passwordRequired": "Enter your password.",
     "emailInvalidExample": "Enter a valid email address, for example name@example.com.",
     "passwordMinLength": "Use at least 10 characters."
+  },
+  "pagination": {
+    "label": "Pagination",
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page {{page}}"
   }
 }

@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 import { RegisterForm } from './register-form'
 import { getAuthToken } from '@/lib/auth-token'
 import { apiError, mockApi, session, user as me } from '@/test/api'
-import { renderWithProviders } from '@/test/render'
+import { renderInDialog } from '@/test/render'
 
 // the modal's view switches; tests that check them pass their own
 const modal = () => ({ onSwitchToLogin: vi.fn(), onForgotPassword: vi.fn() })
@@ -26,7 +26,7 @@ async function fillIn(
 describe('RegisterForm', () => {
   it('lists what to fix, and each item focuses its field', async () => {
     mockApi()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <RegisterForm {...modal()} onSuccess={vi.fn()} />,
     )
 
@@ -56,7 +56,7 @@ describe('RegisterForm', () => {
       'POST /auth/register': { status: 201, body: session },
     })
     const onSuccess = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <RegisterForm {...modal()} onSuccess={onSuccess} />,
     )
 
@@ -91,7 +91,7 @@ describe('RegisterForm', () => {
           finish = () => resolve({ status: 201, body: session })
         }),
     })
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <RegisterForm {...modal()} onSuccess={vi.fn()} />,
     )
 
@@ -112,7 +112,7 @@ describe('RegisterForm', () => {
     it('email_taken offers "Log in instead" with the typed email', async () => {
       mockApi({ 'POST /auth/register': apiError(409, 'email_taken') })
       const onSwitchToLogin = vi.fn()
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <RegisterForm
           {...modal()}
           onSuccess={vi.fn()}
@@ -140,7 +140,7 @@ describe('RegisterForm', () => {
     it('email_taken "reset your password" switches view in the modal', async () => {
       mockApi({ 'POST /auth/register': apiError(409, 'email_taken') })
       const onForgotPassword = vi.fn()
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <RegisterForm
           {...modal()}
           onSuccess={vi.fn()}
@@ -161,7 +161,7 @@ describe('RegisterForm', () => {
 
     it('weak_password goes on the password field', async () => {
       mockApi({ 'POST /auth/register': apiError(422, 'weak_password') })
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
@@ -180,7 +180,7 @@ describe('RegisterForm', () => {
 
     it('other 4xx errors are shown form-wide', async () => {
       mockApi({ 'POST /auth/register': apiError(403, 'account_locked') })
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
@@ -203,7 +203,7 @@ describe('RegisterForm', () => {
             : { status: 201, body: session },
       })
       const onSuccess = vi.fn()
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <RegisterForm {...modal()} onSuccess={onSuccess} />,
       )
 
@@ -226,7 +226,7 @@ describe('RegisterForm', () => {
       mockApi({
         'POST /auth/register': () => Promise.reject(new TypeError('offline')),
       })
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
@@ -245,7 +245,7 @@ describe('RegisterForm', () => {
           retryAfter: 3,
         }),
       })
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <RegisterForm {...modal()} onSuccess={vi.fn()} />,
         { user: userEvent.setup({ advanceTimers: vi.advanceTimersByTime }) },
       )
@@ -275,7 +275,7 @@ describe('RegisterForm', () => {
   describe('password field', () => {
     it('rates the password and ticks the requirements as the user types', async () => {
       mockApi()
-      const { user, container } = await renderWithProviders(
+      const { user, container } = await renderInDialog(
         <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
       const strength = container.querySelector(
@@ -300,7 +300,7 @@ describe('RegisterForm', () => {
 
     it('flags a password that matches the email', async () => {
       mockApi()
-      const { user, container } = await renderWithProviders(
+      const { user, container } = await renderInDialog(
         <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
@@ -317,7 +317,7 @@ describe('RegisterForm', () => {
 
     it('shows and hides the password', async () => {
       mockApi()
-      const { user } = await renderWithProviders(
+      const { user } = await renderInDialog(
         <RegisterForm {...modal()} onSuccess={vi.fn()} />,
       )
 
@@ -334,7 +334,7 @@ describe('RegisterForm', () => {
       'POST /auth/social/roll20': { body: { ...session, isNew: true } },
     })
     const onSocialSuccess = vi.fn()
-    const { user } = await renderWithProviders(
+    const { user } = await renderInDialog(
       <RegisterForm
         {...modal()}
         onSuccess={vi.fn()}
