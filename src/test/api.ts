@@ -11,7 +11,7 @@ export type Handler =
       params: URLSearchParams
     }) => Reply | Promise<Reply>)
 /** `"POST /auth/login"` → its handler */
-type Handlers = Partial<Record<string, Handler>>
+export type Handlers = Partial<Record<string, Handler>>
 type FetchArgs = Parameters<typeof fetch>
 
 /** "POST /auth/login" for a call to {API}/api/v1/auth/login */

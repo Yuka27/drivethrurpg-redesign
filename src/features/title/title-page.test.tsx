@@ -297,3 +297,30 @@ describe('TitlePage', () => {
     ).toHaveAttribute('href', '/titles')
   })
 })
+
+describe('TitlePage while loading', () => {
+  const never = () => new Promise<never>(() => {})
+
+  it('outlines the page until the title arrives', async () => {
+    mockTitle({ 'GET /titles/ttl_vaesen': never })
+    await renderWithProviders(<TitlePage titleId="ttl_vaesen" />)
+
+    expect(await screen.findByText('Loading…')).toHaveAttribute(
+      'role',
+      'status',
+    )
+    expect(screen.queryByRole('heading', { level: 1 })).toBeNull()
+  })
+
+  it('names the reviews without a count until they arrive', async () => {
+    mockTitle({
+      'GET /titles/ttl_vaesen/reviews': never,
+      'GET /titles/ttl_vaesen/discussions': never,
+    })
+    await renderTitle()
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Reviews & Discussions' }),
+    ).toBeVisible()
+  })
+})

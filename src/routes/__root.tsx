@@ -1,5 +1,10 @@
-import { Link, Outlet, createRootRoute } from '@tanstack/react-router'
-import type { ErrorComponentProps } from '@tanstack/react-router'
+import {
+  Link,
+  Outlet,
+  createRootRoute,
+  useRouter,
+} from '@tanstack/react-router'
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuthSync } from '@/api/auth'
@@ -109,28 +114,47 @@ function NotFound() {
   )
 }
 
-/** Anything a page threw: the mockup's "couldn't load", with a retry. */
-function RootError({ reset }: ErrorComponentProps) {
+/**
+ * Anything a page threw: the mockup's "couldn't load", with a retry. It takes
+ * the root component's place, so it brings the app-wide pieces itself.
+ */
+function RootError() {
   const { t } = useTranslation()
+  const router = useRouter()
   return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader />
-      <main className="container flex-1 py-12">
-        <ErrorState title={t('pages.error.title')} onRetry={reset} />
-      </main>
-      <SiteFooter />
-    </div>
+    <AppChrome>
+      <div className="flex min-h-screen flex-col">
+        <SiteHeader />
+        <main className="container flex-1 py-12">
+          {/* runs the routes' checks again (reset() alone keeps a failed one) */}
+          <ErrorState
+            title={t('pages.error.title')}
+            onRetry={() => void router.invalidate()}
+          />
+        </main>
+        <SiteFooter />
+      </div>
+    </AppChrome>
   )
 }
 
 function RootComponent() {
-  const { t } = useTranslation()
   usePreferencesSync()
   useAuthSync()
 
   return (
-    <TooltipProvider delayDuration={300}>
+    <AppChrome>
       <Outlet />
+    </AppChrome>
+  )
+}
+
+/** What every screen needs around it: tooltips, the auth modal, toasts. */
+function AppChrome({ children }: { children: ReactNode }) {
+  const { t } = useTranslation()
+  return (
+    <TooltipProvider delayDuration={300}>
+      {children}
       <AuthDialog />
       <Toaster containerAriaLabel={t('toasts.region')} />
     </TooltipProvider>

@@ -4,7 +4,8 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 import { ListingPage } from './listing-page'
 import { LISTING_SEARCH_DEFAULTS } from './listing-search'
 import type { TitleSummary } from '@/api/titles'
-import { mockApi, user } from '@/test/api'
+import { useAuthDialogStore } from '@/stores/auth-dialog'
+import { apiError, mockApi, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
@@ -108,5 +109,72 @@ describe('ListingPage in search mode', () => {
     expect(
       screen.getByRole('link', { name: 'Browse all titles' }),
     ).toHaveAttribute('href', '/titles')
+  })
+})
+
+describe('matching publishers', () => {
+  const freeLeague = {
+    id: 'pub_free_league',
+    name: 'Free League Publishing',
+    logo: null,
+    titleCount: 42,
+    following: false,
+  }
+  const withPublisher = (
+    me: Handler,
+    overrides: Record<string, Handler> = {},
+  ) =>
+    mockResults(
+      { body: { items: [vaesen], total: 1, page: 1, pageSize: 20 } },
+      {
+        'GET /me': me,
+        'GET /search/suggest': {
+          body: {
+            titles: [],
+            queries: [],
+            publishers: [
+              { id: freeLeague.id, name: freeLeague.name, logo: null },
+            ],
+          },
+        },
+        'GET /publishers/pub_free_league': { body: freeLeague },
+        ...overrides,
+      },
+    )
+
+  it('shows the publisher with its count, and follows it in one tap', async () => {
+    const { bodies } = withPublisher(
+      { body: user },
+      { 'POST /publishers/pub_free_league/follow': { body: {} } },
+    )
+    const { user: u } = await renderResults('free league')
+
+    const follow = await screen.findByRole('button', {
+      name: 'Follow Free League Publishing',
+    })
+    expect(await screen.findByText(/42 titles/)).toBeVisible()
+    await u.click(follow)
+
+    await waitFor(() => expect(follow).toHaveAttribute('aria-pressed', 'true'))
+    expect(follow).toHaveTextContent('Following')
+    expect(bodies('POST /publishers/pub_free_league/follow')).toHaveLength(1)
+  })
+
+  it('asks a guest to log in first', async () => {
+    const { bodies } = withPublisher(apiError(401, 'unauthorized'))
+    const { user: u } = await renderResults('free league')
+
+    await u.click(
+      await screen.findByRole('button', {
+        name: 'Follow Free League Publishing',
+      }),
+    )
+
+    expect(useAuthDialogStore.getState()).toMatchObject({
+      open: true,
+      view: 'login',
+    })
+    expect(bodies('POST /publishers/pub_free_league/follow')).toHaveLength(0)
+    useAuthDialogStore.setState({ open: false })
   })
 })

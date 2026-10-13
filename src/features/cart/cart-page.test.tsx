@@ -300,3 +300,19 @@ describe('CartPage', () => {
     expect(bodies('POST /cart/saved/ln_2/move-to-cart')).toHaveLength(1)
   })
 })
+
+describe('CartPage while loading', () => {
+  const never = () => new Promise<never>(() => {})
+
+  it('shows the cart’s outline, not an empty page', async () => {
+    mockCart(cartOf([pdf]), { 'GET /cart': never })
+    await renderWithProviders(<CartPage />)
+
+    expect(await screen.findByText('Loading…')).toHaveAttribute(
+      'role',
+      'status',
+    )
+    expect(screen.queryByRole('heading', { level: 1 })).toBeNull()
+    expect(screen.queryByText(/Your cart is empty/)).toBeNull()
+  })
+})

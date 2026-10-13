@@ -277,3 +277,28 @@ describe('useRecentlyViewed', () => {
     expect(new Set(ids).size).toBe(10)
   })
 })
+
+describe('HomePage while loading', () => {
+  const never = () => new Promise<never>(() => {})
+
+  it('outlines the sections instead of leaving them out', async () => {
+    mockHome({
+      'GET /home': never,
+      'GET /titles/facets': never,
+      'GET /titles': never,
+    })
+    await renderWithProviders(<HomePage />)
+
+    expect(await screen.findByText('Loading…')).toHaveAttribute(
+      'role',
+      'status',
+    )
+    expect(
+      screen.queryByRole('region', { name: 'Discounts & Promos' }),
+    ).toBeNull()
+    // the catalogue banner is there at once, its numbers to come
+    expect(
+      screen.getByRole('link', { name: 'Browse all titles' }),
+    ).toBeVisible()
+  })
+})
