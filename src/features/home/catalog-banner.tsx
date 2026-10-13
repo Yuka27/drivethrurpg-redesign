@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useTitleFacets, useTitles } from '@/api/titles'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatNumber } from '@/i18n/format'
 
 /** Figma "mini banner": how big the catalogue is, and the way into it. */
@@ -20,13 +21,15 @@ export function CatalogBanner() {
       className="flex flex-col gap-3 rounded-2xl border border-muted bg-linear-to-r from-card to-primary/20 px-8 py-6 lg:flex-row lg:items-center lg:justify-between lg:gap-2"
     >
       <div className="flex flex-col gap-0.5">
-        {total !== undefined && systems !== undefined && (
+        {total !== undefined && systems !== undefined ? (
           <p className="text-xs text-muted-foreground">
             {t('catalog.stats', {
               titles: formatNumber(total),
               systems: formatNumber(systems),
             })}
           </p>
+        ) : (
+          <Skeleton className="my-0.5 h-3 w-52 bg-foreground/10" />
         )}
         <h2
           id="catalog"

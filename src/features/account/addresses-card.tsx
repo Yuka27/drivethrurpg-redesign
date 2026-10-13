@@ -4,7 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { ConfirmDialog } from './confirm-dialog'
-import { SettingsCard, SettingsRow, badgeClass } from './settings-card'
+import {
+  SettingsCard,
+  SettingsRow,
+  SettingsRowsSkeleton,
+  badgeClass,
+} from './settings-card'
 import { useAddresses, useRemoveAddress } from '@/api/account'
 import type { Address } from '@/api/account'
 import { Badge } from '@/components/ui/badge'
@@ -48,6 +53,7 @@ export function AddressesCard() {
           {t('loadError')}
         </p>
       )}
+      {addresses.isPending && <SettingsRowsSkeleton />}
       {addresses.data?.length === 0 && (
         <p className="border-t border-muted py-4 text-sm text-muted-foreground">
           {t('addresses.empty')}

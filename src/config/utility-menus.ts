@@ -3,7 +3,7 @@
 // live on the main site, outside this redesign; TODO_URL marks the hrefs still
 // to fill in, as in footer.ts. Brand names stay literal (label), UI text is a
 // translation key in common.json (labelKey).
-import { TODO_URL } from './footer'
+import { TODO_URL } from './links'
 import type { FooterLink, FooterTextKey } from './footer'
 
 export type UtilityMenu = {

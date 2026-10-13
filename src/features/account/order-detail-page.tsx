@@ -13,11 +13,14 @@ import { ApiError, assetUrl } from '@/api/client'
 import { useFileDownload, useLibraryByTitle } from '@/api/library'
 import type { LibraryItem } from '@/api/library'
 import { useMe } from '@/api/me'
-import { useOrder, useResendReceipt, useTitleSummary } from '@/api/orders'
+import { useOrder, useResendReceipt } from '@/api/orders'
+import { useTitleName } from '@/api/titles'
 import type { OrderDetail, OrderLine } from '@/api/orders'
 import { Badge } from '@/components/ui/badge'
+import { LoadingStatus } from '@/components/site/loading-status'
 import { Button } from '@/components/ui/button'
-import { TODO_URL } from '@/config/footer'
+import { Skeleton } from '@/components/ui/skeleton'
+import { SUPPORT_URL } from '@/config/links'
 import { useFormatDate, useFormatMoney, useRegionName } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
@@ -56,9 +59,25 @@ export function OrderDetailPage({ orderId }: { orderId: string }) {
       ) : order.data ? (
         <OrderDetailContent order={order.data} />
       ) : (
-        <div aria-busy className="flex flex-col gap-4">
-          <span className="h-8 w-64 animate-pulse rounded bg-muted" />
-          <span className="h-40 animate-pulse rounded-xl bg-muted" />
+        <div className="flex flex-col gap-4">
+          <LoadingStatus />
+          <div aria-hidden className="flex flex-col gap-4">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-48" />
+            <Skeleton className="h-24 rounded-xl bg-card" />
+            <div className="flex flex-col gap-3 rounded-xl bg-card p-4">
+              {Array.from({ length: 2 }, (_, index) => (
+                <div key={index} className="flex items-center gap-2.5">
+                  <Skeleton className="h-16 w-[50px] shrink-0" />
+                  <div className="flex flex-1 flex-col gap-2">
+                    <Skeleton className="h-4 w-40 max-w-full" />
+                    <Skeleton className="h-3 w-28 max-w-full" />
+                  </div>
+                  <Skeleton className="h-8 w-24 rounded-lg" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -116,9 +135,8 @@ function OrderDetailContent({ order }: { order: OrderDetail }) {
             <p className="text-sm text-muted-foreground">
               {t('orderDetail.helpBody')}
             </p>
-            {/* TODO_URL: support pages are not routed yet */}
             <Button asChild variant="secondary" size="sm" className="mt-2">
-              <a href={TODO_URL}>{t('orderDetail.contactSupport')}</a>
+              <a href={SUPPORT_URL}>{t('orderDetail.contactSupport')}</a>
             </Button>
           </section>
         </div>
@@ -203,7 +221,7 @@ function OrderProgress({ order }: { order: OrderDetail }) {
  */
 function OrderItem({ line, first }: { line: OrderLine; first: boolean }) {
   const formatMoney = useFormatMoney()
-  const { data: title } = useTitleSummary(line.title.id)
+  const { data: title } = useTitleName(line.title.id)
   const { data: library } = useLibraryByTitle()
   const owned = library?.get(line.title.id)
   const price = {
@@ -243,8 +261,8 @@ function OrderItem({ line, first }: { line: OrderLine; first: boolean }) {
           </>
         ) : (
           <>
-            <span className="h-4 w-40 max-w-full animate-pulse rounded bg-muted" />
-            <span className="h-3 w-28 max-w-full animate-pulse rounded bg-muted" />
+            <Skeleton className="h-4 w-40 max-w-full" />
+            <Skeleton className="h-3 w-28 max-w-full" />
           </>
         )}
       </div>
@@ -262,7 +280,13 @@ function OrderItem({ line, first }: { line: OrderLine; first: boolean }) {
  * New or updated files waiting: "Download" (one file: straight away; several:
  * on the library page, where each can be picked). Nothing new: "In library ✓".
  */
-function LibraryButton({ item, title }: { item: LibraryItem; title: string }) {
+export function LibraryButton({
+  item,
+  title,
+}: {
+  item: LibraryItem
+  title: string
+}) {
   const { t } = useTranslation('account')
   const download = useFileDownload()
   const waiting = item.hasUpdate || item.files.some((file) => file.isNew)

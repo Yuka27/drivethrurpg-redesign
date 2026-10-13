@@ -1,6 +1,7 @@
 import { useId } from 'react'
 
 import { SettingsRow } from './settings-card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 
 /**
@@ -16,7 +17,7 @@ export function SwitchRow({
 }: {
   label: string
   hint?: string
-  /** undefined while the saved value loads (the switch is not shown yet) */
+  /** undefined while the saved value loads (a switch-shaped skeleton) */
   checked: boolean | undefined
   onCheckedChange: (checked: boolean) => void
   disabled?: boolean
@@ -28,7 +29,9 @@ export function SwitchRow({
       label={<label htmlFor={id}>{label}</label>}
       hint={hint && <span id={`${id}-hint`}>{hint}</span>}
       actions={
-        checked !== undefined && (
+        checked === undefined ? (
+          <Skeleton className="h-[1.15rem] w-8 rounded-full" />
+        ) : (
           <Switch
             id={id}
             checked={checked}

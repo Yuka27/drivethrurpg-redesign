@@ -2,7 +2,7 @@ import { vi } from 'vite-plus/test'
 
 import type { Me } from '@/api/me'
 
-type Reply = { status?: number; body?: unknown }
+export type Reply = { status?: number; body?: unknown }
 /** What one "METHOD /path" answers: a reply, or a function returning one (sync or async) */
 export type Handler =
   | Reply

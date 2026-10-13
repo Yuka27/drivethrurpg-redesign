@@ -8,6 +8,7 @@ import type { Discussion, Review, TitleDetail } from '@/api/titles'
 import { Pagination } from '@/components/site/pagination'
 import { Stars } from '@/components/title/rating-stars'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatDate, useFormatNumber } from '@/i18n/format'
 import { useComingSoon } from '@/lib/use-coming-soon'
 
@@ -25,8 +26,11 @@ type Entry =
  */
 export function ReviewsSection({ title }: { title: TitleDetail }) {
   const { t } = useTranslation('title')
-  const reviews = useTitleReviews(title.id).data
-  const discussions = useTitleDiscussions(title.id).data
+  const reviewsQuery = useTitleReviews(title.id)
+  const discussionsQuery = useTitleDiscussions(title.id)
+  const reviews = reviewsQuery.data
+  const discussions = discussionsQuery.data
+  const loading = reviewsQuery.isPending || discussionsQuery.isPending
   const comingSoon = useComingSoon()
   const [page, setPage] = useState(1)
 
@@ -57,7 +61,9 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
           id="reviews-heading"
           className="font-sans text-base leading-6 font-bold"
         >
-          {t('reviews.heading', { count: total })}
+          {loading
+            ? t('stickyNav.reviews')
+            : t('reviews.heading', { count: total })}
         </h2>
         <Button
           variant="secondary"
@@ -69,7 +75,9 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
         </Button>
       </div>
 
-      {title.rating && reviews && (
+      {loading && <ReviewsSkeleton rating={Boolean(title.rating)} />}
+
+      {title.rating && reviews && !loading && (
         <RatingSummary
           average={title.rating.average}
           count={title.rating.count}
@@ -77,7 +85,7 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
         />
       )}
 
-      {shown.length > 0 && (
+      {!loading && shown.length > 0 && (
         <ul className="flex flex-col gap-2">
           {shown.map((entry) => (
             <li
@@ -274,5 +282,42 @@ function DiscussionItem({
       )}
       <EntryActions onAction={onAction} />
     </article>
+  )
+}
+
+/** The rating card and a few entries while reviews and discussions load. */
+function ReviewsSkeleton({ rating }: { rating: boolean }) {
+  return (
+    <div aria-hidden className="flex flex-col gap-4">
+      {rating && (
+        <div className="flex items-center gap-4 rounded-xl bg-card p-6">
+          <div className="flex w-24 shrink-0 flex-col items-center gap-2">
+            <Skeleton className="h-10 w-14" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+          <div className="flex flex-1 flex-col gap-2">
+            {Array.from({ length: 5 }, (_, index) => (
+              <Skeleton key={index} className="h-2" />
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="flex flex-col gap-2">
+        {Array.from({ length: 3 }, (_, index) => (
+          <div
+            key={index}
+            className="flex flex-col gap-3 rounded-xl bg-card p-4"
+          >
+            <div className="flex items-center gap-2">
+              <Skeleton className="size-8 rounded-full" />
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="ml-auto h-3 w-16" />
+            </div>
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-4/5" />
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }

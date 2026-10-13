@@ -4,17 +4,21 @@ import { useTranslation } from 'react-i18next'
 import { assetUrl } from '@/api/client'
 import { useHomeBanners } from '@/api/titles'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 
 /**
  * Figma: the promotion at the top of the home page and the listing. Its content is the API's (the first
  * GET /home banner), on its image with a dark gradient for the text: from the
- * left on desktop, from the bottom on phones. Nothing while it loads or fails.
+ * left on desktop, from the bottom on phones. Its outline while it loads,
+ * nothing when it fails.
  */
 export function PromoBanner() {
   const { t } = useTranslation('listing')
   const banners = useHomeBanners()
   const router = useRouter()
   const banner = banners.data?.[0]
+  if (banners.isPending)
+    return <Skeleton className="h-[336px] rounded-xl lg:h-[255px]" />
   if (!banner) return null
 
   return (

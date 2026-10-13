@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { cartItemCount, useCart } from '@/api/cart'
-import { TODO_URL } from '@/config/footer'
+import { PRIVACY_URL, TERMS_URL } from '@/config/links'
 import { useApplyApiError } from '@/lib/forms'
 
 const inputClass =
@@ -202,6 +202,7 @@ export function LoginForm({
             <SocialButtons
               layout="stacked"
               disabled={pending}
+              pending={social.isPending ? social.variables : undefined}
               onSelect={signInWith}
             />
 
@@ -222,12 +223,11 @@ export function LoginForm({
               t={t}
               i18nKey="login.legal"
               components={{
-                // TODO_URL: legal pages are not routed yet
                 terms: (
-                  <a href={TODO_URL} className="text-foreground underline" />
+                  <a href={TERMS_URL} className="text-foreground underline" />
                 ),
                 privacy: (
-                  <a href={TODO_URL} className="text-foreground underline" />
+                  <a href={PRIVACY_URL} className="text-foreground underline" />
                 ),
               }}
             />

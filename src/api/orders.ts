@@ -41,11 +41,15 @@ const OrderLineSchema = z.object({
   lineId: z.string(),
   title: z.object({
     id: z.string(),
+    /** the order carries it; older code reads the title's own name instead */
+    name: z.string().nullish(),
     cover: z.object({ url: z.string(), alt: z.string() }).nullish(),
   }),
   formatLabel: z.string().nullish(),
   qty: z.number().int(),
   unitPrice: MoneySchema,
+  /** printed: ships (the API does not always say) */
+  requiresShipping: z.boolean().nullish().catch(null),
 })
 export type OrderLine = z.infer<typeof OrderLineSchema>
 
@@ -82,6 +86,8 @@ const OrderDetailSchema = OrderSummarySchema.omit({
     .nullish(),
   /** the digital files are in the library */
   digitalReady: z.boolean(),
+  /** placed without an account: it can become one (POST …/create-account) */
+  guest: z.boolean().catch(false),
 })
 export type OrderDetail = z.infer<typeof OrderDetailSchema>
 
@@ -103,29 +109,27 @@ export function useOrder(id: string) {
   })
 }
 
-const TitleSummarySchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  publisher: z.object({ id: z.string(), name: z.string() }),
-})
-
-/** GET /titles/{id}, only its name and publisher (for an order line). */
-export function useTitleSummary(id: string) {
-  const prefs = useRequestPrefs()
-  return useQuery({
-    queryKey: queryKeys.titles.summary(id, prefs),
-    queryFn: ({ signal }) =>
-      apiFetch(`/titles/${id}`, { schema: TitleSummarySchema, prefs, signal }),
-    staleTime: 60 * 60 * 1000,
-  })
-}
-
 /** POST /orders/{id}/resend-email (202): sends the receipt to the account's email again. */
 export function useResendReceipt() {
   return useMutation({
     mutationFn: (id: string) =>
       apiFetch(`/orders/${id}/resend-email`, {
         method: 'POST',
+        schema: z.unknown(),
+      }),
+  })
+}
+
+/**
+ * POST /orders/{id}/create-account: a guest keeps the order's titles in a
+ * library by choosing a password for the order's email.
+ */
+export function useCreateAccountFromOrder() {
+  return useMutation({
+    mutationFn: ({ id, password }: { id: string; password: string }) =>
+      apiFetch(`/orders/${id}/create-account`, {
+        method: 'POST',
+        body: { password },
         schema: z.unknown(),
       }),
   })

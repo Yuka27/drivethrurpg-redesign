@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useCartRecommendations } from '@/api/cart'
 import { ShelfCard } from '@/components/title/shelf-card'
 import { CartButton } from '@/components/title/title-actions'
+import { ShelfSkeleton } from '@/components/title/title-skeletons'
 
 /**
  * Figma "Customers also bought": GET /cart/recommendations as 200px cards
@@ -11,7 +12,9 @@ import { CartButton } from '@/components/title/title-actions'
  */
 export function CartRecommendations() {
   const { t } = useTranslation('cart')
-  const titles = useCartRecommendations().data
+  const query = useCartRecommendations()
+  const titles = query.data
+  if (query.isPending) return <ShelfSkeleton />
   if (!titles?.length) return null
 
   return (

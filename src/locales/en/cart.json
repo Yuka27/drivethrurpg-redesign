@@ -4,8 +4,12 @@
   "loadError": "We could not load your cart. Try again later.",
   "empty": {
     "title": "Your cart is empty",
-    "text": "Find your next adventure in the catalog.",
-    "browse": "Browse titles"
+    "text": "Titles you add will wait here.",
+    "browse": "Continue shopping",
+    "saved": "Saved for later · {{count}}",
+    "moveToCart": "Move to cart",
+    "moveLabel": "Move {{title}} to cart",
+    "moved": "{{title}} is back in your cart."
   },
   "summary": {
     "itemCount_one": "{{count}} item",
@@ -61,5 +65,6 @@
     "note": "We email them a link to claim it. Nothing is added to your library."
   },
   "alsoBought": "Customers also bought",
-  "add": "Add"
+  "add": "Add",
+  "loadErrorTitle": "We couldn’t load your cart"
 }

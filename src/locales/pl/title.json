@@ -124,5 +124,14 @@
     "replies_other": "{{count}} odpowiedzi",
     "reply": "Odpowiedz",
     "flag": "Zgłoś"
-  }
+  },
+  "unavailable": {
+    "title": "Ten tytuł nie jest już dostępny",
+    "text": "Wydawca usunął go ze sklepu.",
+    "owned": "Masz go już?",
+    "ownedText": "Twój egzemplarz zostaje w Bibliotece i nadal możesz go pobrać.",
+    "library": "Przejdź do Biblioteki",
+    "similar": "Podobne tytuły"
+  },
+  "loadErrorTitle": "Nie udało się wczytać tego tytułu"
 }

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import {
   ArrowRightIcon,
+  FunnelIcon,
   HeartIcon,
   LayoutGridIcon,
   ListIcon,
@@ -17,21 +18,32 @@ import { WISHLIST_SORTS } from './wishlist-search'
 import type { WishlistSearch, WishlistSort } from './wishlist-search'
 import {
   isOnSale,
-  toTitleCard,
+  toTitleSummary,
   useAddWishlistToCart,
   useWishlist,
 } from '@/api/wishlist'
 import type { WishlistItem } from '@/api/wishlist'
+import { useTitles } from '@/api/titles'
 import { AppliedFilters } from '@/components/filters/applied-filters'
+import { FilterPanelSkeleton } from '@/components/filters/filter-panel-skeleton'
 import { FilterSheet } from '@/components/filters/filter-sheet'
 import { QuickFilters } from '@/components/filters/quick-filters'
+import {
+  EmptyActions,
+  EmptyLabel,
+  EmptyState,
+  ErrorState,
+} from '@/components/site/empty-state'
+import { CoverLinks } from '@/components/title/cover-links'
 import { OptionSelect } from '@/components/site/option-select'
 import { Pagination } from '@/components/site/pagination'
 import { RecentlyViewed } from '@/components/title/recently-viewed'
 import { TitleCard } from '@/components/title/title-card'
 import { TitleRow } from '@/components/title/title-row'
+import { TitleResultsSkeleton } from '@/components/title/title-skeletons'
 import { useFacetLabel } from '@/components/title/use-facet-label'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { ListingFilterPanel } from '@/features/listing/listing-filter-panel'
 import {
@@ -94,7 +106,7 @@ export function WishlistPage({
   const page = Math.min(search.page, pageCount)
   const from = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1
   const to = Math.min(page * PAGE_SIZE, total)
-  const pageItems = shown.slice(from - 1, to).map(toTitleCard)
+  const pageItems = shown.slice(from - 1, to).map(toTitleSummary)
   const sale = items.filter(isOnSale)
 
   const quick = [
@@ -128,7 +140,11 @@ export function WishlistPage({
   if (query.isError)
     return (
       <div className="container pt-4 pb-8">
-        <p className="text-sm text-destructive">{t('loadError')}</p>
+        <ErrorState
+          title={t('loadErrorTitle')}
+          onRetry={() => void query.refetch()}
+          className="rounded-xl bg-card"
+        />
       </div>
     )
 
@@ -249,32 +265,36 @@ export function WishlistPage({
           </>
         )}
 
+        {query.isPending && (
+          <>
+            <div className="[grid-area:sidebar] max-lg:hidden">
+              <FilterPanelSkeleton variant="sidebar" />
+            </div>
+            <Skeleton className="h-3 w-40 self-center [grid-area:showing]" />
+          </>
+        )}
+
         <div
           ref={resultsRef}
           className="flex scroll-mt-4 flex-col gap-4 [grid-area:results]"
         >
           {!query.data ? (
-            <ul
-              aria-busy
-              aria-label={t('heading')}
-              className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:gap-3 xl:grid-cols-4"
-            >
-              {Array.from({ length: 8 }, (_, index) => (
-                <li
-                  key={index}
-                  className="h-[340px] animate-pulse rounded-xl bg-card lg:h-[414px]"
-                />
-              ))}
-            </ul>
+            <TitleResultsSkeleton view={search.view} label={t('heading')} />
           ) : items.length === 0 ? (
             <EmptyWishlist />
           ) : pageItems.length === 0 ? (
-            <div className="flex flex-col items-start gap-3 rounded-xl bg-card p-6">
-              <p className="text-sm">{t('listing:noResults')}</p>
-              <Button variant="outline" size="sm" onClick={clearAll}>
-                {t('listing:clearFilters')}
-              </Button>
-            </div>
+            <EmptyState
+              icon={<FunnelIcon />}
+              title={t('listing:emptyState.title')}
+              text={t('listing:emptyState.text')}
+              className="rounded-xl bg-card"
+            >
+              <EmptyActions>
+                <Button onClick={clearAll} className="rounded-lg">
+                  {t('listing:emptyState.clearAll')}
+                </Button>
+              </EmptyActions>
+            </EmptyState>
           ) : search.view === 'list' ? (
             <ul aria-label={t('heading')} className="flex flex-col gap-3">
               {pageItems.map((title) => (
@@ -392,16 +412,35 @@ function SaleBanner({
   )
 }
 
+/** A few covers to start from: the API has no "popular on wishlists" list. */
+const PICKS = 4
+
+/**
+ * Mockup "Wishlist: empty": the benefit (sale alerts) in one line, the store,
+ * and a few popular titles to start from (the bestsellers).
+ */
 function EmptyWishlist() {
   const { t } = useTranslation('wishlist')
+  const picks = useTitles({}, { sort: 'bestselling', page: 1, pageSize: PICKS })
+    .data?.items
   return (
-    <div className="flex flex-col items-center gap-3 rounded-xl bg-card px-4 py-10 text-center">
-      <HeartIcon aria-hidden className="size-8 text-muted-foreground" />
-      <p className="font-bold">{t('empty.title')}</p>
-      <p className="text-sm text-muted-foreground">{t('empty.text')}</p>
-      <Button asChild className="rounded-lg">
-        <Link to="/titles">{t('empty.browse')}</Link>
-      </Button>
-    </div>
+    <EmptyState
+      icon={<HeartIcon />}
+      title={t('empty.title')}
+      text={t('empty.text')}
+      className="rounded-xl bg-card"
+    >
+      <EmptyActions>
+        <Button asChild className="rounded-lg">
+          <Link to="/titles">{t('empty.browse')}</Link>
+        </Button>
+      </EmptyActions>
+      {picks && picks.length > 0 && (
+        <>
+          <EmptyLabel id="wishlist-picks">{t('empty.picks')}</EmptyLabel>
+          <CoverLinks titles={picks} labelledBy="wishlist-picks" />
+        </>
+      )}
+    </EmptyState>
   )
 }

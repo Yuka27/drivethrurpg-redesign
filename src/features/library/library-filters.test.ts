@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vite-plus/test'
 
-import { libraryItem, search } from './library-fixtures'
+import { libraryItem, search } from '@/test/library'
 import {
   activeFilterCount,
   facetOptions,

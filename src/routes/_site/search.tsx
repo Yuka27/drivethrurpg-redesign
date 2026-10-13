@@ -1,18 +1,46 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod'
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 
-import { languageFilter, searchText } from '@/lib/search-params'
-
-const SearchSearchSchema = z.object({
-  q: searchText(z.string().trim().max(200).optional()).catch(undefined),
-  language: languageFilter,
-})
+import { ListingPage } from '@/features/listing/listing-page'
+import {
+  LISTING_SEARCH_DEFAULTS,
+  ListingSearchSchema,
+} from '@/features/listing/listing-search'
+import type { ListingSearch } from '@/features/listing/listing-search'
+import { useRecentSearches } from '@/stores/recent-searches'
+import { replacesHistory } from '@/lib/search-params'
 
 export const Route = createFileRoute('/_site/search')({
-  validateSearch: SearchSearchSchema,
-  component: RouteComponent,
+  // the listing's parameters, with the words: /search?q=vaesen&system=year_zero
+  validateSearch: ListingSearchSchema,
+  search: {
+    middlewares: [
+      stripSearchParams({ ...LISTING_SEARCH_DEFAULTS, q: undefined }),
+    ],
+  },
+  component: SearchRoute,
 })
 
-function RouteComponent() {
-  return <div>Hello "/search"!</div>
+/** /search?q=: the listing over what matches the words (GET /search). */
+function SearchRoute() {
+  const search = Route.useSearch()
+  const navigate = Route.useNavigate()
+  const addRecent = useRecentSearches((state) => state.add)
+
+  return (
+    <ListingPage
+      mode="search"
+      search={search}
+      onSearchChange={(patch: Partial<ListingSearch>) =>
+        void navigate({
+          search: (previous) => ({ ...previous, ...patch }),
+          replace: replacesHistory(patch),
+        })
+      }
+      // a new search starts with no filters
+      onSearch={(q) => {
+        addRecent(q)
+        void navigate({ search: { q } })
+      }}
+    />
+  )
 }

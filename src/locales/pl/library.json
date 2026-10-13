@@ -54,7 +54,25 @@
   "downloadSelected_other": "Pobierz {{count}} tytułu",
   "downloadFailed": "Nie udało się przygotować pobierania. Spróbuj ponownie.",
   "empty": "Twoja biblioteka jest pusta. Tu pojawią się kupione tytuły i prezenty.",
-  "noResults": "Żaden tytuł nie pasuje do tych filtrów.",
   "clearFilters": "Wyczyść filtry",
-  "loadError": "Nie udało się wczytać biblioteki. Spróbuj później."
+  "loadError": "Nie udało się wczytać biblioteki. Spróbuj później.",
+  "emptyState": {
+    "title": "Twoja biblioteka jest pusta",
+    "text": "Kupione i odebrane tytuły pojawią się tutaj, gotowe do pobrania.",
+    "gift": "Dostałeś prezent?",
+    "giftHint": "Odbierz go kodem z e-maila, który wysłaliśmy",
+    "merge": "Kupowałeś na innym koncie?",
+    "mergeHint": "Połącz je z tym kontem",
+    "free": "Szukasz darmowych tytułów?",
+    "freeHint": "Zacznij od tych",
+    "noMatchQuery": "Nic w Twojej bibliotece nie pasuje do „{{query}}”",
+    "noMatchFilters": "Nic w Twojej bibliotece nie pasuje do tych filtrów",
+    "owned_one": "Masz {{count}} tytuł. Nie pasuje.",
+    "owned_few": "Masz {{count}} tytuły. Żaden nie pasuje.",
+    "owned_many": "Masz {{count}} tytułów. Żaden nie pasuje.",
+    "owned_other": "Masz {{count}} tytułu. Żaden nie pasuje.",
+    "clearSearch": "Wyczyść wyszukiwanie",
+    "orders": "Kupione niedawno? Sprawdź Zamówienia →",
+    "loadError": "Nie udało się wczytać Twojej biblioteki"
+  }
 }

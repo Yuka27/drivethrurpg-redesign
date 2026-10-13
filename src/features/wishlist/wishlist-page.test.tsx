@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 import { WishlistPage } from './wishlist-page'
 import { WishlistSearchSchema } from './wishlist-search'
 import type { WishlistSearch } from './wishlist-search'
+import { toTitleSummary } from '@/api/wishlist'
 import type { WishlistItem } from '@/api/wishlist'
 import { mockApi, user } from '@/test/api'
 import type { Handler } from '@/test/api'
@@ -231,14 +232,35 @@ describe('WishlistPage', () => {
     expect(await navigator.clipboard.readText()).toBe(shareUrl)
   })
 
-  it('says when the wishlist is empty', async () => {
-    mockWishlist([])
+  it('says when the wishlist is empty, with popular titles to start from', async () => {
+    mockWishlist([], {
+      'GET /titles': {
+        body: {
+          items: [
+            {
+              ...toTitleSummary(vaesen),
+              id: 'ttl_eberron',
+              title: 'Exploring Eberron',
+              inWishlist: false,
+            },
+          ],
+          total: 1,
+          page: 1,
+          pageSize: 4,
+        },
+      },
+    })
     await renderWithProviders(<Harness />)
 
-    expect(await screen.findByText('Your wishlist is empty')).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Browse titles' })).toHaveAttribute(
-      'href',
-      '/titles',
-    )
+    expect(
+      await screen.findByRole('heading', { name: 'Your wishlist is empty' }),
+    ).toBeVisible()
+    expect(
+      screen.getByRole('link', { name: 'Browse the store' }),
+    ).toHaveAttribute('href', '/titles')
+    const picks = await screen.findByRole('list', { name: 'Popular picks' })
+    expect(
+      within(picks).getByRole('link', { name: 'Exploring Eberron' }),
+    ).toHaveAttribute('href', '/titles/ttl_eberron')
   })
 })

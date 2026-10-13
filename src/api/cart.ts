@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 import { apiFetch, MoneySchema, useRequestPrefs } from './client'
 import { queryKeys } from './query-keys'
-import { TitleCardSchema } from './titles'
+import { TitleSummarySchema } from './titles'
 
 const CartLineSchema = z.object({
   lineId: z.string(),
@@ -27,9 +27,11 @@ const CartLineSchema = z.object({
 })
 export type CartLine = z.infer<typeof CartLineSchema>
 
-const CartSchema = z.object({
+export const CartSchema = z.object({
   id: z.string(),
   lines: z.array(CartLineSchema),
+  /** set aside from the cart; each can move back */
+  savedForLater: z.array(CartLineSchema).catch([]),
   promo: z
     .object({
       code: z.string(),
@@ -79,7 +81,7 @@ export function useCartRecommendations() {
     queryKey: queryKeys.cartRecommendations(prefs),
     queryFn: ({ signal }) =>
       apiFetch('/cart/recommendations', {
-        schema: z.array(TitleCardSchema).catch([]),
+        schema: z.array(TitleSummarySchema).catch([]),
         prefs,
         signal,
       }),
@@ -114,6 +116,23 @@ export const useSetLineQty = () =>
       schema: CartSchema,
     }),
   )
+
+/** POST /cart/saved/{lineId}/move-to-cart: a saved line back in the cart. */
+export function useMoveSavedToCart() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (lineId: string) =>
+      apiFetch(`/cart/saved/${lineId}/move-to-cart`, {
+        method: 'POST',
+        body: {},
+        schema: z.unknown(),
+      }),
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: ['cart'] })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.me.all })
+    },
+  })
+}
 
 /** DELETE /cart/items/{lineId}: the cart without it, with an `undoToken`. */
 export const useRemoveLine = () =>

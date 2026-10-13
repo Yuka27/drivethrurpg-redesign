@@ -6,14 +6,17 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 import { ListingPage } from './listing-page'
 import { LISTING_SEARCH_DEFAULTS } from './listing-search'
 import type { ListingSearch } from './listing-search'
-import type { TitleCard } from '@/api/titles'
+import type { TitleSummary } from '@/api/titles'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
 import { apiError, mockApi, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
 const usd = (amount: number) => ({ amount, currency: 'USD' })
-function title(id: string, overrides: Partial<TitleCard> = {}): TitleCard {
+function title(
+  id: string,
+  overrides: Partial<TitleSummary> = {},
+): TitleSummary {
   return {
     id,
     title: `Title ${id}`,
@@ -62,7 +65,7 @@ const facet = (value: string, label: string, count: number) => ({
 })
 
 /** A small fake of GET /titles: filters on system and priceMax, like the API. */
-function titlesHandler(items: Array<TitleCard>): Handler {
+function titlesHandler(items: Array<TitleSummary>): Handler {
   return ({ params }) => {
     const systems = params.get('system')?.split(',')
     const max = params.get('priceMax')
@@ -381,18 +384,38 @@ describe('ListingPage', () => {
     useAuthDialogStore.getState().setOpen(false)
   })
 
-  it('offers to clear filters when nothing matches', async () => {
+  it('offers to loosen one filter, with what it brings back, or clear them', async () => {
     mockListing()
     const { user: u } = await renderWithProviders(
       <Harness
-        initial={{ ...LISTING_SEARCH_DEFAULTS, system: 'pathfinder' }}
+        initial={{
+          ...LISTING_SEARCH_DEFAULTS,
+          system: 'pathfinder',
+          priceMax: 50,
+        }}
       />,
     )
 
     expect(
-      await screen.findByText('No titles match these filters.'),
+      await screen.findByRole('heading', {
+        name: 'No titles match these filters',
+      }),
     ).toBeVisible()
-    await u.click(screen.getByRole('button', { name: 'Clear filters' }))
+    const loosen = screen.getByRole('list', { name: 'Or loosen one' })
+    const [withoutSystem, withoutPrice] = within(loosen).getAllByRole('button')
+    // without the rule system: the whole catalogue is under $50
+    await waitFor(() =>
+      expect(withoutSystem).toHaveTextContent(`${catalogue.length} titles`),
+    )
+    await waitFor(() => expect(withoutPrice).toHaveTextContent('0 titles'))
+
+    await u.click(withoutPrice)
+    expect(currentSearch().priceMax).toBeUndefined()
+    expect(currentSearch().system).toBe('pathfinder')
+
+    await u.click(
+      await screen.findByRole('button', { name: 'Clear all filters' }),
+    )
     expect(currentSearch().system).toBe('')
   })
 
@@ -408,5 +431,24 @@ describe('ListingPage', () => {
 
     await u.click(within(sheet).getByRole('button', { name: 'Show 2 results' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+
+  it('shows skeletons, not an empty page, while titles and facets load', async () => {
+    const never = () => new Promise<never>(() => {})
+    mockListing({ 'GET /titles': never, 'GET /titles/facets': never })
+    await renderWithProviders(
+      <Harness initial={{ ...LISTING_SEARCH_DEFAULTS, view: 'list' }} />,
+    )
+
+    expect(await screen.findByText('Loading…')).toHaveAttribute(
+      'role',
+      'status',
+    )
+    const list = screen.getByRole('list', { name: 'All titles' })
+    expect(list).toHaveAttribute('aria-busy', 'true')
+    // the outline is hidden from screen readers: nothing to read or press yet
+    expect(within(list).queryAllByRole('listitem')).toHaveLength(0)
+    expect(list.children).toHaveLength(8)
+    expect(within(sidebar()).queryAllByRole('checkbox')).toHaveLength(0)
   })
 })

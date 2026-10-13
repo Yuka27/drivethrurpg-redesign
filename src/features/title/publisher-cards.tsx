@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { useMe } from '@/api/me'
 import { usePublisher, useTogglePublisherFollow } from '@/api/publishers'
 import { PublisherLogo } from '@/components/site/publisher-logo'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { useFormatNumber } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
@@ -22,7 +23,8 @@ export function PublisherCard({
 }) {
   const { t } = useTranslation('title')
   const formatNumber = useFormatNumber()
-  const publisher = usePublisher(publisherId).data
+  const query = usePublisher(publisherId)
+  const publisher = query.data
 
   return (
     <Link
@@ -39,6 +41,7 @@ export function PublisherCard({
         <span className="max-w-full truncate text-lg leading-7 font-bold group-hover:underline">
           {name}
         </span>
+        {query.isPending && <Skeleton className="h-[22px] w-20" />}
         {publisher && publisher.titleCount > 0 && (
           <span className="inline-flex h-[22px] items-center rounded-sm border border-primary px-2 text-xs font-medium text-primary">
             {t('publisher.titles', {

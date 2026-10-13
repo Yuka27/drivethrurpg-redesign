@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { LoadingStatus } from '@/components/site/loading-status'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
 /** Figma: secondary 32px button on desktop; 28px, 12px text and 6px radius in mobile rows. */
@@ -111,6 +113,28 @@ export function SettingsRow({
           {actions}
         </div>
       )}
+    </div>
+  )
+}
+
+/** `SettingsRow`s while a card's list loads: a label, a hint, a button. */
+export function SettingsRowsSkeleton({ rows = 2 }: { rows?: number }) {
+  return (
+    <div>
+      <LoadingStatus />
+      {Array.from({ length: rows }, (_, index) => (
+        <div
+          key={index}
+          aria-hidden
+          className="flex items-center gap-4 border-t border-muted py-4"
+        >
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-3 w-56 max-w-full" />
+          </div>
+          <Skeleton className="h-8 w-20" />
+        </div>
+      ))}
     </div>
   )
 }

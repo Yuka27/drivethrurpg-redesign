@@ -6,6 +6,7 @@ import {
   ListingSearchSchema,
 } from '@/features/listing/listing-search'
 import type { ListingSearch } from '@/features/listing/listing-search'
+import { replacesHistory } from '@/lib/search-params'
 
 export const Route = createFileRoute('/_site/titles/')({
   validateSearch: ListingSearchSchema,
@@ -26,7 +27,7 @@ function TitlesRoute() {
       onSearchChange={(patch: Partial<ListingSearch>) =>
         void navigate({
           search: (previous) => ({ ...previous, ...patch }),
-          replace: !('page' in patch && Object.keys(patch).length === 1),
+          replace: replacesHistory(patch),
         })
       }
     />

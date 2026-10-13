@@ -20,6 +20,7 @@ export const vaesen: TitleDetail = {
   owned: false,
   inWishlist: false,
   textLanguage: 'en',
+  shortDescription: 'Stockholm, 1897: the monsters are real.',
   description: 'A city of nightmares.\n\nSecond paragraph.',
   authors: [{ id: 'aut_1', name: 'Nils Karlén' }],
   releaseDate: '2023-11-21',

@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
 
-import type { TitleCard } from '@/api/titles'
+import type { TitleSummary } from '@/api/titles'
 import { useFormatMoney, useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
 /** How much cheaper than the list price, as a fraction (0 when not on sale). */
-export function discountOf(title: TitleCard) {
+export function discountOf(title: TitleSummary) {
   const list = title.listPrice?.amount ?? 0
   return title.onSale && list > title.price.amount
     ? (list - title.price.amount) / list
@@ -22,7 +22,7 @@ export function DealBadges({
   tone = 'update',
   className,
 }: {
-  title: TitleCard
+  title: TitleSummary
   tone?: 'update' | 'primary'
   className?: string
 }) {

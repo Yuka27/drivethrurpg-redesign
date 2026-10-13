@@ -5,7 +5,7 @@ import { CartButton, WishlistButton } from './title-actions'
 import { TitleCover, TitleHeading } from './title-card'
 import { TitlePrice } from './title-price'
 import { useFacetLabel } from './use-facet-label'
-import type { TitleCard as Title } from '@/api/titles'
+import type { TitleSummary as Title } from '@/api/titles'
 import { cn } from '@/lib/utils'
 
 /**

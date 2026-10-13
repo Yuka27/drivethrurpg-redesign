@@ -1,6 +1,7 @@
 import {
   keepPreviousData,
   useMutation,
+  useQueries,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
@@ -12,7 +13,7 @@ import { queryKeys } from './query-keys'
 const ImageSchema = z.object({ url: z.string(), alt: z.string().catch('') })
 
 /** A title as GET /titles lists it: enough for a card. */
-export const TitleCardSchema = z.object({
+export const TitleSummarySchema = z.object({
   id: z.string(),
   title: z.string(),
   publisher: z
@@ -34,10 +35,10 @@ export const TitleCardSchema = z.object({
   inWishlist: z.boolean().catch(false),
   textLanguage: z.string().catch(''),
 })
-export type TitleCard = z.infer<typeof TitleCardSchema>
+export type TitleSummary = z.infer<typeof TitleSummarySchema>
 
-const TitleListSchema = z.object({
-  items: z.array(TitleCardSchema),
+export const TitleListSchema = z.object({
+  items: z.array(TitleSummarySchema),
   total: z.number().int(),
   page: z.number().int(),
   pageSize: z.number().int(),
@@ -63,7 +64,7 @@ export type TitleFilters = {
 export type TitleSort = 'bestselling' | 'newest' | 'price_asc' | 'price_desc'
 
 /** Leave out empty values: they are not filters, and they would split the cache. */
-const compact = (filters: TitleFilters) =>
+export const compact = (filters: TitleFilters) =>
   Object.fromEntries(
     (Object.entries(filters) as Array<[string, unknown]>).filter(
       ([, value]) => value !== undefined && value !== '' && value !== false,
@@ -77,7 +78,8 @@ export function useTitles(
     sort,
     page,
     pageSize,
-  }: { sort?: TitleSort; page: number; pageSize: number },
+    enabled = true,
+  }: { sort?: TitleSort; page: number; pageSize: number; enabled?: boolean },
 ) {
   const prefs = useRequestPrefs()
   const params = { ...compact(filters), sort, page, pageSize }
@@ -87,6 +89,30 @@ export function useTitles(
       apiFetch('/titles', { params, schema: TitleListSchema, prefs, signal }),
     // keep the current page on screen while the next filter's results load
     placeholderData: keepPreviousData,
+    enabled,
+  })
+}
+
+/**
+ * How many titles each of several searches finds (GET /titles, one title a
+ * page: only `total` is read). The listing's "loosen one filter" counts.
+ */
+export function useTitleCounts(searches: Array<TitleFilters>) {
+  const prefs = useRequestPrefs()
+  return useQueries({
+    queries: searches.map((filters) => {
+      const params = { ...compact(filters), page: 1, pageSize: 1 }
+      return {
+        queryKey: queryKeys.titles.list(params, prefs),
+        queryFn: ({ signal }: { signal: AbortSignal }) =>
+          apiFetch('/titles', {
+            params,
+            schema: TitleListSchema,
+            prefs,
+            signal,
+          }).then((list) => list.total),
+      }
+    }),
   })
 }
 
@@ -104,7 +130,6 @@ const FacetsSchema = z.object({
   publishers: z.array(FacetValueSchema).catch([]),
 })
 export type TitleFacets = z.infer<typeof FacetsSchema>
-export type FacetValue = z.infer<typeof FacetValueSchema>
 
 /**
  * GET /titles/facets: the values each facet has, counted under `filters`. The
@@ -128,6 +153,26 @@ export function useTitleFacets(filters: TitleFilters, enabled = true) {
   })
 }
 
+const TitleNameSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  publisher: z.object({ id: z.string(), name: z.string() }),
+})
+
+/**
+ * GET /titles/{id}, only its name and publisher: for lines that carry neither
+ * (order, cart and confirmation lines). Its own cache entry, kept an hour.
+ */
+export function useTitleName(id: string) {
+  const prefs = useRequestPrefs()
+  return useQuery({
+    queryKey: queryKeys.titles.name(id, prefs),
+    queryFn: ({ signal }) =>
+      apiFetch(`/titles/${id}`, { schema: TitleNameSchema, prefs, signal }),
+    staleTime: 60 * 60 * 1000,
+  })
+}
+
 const BannerSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -136,13 +181,12 @@ const BannerSchema = z.object({
   link: z.string(),
   image: ImageSchema.nullable().catch(null),
 })
-export type Banner = z.infer<typeof BannerSchema>
 
 const HomeSectionSchema = z.object({
   /** "bestselling", "new", "sale", "free" */
   id: z.string(),
   title: z.string(),
-  titles: z.array(TitleCardSchema).catch([]),
+  titles: z.array(TitleSummarySchema).catch([]),
 })
 export type HomeSection = z.infer<typeof HomeSectionSchema>
 
@@ -189,7 +233,10 @@ const EditionsSchema = z.object({
 })
 
 /** GET /titles/{id}: everything the product page shows about the title. */
-const TitleDetailSchema = TitleCardSchema.extend({
+const TitleDetailSchema = TitleSummarySchema.extend({
+  /** a sentence or two for the header card (plain text); none: no lead there */
+  shortDescription: z.string().trim().nullish().catch(null),
+  /** the full text for Overview: plain paragraphs, blank lines between them */
   description: z.string().catch(''),
   authors: z.array(z.object({ id: z.string(), name: z.string() })).catch([]),
   releaseDate: z.string().nullable().catch(null),
@@ -295,7 +342,7 @@ export function useSimilarTitles(titleId: string) {
     queryKey: queryKeys.titles.related(titleId, 'similar', prefs),
     queryFn: ({ signal }) =>
       apiFetch(`/titles/${titleId}/similar`, {
-        schema: z.array(TitleCardSchema),
+        schema: z.array(TitleSummarySchema),
         prefs,
         signal,
       }),

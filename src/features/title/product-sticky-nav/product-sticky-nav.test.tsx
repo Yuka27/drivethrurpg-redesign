@@ -179,12 +179,12 @@ describe('ProductStickyNav', () => {
 
   it('says why it cannot add, as the buy box does', async () => {
     mockTitle({
-      'GET /titles/ttl_vaesen': { body: { ...vaesen, available: false } },
+      'GET /titles/ttl_vaesen': { body: { ...vaesen, owned: true } },
     })
     await renderTitle()
 
     expect(
-      within(bar()).getByRole('button', { name: 'No longer available' }),
+      within(bar()).getByRole('button', { name: 'In your library' }),
     ).toBeDisabled()
   })
 })

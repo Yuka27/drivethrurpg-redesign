@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import type { TitleCard } from '@/api/titles'
+import type { TitleSummary } from '@/api/titles'
 import { useFormatMoney } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
@@ -9,7 +9,7 @@ export function TitlePrice({
   title,
   className,
 }: {
-  title: TitleCard
+  title: TitleSummary
   className?: string
 }) {
   const { t } = useTranslation('listing')

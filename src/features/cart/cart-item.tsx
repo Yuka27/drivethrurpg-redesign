@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { useRemoveLine, useSetLineQty, useUndoRemove } from '@/api/cart'
-import type { CartLine as Line } from '@/api/cart'
+import type { CartLine } from '@/api/cart'
 import { assetUrl } from '@/api/client'
-import { useTitleSummary } from '@/api/orders'
+
+import { useTitleName } from '@/api/titles'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatMoney, useFormatNumber } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
@@ -16,13 +18,13 @@ import { cn } from '@/lib/utils'
 const MAX_QTY = 99
 
 /**
- * Figma "cart item": cover, title, publisher, the format and how it arrives,
+ * Figma "cart item": one cart line: cover, title, publisher, the format and how it arrives,
  * the quantity and Remove; the price on the right (desktop) or under the
  * title (phones), with the discount when on sale. A download needs no
  * quantity, so its stepper shows only once there is more than one (to take
  * extras off again). Removing offers Undo (POST /cart/undo).
  */
-export function CartLine({ line }: { line: Line }) {
+export function CartItem({ line }: { line: CartLine }) {
   const { t } = useTranslation('cart')
   const apiError = useApiError()
   const formatMoney = useFormatMoney()
@@ -31,7 +33,8 @@ export function CartLine({ line }: { line: Line }) {
     maximumFractionDigits: 0,
   })
   // the cart has no publisher: the title's (cached, as on order pages)
-  const publisher = useTitleSummary(line.title.id).data?.publisher.name
+  const titleName = useTitleName(line.title.id)
+  const publisher = titleName.data?.publisher.name
   const setQty = useSetLineQty()
   const remove = useRemoveLine()
   const undo = useUndoRemove()
@@ -115,10 +118,14 @@ export function CartLine({ line }: { line: Line }) {
               >
                 {name}
               </Link>
-              {publisher && (
-                <span className="truncate text-xs text-muted-foreground">
-                  {publisher}
-                </span>
+              {titleName.isPending ? (
+                <Skeleton className="mt-1 h-3 w-24" />
+              ) : (
+                publisher && (
+                  <span className="truncate text-xs text-muted-foreground">
+                    {publisher}
+                  </span>
+                )
               )}
             </div>
             <div className="flex flex-wrap items-center gap-2">

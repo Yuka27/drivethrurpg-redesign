@@ -42,9 +42,9 @@ export const queryKeys = {
       ['titles', 'list', filters, prefs] as const,
     detail: (id: string, prefs: Preferences) =>
       ['titles', 'detail', id, prefs] as const,
-    /** name and publisher only (order lines); its own key so it never replaces a full detail */
-    summary: (id: string, prefs: Preferences) =>
-      ['titles', 'summary', id, prefs] as const,
+    /** name and publisher only (order and cart lines); its own key so it never replaces a full detail */
+    name: (id: string, prefs: Preferences) =>
+      ['titles', 'name', id, prefs] as const,
     facets: (filters: Record<string, unknown>, prefs: Preferences) =>
       ['titles', 'facets', filters, prefs] as const,
     /** a title's reviews, discussions, similar titles, samples: apart from its detail */
@@ -57,6 +57,7 @@ export const queryKeys = {
   search: {
     results: (params: Record<string, unknown>, prefs: Preferences) =>
       ['search', 'results', params, prefs] as const,
+    popular: (prefs: Preferences) => ['search', 'popular', prefs] as const,
     suggest: (q: string, prefs: Preferences) =>
       ['search', 'suggest', q, prefs] as const,
   },
@@ -80,6 +81,17 @@ export const queryKeys = {
   cartRecommendations: (prefs: Preferences) =>
     ['cart', 'recommendations', prefs] as const,
   wishlist: (prefs: Preferences) => ['wishlist', prefs] as const,
+  notifications: (prefs: Preferences) => ['notifications', prefs] as const,
+  gifts: {
+    detail: (token: string, prefs: Preferences) =>
+      ['gifts', 'detail', token, prefs] as const,
+  },
+  checkout: {
+    /** one checkout session per visit to the page (POST /checkout starts it) */
+    session: (prefs: Preferences) => ['checkout', 'session', prefs] as const,
+    rates: (id: string, prefs: Preferences) =>
+      ['checkout', 'rates', id, prefs] as const,
+  },
   wishlistSettings: (prefs: Preferences) =>
     ['wishlist', 'settings', prefs] as const,
   library: (filters: Record<string, unknown>, prefs: Preferences) =>

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import type { TitleFilters, TitleSort } from '@/api/titles'
-import { listParam, splitList } from '@/lib/search-params'
+import { listParam, searchText, splitList } from '@/lib/search-params'
 
 export const LISTING_SORTS = [
   'match',
@@ -27,6 +27,8 @@ export const PRICE_BANDS = [0, 5, 10, 20, 50] as const
 
 /** What the listing opens on. Figma: "Sort: Best Match", cards. Defaults stay out of the URL. */
 export const LISTING_SEARCH_DEFAULTS = {
+  /** a search's words (the /search page); empty on the catalogue */
+  q: '',
   onSale: false,
   genre: '',
   system: '',
@@ -46,6 +48,7 @@ export const LISTING_SEARCH_DEFAULTS = {
  * keep them); anything invalid falls back to its default.
  */
 export const ListingSearchSchema = z.object({
+  q: searchText(z.string().trim().max(200)).default('').catch(''),
   onSale: z.boolean().default(false).catch(false),
   genre: listParam.default(''),
   system: listParam.default(''),
@@ -75,6 +78,7 @@ export function toTitleFilters(
   except?: ListingFacet,
 ): TitleFilters {
   return {
+    q: search.q || undefined,
     onSale: search.onSale,
     genre: except === 'genre' ? undefined : search.genre,
     system: except === 'system' ? undefined : search.system,

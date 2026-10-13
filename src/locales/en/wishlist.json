@@ -22,8 +22,9 @@
   },
   "empty": {
     "title": "Your wishlist is empty",
-    "text": "Tap the heart on any title to save it here.",
-    "browse": "Browse titles"
+    "text": "Tap the heart on any title to save it. We’ll tell you when it goes on sale.",
+    "browse": "Browse the store",
+    "picks": "Popular picks"
   },
   "shareDialog": {
     "title": "Share your wishlist",
@@ -34,5 +35,6 @@
     "copy": "Copy link",
     "copied": "Link copied.",
     "copyFailed": "We could not copy the link. Select it and copy it yourself."
-  }
+  },
+  "loadErrorTitle": "We couldn’t load your wishlist"
 }

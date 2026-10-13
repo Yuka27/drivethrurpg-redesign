@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 import { TitlePrice } from './title-price'
 import { assetUrl } from '@/api/client'
-import type { TitleCard } from '@/api/titles'
+import type { TitleSummary } from '@/api/titles'
 import { cn } from '@/lib/utils'
 
 /**
@@ -17,7 +17,7 @@ export function ShelfCard({
   action,
   className,
 }: {
-  title: TitleCard
+  title: TitleSummary
   action?: ReactNode
   className?: string
 }) {

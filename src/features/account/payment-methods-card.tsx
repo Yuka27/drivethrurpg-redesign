@@ -7,6 +7,7 @@ import { ConfirmDialog } from './confirm-dialog'
 import {
   SettingsCard,
   SettingsRow,
+  SettingsRowsSkeleton,
   badgeClass,
   rowButtonClass,
 } from './settings-card'
@@ -56,6 +57,7 @@ export function PaymentMethodsCard() {
           {t('loadError')}
         </p>
       )}
+      {methods.isPending && <SettingsRowsSkeleton />}
       {empty && (
         // Figma: the text and the button share a row on desktop; the button
         // goes full width under the text on mobile

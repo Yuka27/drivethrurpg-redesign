@@ -8,7 +8,7 @@ import { usePreferencesStore } from '@/stores/preferences'
  * Numbers, dates and money are formatted by the browser (Intl) in the current
  * language, never by translation files or string concatenation.
  */
-function useLocale() {
+export function useLocale() {
   return apiLanguage(usePreferencesStore((state) => state.language))
 }
 

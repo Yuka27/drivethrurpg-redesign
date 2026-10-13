@@ -30,7 +30,8 @@ export function TitleHeader({
   const formatNumber = useFormatNumber()
   const formatAverage = useFormatNumber({ maximumFractionDigits: 1 })
   const authors = title.authors.map((author) => author.name).join(', ')
-  const lead = title.description.split(/\n\s*\n/)[0]
+  // its own short text: the full description is right below, in Overview
+  const lead = title.shortDescription
 
   return (
     <header className="flex flex-col items-center gap-2 text-center lg:flex-row lg:items-start lg:text-left">

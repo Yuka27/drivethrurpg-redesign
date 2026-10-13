@@ -1,3 +1,111 @@
 {
-  "heading": "Kasa"
+  "heading": "Kasa",
+  "secure": "Bezpieczna płatność",
+  "backToCart": "Wróć do koszyka",
+  "continueShopping": "Kontynuuj zakupy",
+  "loadError": "Nie udało się rozpocząć płatności. Wróć do koszyka i spróbuj ponownie.",
+  "empty": "Twój koszyk jest pusty, więc nie ma czego opłacić.",
+  "sections": {
+    "contact": "Kontakt",
+    "address": "Adres rozliczeniowy i wysyłki",
+    "billing": "Adres rozliczeniowy",
+    "shipping": "Adres wysyłki",
+    "delivery": "Dostawa",
+    "payment": "Płatność"
+  },
+  "contact": {
+    "email": "E-mail",
+    "emailPlaceholder": "ty@przyklad.pl",
+    "emailHint": "Wyślemy tu paragon i linki do pobrania.",
+    "haveAccount": "Masz konto?",
+    "login": "Zaloguj się",
+    "loginRest": ", aby użyć zapisanych danych",
+    "notYou": "To nie Ty?"
+  },
+  "address": {
+    "country": "Kraj",
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "line1": "Adres",
+    "postalCode": "Kod pocztowy",
+    "city": "Miasto",
+    "change": "Zmień",
+    "saved": "Zapisane adresy",
+    "useNew": "Użyj nowego adresu",
+    "shipHere": "Wyślij produkty drukowane na ten adres"
+  },
+  "delivery": {
+    "hint": "Pliki PDF pobierzesz od razu po płatności."
+  },
+  "payment": {
+    "methods": "Metoda płatności",
+    "card": "Karta",
+    "paypal": "PayPal",
+    "applePay": "Apple Pay",
+    "cardNumber": "Numer karty",
+    "expiry": "Data ważności",
+    "expiryPlaceholder": "MM / RR",
+    "cvc": "Kod CVC",
+    "cvcPlaceholder": "CVC",
+    "savedCard": "{{brand}} kończąca się na {{last4}}",
+    "expires": "Ważna do {{date}}",
+    "useAnother": "Użyj innej",
+    "useSaved": "Użyj zapisanej karty",
+    "redirect": "Przekierujemy Cię do {{provider}}, aby zatwierdzić płatność, a potem wrócisz tutaj."
+  },
+  "gift": {
+    "none": "To nie jest prezent",
+    "noneHint": "Tytuły cyfrowe trafią do Twojej Biblioteki.",
+    "make": "Zrób z tego prezent",
+    "on": "Prezent dla {{email}}",
+    "onHint": "Wyślemy odbiorcy link do odebrania tytułów cyfrowych.",
+    "change": "Zmień"
+  },
+  "declined": {
+    "title": "Płatność nie powiodła się",
+    "text": "Bank odrzucił kartę. Nic nie zostało pobrane. Spróbuj innej karty lub metody płatności.",
+    "field": "Twoja karta została odrzucona."
+  },
+  "summary": {
+    "title": "Podsumowanie zamówienia",
+    "show": "Pokaż podsumowanie",
+    "hide": "Ukryj podsumowanie",
+    "subtotal": "Suma częściowa",
+    "saleSavings": "Oszczędności z promocji",
+    "promo": "Kod rabatowy {{code}}",
+    "shipping": "Wysyłka ({{rate}})",
+    "total": "Razem",
+    "vat": "Zawiera {{amount}} VAT ({{rate}})",
+    "pay": "Zapłać {{amount}}",
+    "processing": "Przetwarzanie…",
+    "fine": "Płatności są szyfrowane. Płacąc, akceptujesz <terms>Regulamin</terms>. Tytuły cyfrowe pobierzesz od razu.",
+    "qty": "Liczba sztuk: {{count}}"
+  },
+  "confirmation": {
+    "title": "Dziękujemy, zamówienie jest potwierdzone",
+    "sentTo": "Wysłaliśmy paragon na adres <b>{{email}}</b>.",
+    "sent": "Wysłaliśmy paragon na Twój e-mail.",
+    "ready": "Twoje pliki PDF są gotowe do pobrania.",
+    "number": "Numer zamówienia",
+    "totalPaid": "Zapłacono",
+    "paidWith": "Metoda płatności",
+    "card": "Karta",
+    "savedCard": "{{brand}} kończąca się na {{last4}}",
+    "pdfReady": "PDF gotowy do pobrania",
+    "ships": "Egzemplarz drukowany wyślemy w ciągu {{eta}}. Numer przesyłki dostaniesz e-mailem.",
+    "shipsSoon": "Egzemplarz drukowany wkrótce wyślemy. Numer przesyłki dostaniesz e-mailem.",
+    "keepTitle": "Zachowaj je w swojej Bibliotece",
+    "keepText": "Twoje tytuły są przypisane do tego adresu e-mail. Ustaw hasło, aby w każdej chwili otworzyć Bibliotekę i ponownie pobrać pliki.",
+    "password": "Wybierz hasło",
+    "passwordPlaceholder": "Co najmniej 10 znaków",
+    "create": "Załóż konto",
+    "created": "Konto jest gotowe. Zaloguj się, aby otworzyć Bibliotekę.",
+    "login": "Zaloguj się",
+    "skip": "Pomiń i kontynuuj zakupy",
+    "receipt": "Pobierz paragon",
+    "receiptFailed": "Nie udało się otworzyć paragonu. Spróbuj ponownie później.",
+    "library": "Przejdź do Biblioteki",
+    "details": "Zobacz szczegóły zamówienia",
+    "notFound": "Nie znaleźliśmy tego zamówienia."
+  }
 }

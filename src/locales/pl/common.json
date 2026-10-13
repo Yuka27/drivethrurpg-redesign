@@ -5,13 +5,30 @@
   "actions": {
     "opensInNewTab": "(otwiera się w nowej karcie)",
     "tryAgain": "Spróbuj ponownie",
-    "backHome": "Wróć na stronę główną",
     "close": "Zamknij"
   },
   "header": {
     "search": {
       "label": "Szukaj tytułów",
-      "placeholder": "Wpisz, aby wyszukać..."
+      "placeholder": "Wpisz, aby wyszukać...",
+      "suggestions": "Podpowiedzi wyszukiwania",
+      "clear": "Wyczyść wyszukiwanie",
+      "close": "Zamknij wyszukiwanie",
+      "recent": "Ostatnie wyszukiwania",
+      "clearRecent": "Wyczyść wszystko",
+      "removeRecent": "Usuń {{q}} z ostatnich wyszukiwań",
+      "popular": "Popularne wyszukiwania",
+      "suggested": "Proponowane wyszukiwania",
+      "titles": "Tytuły",
+      "publishers": "Wydawcy",
+      "publisher": "Wydawca",
+      "fill": "Wpisz „{{q}}” w pole wyszukiwania",
+      "seeAll": "Zobacz wszystkie wyniki dla <q>„{{q}}”</q>",
+      "noMatch": "Brak szybkich podpowiedzi dla „{{q}}”",
+      "noMatchHint": "Sprawdź pisownię albo przeszukaj cały katalog.",
+      "hintMove": "aby się przesuwać",
+      "hintSearch": "aby szukać",
+      "hintClose": "aby zamknąć"
     },
     "currency": "Waluta",
     "language": "Język",
@@ -123,7 +140,13 @@
       "title": "Testy",
       "note": "Symuluje linki z e-maili; prawdziwe e-maile nie są wysyłane.",
       "resetPassword": "Ustaw nowe hasło",
-      "resetPasswordExpired": "Ustaw nowe hasło (wygasły link)"
+      "resetPasswordExpired": "Ustaw nowe hasło (wygasły link)",
+      "gift": "Link do prezentu:",
+      "giftReady": "gotowy",
+      "giftClaimedByMe": "odebrany przez Ciebie",
+      "giftClaimed": "odebrany przez kogoś innego",
+      "giftExpired": "wygasły",
+      "giftInvalid": "uszkodzony link"
     }
   },
   "newsletter": {
@@ -140,13 +163,8 @@
     "saveFailedDetail": "Nadal obowiązują na tym urządzeniu."
   },
   "pages": {
-    "notFound": {
-      "title": "Krytyczna porażka",
-      "body": "Ta strona nie istnieje."
-    },
     "error": {
-      "title": "Coś poszło nie tak",
-      "unexpected": "Nieoczekiwany błąd"
+      "title": "Coś poszło nie tak"
     }
   },
   "errors": {
@@ -157,6 +175,7 @@
     "email_taken": "Konto z tym adresem e-mail już istnieje.",
     "weak_password": "Hasło musi mieć co najmniej 10 znaków.",
     "invalid_email": "Podaj prawidłowy adres e-mail.",
+    "gift_already_claimed": "Ten prezent został już odebrany.",
     "gift_expired": "Ten prezent wygasł.",
     "gift_not_found": "Nie znaleźliśmy tego prezentu.",
     "promo_invalid": "Ten kod promocyjny jest nieprawidłowy.",
@@ -170,6 +189,15 @@
     "region": "Powiadomienia"
   },
   "validation": {
+    "firstNameRequired": "Podaj imię.",
+    "lastNameRequired": "Podaj nazwisko.",
+    "addressRequired": "Podaj ulicę i numer.",
+    "postalCodeRequired": "Podaj kod pocztowy.",
+    "cityRequired": "Podaj miasto.",
+    "cardNumberInvalid": "Podaj prawidłowy numer karty.",
+    "expiryInvalid": "Podaj prawidłową datę ważności, MM / RR.",
+    "cvcInvalid": "Podaj 3 lub 4 cyfry z tyłu karty.",
+    "emailRequired": "Podaj adres e-mail.",
     "codeRequired": "Wpisz kod.",
     "recipientEmailRequired": "Podaj e-mail odbiorcy.",
     "emailInvalid": "Podaj prawidłowy adres e-mail.",
@@ -206,5 +234,37 @@
     "remove": "Usuń filtr: {{filter}}",
     "quick": "Szybkie filtry"
   },
-  "comingSoon": "Ta funkcja nie jest jeszcze dostępna."
+  "comingSoon": "Ta funkcja nie jest jeszcze dostępna.",
+  "emptyStates": {
+    "browseStore": "Przeglądaj sklep",
+    "error": {
+      "text": "To problem po naszej stronie albo z połączeniem. Twoje rzeczy są bezpieczne.",
+      "support": "Skontaktuj się z pomocą",
+      "status": "Sprawdź stan usług →"
+    },
+    "notFound": {
+      "code": "404",
+      "title": "Krytyczna porażka",
+      "text": "Wyrzuciłeś 1. Ta strona nie istnieje albo została przeniesiona.",
+      "home": "Przejdź na stronę główną",
+      "search": "Szukaj w sklepie",
+      "headTo": "Albo przejdź do",
+      "newReleases": "Nowości",
+      "deals": "Okazja dnia",
+      "library": "Moja Biblioteka",
+      "support": "Pomoc"
+    }
+  },
+  "notifications": {
+    "title": "Powiadomienia",
+    "markAll": "Oznacz wszystkie jako przeczytane",
+    "settings": "Ustawienia powiadomień",
+    "unread": "Nieprzeczytane",
+    "emptyTitle": "Jesteś na bieżąco",
+    "emptyText": "Tu pojawią się nowe pliki, informacje o promocjach i prezenty.",
+    "loadError": "Nie udało się wczytać powiadomień."
+  },
+  "status": {
+    "loading": "Ładowanie…"
+  }
 }

@@ -1,4 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import { SearchXIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -16,11 +17,19 @@ import type { Section } from './product-sticky-nav/use-scroll-spy'
 import { FollowCard, PublisherCard } from './publisher-cards'
 import { ReviewsSection } from './reviews-section'
 import { TitleHeader } from './title-header'
+import { TitleUnavailable } from './title-unavailable'
 import { chosenEdition, defaultSku } from './use-buy'
 import { ApiError } from '@/api/client'
 import { useTitle, useTitleDiscussions, useTitleReviews } from '@/api/titles'
+import {
+  EmptyActions,
+  EmptyState,
+  ErrorState,
+} from '@/components/site/empty-state'
 import { RecentlyViewed } from '@/components/title/recently-viewed'
+import { LoadingStatus } from '@/components/site/loading-status'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { useRecentlyViewed } from '@/stores/recently-viewed'
 
@@ -72,25 +81,30 @@ export function TitlePage({ titleId }: { titleId: string }) {
     const missing =
       title.error instanceof ApiError && title.error.status === 404
     return (
-      <div className="container flex flex-col items-start gap-4 py-10">
-        <h1 className="font-sans text-2xl font-bold">
-          {t(missing ? 'notFound' : 'loadError')}
-        </h1>
-        <Button asChild variant="outline">
-          <Link to="/titles">{t('browse')}</Link>
-        </Button>
+      <div className="container py-10">
+        {missing ? (
+          <EmptyState as="h1" icon={<SearchXIcon />} title={t('notFound')}>
+            <EmptyActions>
+              <Button asChild className="rounded-lg">
+                <Link to="/titles">{t('browse')}</Link>
+              </Button>
+            </EmptyActions>
+          </EmptyState>
+        ) : (
+          <ErrorState
+            title={t('loadErrorTitle')}
+            onRetry={() => void title.refetch()}
+          />
+        )}
       </div>
     )
   }
 
   const data = title.data
-  if (!data)
-    return (
-      <div aria-busy className="container flex gap-8 pt-6 pb-8">
-        <div className="h-[245px] flex-1 animate-pulse rounded-xl bg-card" />
-        <div className="h-[370px] w-[379px] animate-pulse rounded-xl bg-card max-lg:hidden" />
-      </div>
-    )
+  if (!data) return <TitlePageSkeleton />
+
+  // withdrawn from sale: say so, keep an owner's copy in view, offer others
+  if (!data.available) return <TitleUnavailable title={data} />
 
   const discussionCount = (reviews?.total ?? 0) + (discussions?.total ?? 0)
   const sku = pickedSku ?? defaultSku(data)
@@ -133,7 +147,9 @@ export function TitlePage({ titleId }: { titleId: string }) {
                       )}
                     >
                       {id === 'reviews'
-                        ? t('tabs.reviews', { count: discussionCount })
+                        ? reviews && discussions
+                          ? t('tabs.reviews', { count: discussionCount })
+                          : t('stickyNav.reviews')
                         : t(`tabs.${id}`)}
                     </a>
                   </li>
@@ -176,5 +192,55 @@ export function TitlePage({ titleId }: { titleId: string }) {
         <RecentlyViewed exclude={data.id} />
       </div>
     </>
+  )
+}
+
+/** The product page's outline while GET /titles/{id} loads. */
+function TitlePageSkeleton() {
+  return (
+    <div className="container flex flex-col gap-6 pt-4 pb-8 lg:grid lg:grid-cols-[minmax(0,1fr)_379px] lg:items-start lg:gap-8">
+      <LoadingStatus />
+      <div aria-hidden className="flex flex-col gap-6">
+        <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-start">
+          <Skeleton className="h-[245px] w-[190px] shrink-0 rounded-xl" />
+          <div className="flex w-full flex-col items-center gap-3 py-2 lg:items-start lg:px-3">
+            <Skeleton className="h-7 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+            <Skeleton className="h-3 w-40" />
+            <div className="flex gap-2">
+              <Skeleton className="h-[22px] w-20" />
+              <Skeleton className="h-[22px] w-24" />
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-4 border-b border-muted pb-2">
+          <Skeleton className="h-5 w-20" />
+          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-5 w-24" />
+        </div>
+        <div className="flex flex-col gap-2.5">
+          <Skeleton className="h-4" />
+          <Skeleton className="h-4" />
+          <Skeleton className="h-4 w-11/12" />
+          <Skeleton className="h-4 w-3/5" />
+        </div>
+      </div>
+      <div aria-hidden className="flex flex-col gap-2">
+        <div className="flex flex-col gap-4 rounded-xl bg-card p-4">
+          <Skeleton className="h-8 w-28" />
+          <Skeleton className="h-12 rounded-lg" />
+          <Skeleton className="h-12 rounded-lg" />
+          <Skeleton className="h-10 rounded-lg" />
+          <Skeleton className="h-10 rounded-lg" />
+        </div>
+        <div className="flex items-center gap-2 rounded-xl bg-card px-4 py-1">
+          <Skeleton className="size-20 rounded-xl" />
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-5 w-2/3" />
+            <Skeleton className="h-[22px] w-20" />
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

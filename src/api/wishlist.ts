@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 import { apiFetch, MoneySchema, useRequestPrefs } from './client'
 import { queryKeys } from './query-keys'
-import type { TitleCard } from './titles'
+import type { TitleSummary } from './titles'
 
 const WishlistItemSchema = z.object({
   titleId: z.string(),
@@ -58,7 +58,7 @@ export const isOnSale = (item: WishlistItem) =>
   item.listPrice !== null && item.listPrice.amount > item.price.amount
 
 /** A wishlist entry as a title card, so the listing's cards and rows show it. */
-export const toTitleCard = (item: WishlistItem): TitleCard => ({
+export const toTitleSummary = (item: WishlistItem): TitleSummary => ({
   id: item.titleId,
   title: item.title,
   publisher: item.publisher,

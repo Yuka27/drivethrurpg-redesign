@@ -28,8 +28,9 @@
   },
   "empty": {
     "title": "Twoja lista życzeń jest pusta",
-    "text": "Kliknij serce przy dowolnym tytule, aby go tu zapisać.",
-    "browse": "Przeglądaj tytuły"
+    "text": "Kliknij serce przy dowolnym tytule, aby go zapisać. Damy Ci znać, gdy będzie w promocji.",
+    "browse": "Przeglądaj sklep",
+    "picks": "Popularne tytuły"
   },
   "shareDialog": {
     "title": "Udostępnij listę życzeń",
@@ -40,5 +41,6 @@
     "copy": "Kopiuj link",
     "copied": "Skopiowano link.",
     "copyFailed": "Nie udało się skopiować linku. Zaznacz go i skopiuj ręcznie."
-  }
+  },
+  "loadErrorTitle": "Nie udało się wczytać listy życzeń"
 }

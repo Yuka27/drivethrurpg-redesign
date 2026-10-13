@@ -6,6 +6,7 @@ import { assetUrl } from '@/api/client'
 import { useSimilarTitles } from '@/api/titles'
 import { TitlePrice } from '@/components/title/title-price'
 import { useFacetLabel } from '@/components/title/use-facet-label'
+import { Skeleton } from '@/components/ui/skeleton'
 
 /** Figma: five titles, then a link to more like them. */
 const SHOWN = 5
@@ -20,7 +21,9 @@ export function AlsoBought({
 }) {
   const { t } = useTranslation('title')
   const facetLabel = useFacetLabel()
-  const similar = useSimilarTitles(titleId).data?.slice(0, SHOWN)
+  const query = useSimilarTitles(titleId)
+  const similar = query.data?.slice(0, SHOWN)
+  if (query.isPending) return <AlsoBoughtSkeleton />
   if (!similar?.length) return null
 
   return (
@@ -79,5 +82,24 @@ export function AlsoBought({
         <ArrowRightIcon aria-hidden className="size-4" />
       </Link>
     </section>
+  )
+}
+
+/** The card's outline while the similar titles load. */
+function AlsoBoughtSkeleton() {
+  return (
+    <div aria-hidden className="flex flex-col rounded-xl bg-card p-4">
+      <Skeleton className="mx-2 mb-3 h-5 w-48" />
+      {Array.from({ length: 3 }, (_, index) => (
+        <div key={index} className="flex items-center gap-4 px-1 py-3">
+          <Skeleton className="h-[76px] w-14 shrink-0" />
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-4 w-4/5" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+          <Skeleton className="h-4 w-10 shrink-0" />
+        </div>
+      ))}
+    </div>
   )
 }

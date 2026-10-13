@@ -47,12 +47,18 @@ describe('SiteNav', () => {
       'href',
       '/titles?genre=horror',
     )
+  })
 
-    // keyboard: Escape closes, Enter opens another (a click would follow a
-    // hover that already opened it, and toggle it shut)
-    await u.keyboard('{Escape}')
-    within(nav).getByRole('button', { name: 'Publisher' }).focus()
+  it('opens a publisher menu by keyboard, with a way to the whole catalogue', async () => {
+    mockFacets()
+    const { user: u } = await renderWithProviders(<SiteNav />)
+
+    const nav = await screen.findByRole('navigation', {
+      name: 'Browse the catalog',
+    })
+    ;(await within(nav).findByRole('button', { name: 'Publisher' })).focus()
     await u.keyboard('{Enter}')
+
     expect(
       await within(nav).findByRole('link', { name: /Free League Publishing/ }),
     ).toHaveAttribute('href', '/titles?publisher=pub_free_league')

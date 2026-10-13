@@ -6,6 +6,7 @@ import {
   WishlistSearchSchema,
 } from '@/features/wishlist/wishlist-search'
 import type { WishlistSearch } from '@/features/wishlist/wishlist-search'
+import { replacesHistory } from '@/lib/search-params'
 
 export const Route = createFileRoute('/_auth/wishlist')({
   validateSearch: WishlistSearchSchema,
@@ -25,7 +26,7 @@ function WishlistRoute() {
       onSearchChange={(patch: Partial<WishlistSearch>) =>
         void navigate({
           search: (previous) => ({ ...previous, ...patch }),
-          replace: !('page' in patch && Object.keys(patch).length === 1),
+          replace: replacesHistory(patch),
         })
       }
     />

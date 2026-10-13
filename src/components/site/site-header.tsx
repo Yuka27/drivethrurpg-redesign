@@ -1,8 +1,9 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useMatch, useRouterState } from '@tanstack/react-router'
 import {
-  BellIcon,
+  ArrowLeftIcon,
   HeartIcon,
   LibraryBigIcon,
+  LockIcon,
   ShoppingCartIcon,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -12,20 +13,20 @@ import { useTranslation } from 'react-i18next'
 
 import { AccountMenu } from './account-menu'
 import { AiContentToggle } from './ai-content-toggle'
+import { CountBadge } from './count-badge'
 import { IconTooltip } from './icon-tooltip'
 import { LoginButton } from './login-button'
 import { Logo } from './logo'
 import { MobileMenu } from './mobile-menu'
+import { NotificationsPopover } from './notifications-popover'
 import { CurrencySelect, LanguageSelect } from './preference-selects'
 import { SearchBar } from './search-bar'
 import { SiteNav } from './site-nav'
 import { ThemeToggle } from './theme-toggle'
 import { useMe } from '@/api/me'
 import type { Me } from '@/api/me'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useLastLibrarySearch } from '@/features/library/library-search'
-import { useFormatNumber } from '@/i18n/format'
 import { useHeightVar } from '@/lib/use-height-var'
 import { cn } from '@/lib/utils'
 
@@ -37,6 +38,15 @@ type SiteHeaderProps = {
 export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
   const { data: me, isPending } = useMe()
   const headerRef = useRef<HTMLElement>(null)
+  // on /search?q=: the words, shown in the field
+  const searchQuery = useRouterState({
+    select: (state) => {
+      const { q } = state.location.search as { q?: unknown }
+      return state.location.pathname === '/search' && typeof q === 'string'
+        ? q
+        : ''
+    },
+  })
   // sticky parts below it (the product page's menu) stick under this height
   useHeightVar(headerRef, '--header-h')
 
@@ -44,8 +54,9 @@ export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
     <header ref={headerRef} className="sticky top-0 z-40 bg-background">
       <div className="container">
         {variant === 'focus' ? (
-          <div className="flex h-12 items-center border-b">
+          <div className="flex h-12 items-center gap-3 border-b">
             <Logo />
+            <FocusActions />
           </div>
         ) : (
           <div className="flex flex-wrap items-center gap-x-2 gap-y-2.5 py-4 lg:flex-nowrap lg:gap-x-3 lg:border-b lg:py-2">
@@ -53,7 +64,12 @@ export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
 
             <Logo />
 
-            <SearchBar className="order-last w-full lg:order-none lg:w-auto lg:flex-1" />
+            <SearchBar
+              // a new search (or leaving it) starts the field from its words
+              key={searchQuery}
+              initialQuery={searchQuery}
+              className="order-last w-full lg:order-none lg:w-auto lg:flex-1"
+            />
 
             {me ? (
               <UserActions user={me} />
@@ -65,6 +81,38 @@ export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
         {variant === 'full' && <SiteNav />}
       </div>
     </header>
+  )
+}
+
+/**
+ * The minimal header's right side (checkout mockup): "Secure checkout" and
+ * "Back to cart" while paying, "Continue shopping" once the order is placed.
+ */
+function FocusActions() {
+  const { t } = useTranslation('checkout')
+  const onCheckout = useMatch({ from: '/_focus/checkout', shouldThrow: false })
+  const linkClass =
+    'ml-auto text-sm text-muted-foreground hover:text-foreground'
+  if (onCheckout)
+    return (
+      <>
+        <span className="ml-auto flex items-center gap-1.5 text-[13px] text-muted-foreground">
+          <LockIcon aria-hidden className="size-3.5" />
+          <span className="max-sm:sr-only">{t('secure')}</span>
+        </span>
+        <Link
+          to="/cart"
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeftIcon aria-hidden className="size-3.5" />
+          {t('backToCart')}
+        </Link>
+      </>
+    )
+  return (
+    <Link to="/" className={linkClass}>
+      {t('continueShopping')}
+    </Link>
   )
 }
 
@@ -127,11 +175,9 @@ function UserActions({ user }: { user: Me }) {
         />
       </div>
       <div className="flex items-center gap-1">
-        <HeaderIconLink
-          to="/notifications"
-          icon={BellIcon}
+        <NotificationsPopover
+          unread={counts.unreadNotifications}
           label={t('header.notifications.label')}
-          count={counts.unreadNotifications}
           countLabel={t('header.notifications.withCount', {
             count: counts.unreadNotifications,
           })}
@@ -170,7 +216,6 @@ function HeaderIconLink({
   countLabel,
   className,
 }: HeaderIconLinkProps) {
-  const formatNumber = useFormatNumber()
   const accessibleName = count > 0 && countLabel ? countLabel : label
 
   return (
@@ -183,14 +228,7 @@ function HeaderIconLink({
       >
         <Link to={to} aria-label={accessibleName}>
           <Icon aria-hidden />
-          {count > 0 && (
-            <Badge
-              aria-hidden
-              className="absolute -top-1.5 -right-1.5 h-4 min-w-4 px-1 py-0 text-[10px] leading-none tabular-nums"
-            >
-              {count > 99 ? `${formatNumber(99)}+` : formatNumber(count)}
-            </Badge>
-          )}
+          <CountBadge count={count} />
         </Link>
       </Button>
     </IconTooltip>

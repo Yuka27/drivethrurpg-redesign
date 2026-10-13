@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next'
 
 import { assetUrl } from '@/api/client'
 import { useTitle } from '@/api/titles'
-import type { HomeSection, TitleCard } from '@/api/titles'
+import type { HomeSection, TitleSummary } from '@/api/titles'
 import { OptionSelect } from '@/components/site/option-select'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ratingVerdict, Stars } from '@/components/title/rating-stars'
 import { CartButton, WishlistButton } from '@/components/title/title-actions'
 import { TitlePrice } from '@/components/title/title-price'
@@ -139,7 +140,7 @@ export function TitleTabs({
   )
 }
 
-function TitleSummary({ title }: { title: TitleCard }) {
+function TitleSummary({ title }: { title: TitleSummary }) {
   const facetLabel = useFacetLabel()
   return (
     <span className="flex min-w-0 flex-1 flex-col">
@@ -159,7 +160,7 @@ function TitleSummary({ title }: { title: TitleCard }) {
 }
 
 /** Desktop only: the hovered or focused title, with what its page would say first. */
-function TitlePreview({ title }: { title: TitleCard }) {
+function TitlePreview({ title }: { title: TitleSummary }) {
   const { t } = useTranslation(['home', 'title', 'listing'])
   const facetLabel = useFacetLabel()
   const formatMoney = useFormatMoney()
@@ -263,9 +264,9 @@ function TitlePreview({ title }: { title: TitleCard }) {
             ))}
           </dl>
         )}
-        {detail?.description && (
+        {(detail?.shortDescription || detail?.description) && (
           <p className="line-clamp-5 px-4 py-1 text-sm text-muted-foreground">
-            {detail.description}
+            {detail.shortDescription || detail.description}
           </p>
         )}
         <div className="mt-auto flex gap-1 px-4">
@@ -279,5 +280,40 @@ function TitlePreview({ title }: { title: TitleCard }) {
         </div>
       </div>
     </aside>
+  )
+}
+
+/** The tabs' outline while GET /home loads: tabs, five rows, the preview. */
+export function TitleTabsSkeleton() {
+  return (
+    <div aria-hidden className="flex flex-col gap-2 pt-4">
+      <div className="flex gap-3 pb-1">
+        {[28, 24, 20, 24].map((width, index) => (
+          <Skeleton
+            key={index}
+            className="h-6"
+            style={{ width: `${width * 4}px` }}
+          />
+        ))}
+      </div>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,424px)]">
+        <ul className="flex flex-col">
+          {Array.from({ length: SHOWN }, (_, index) => (
+            <li
+              key={index}
+              className="flex items-center gap-3 px-1 py-2 lg:gap-4"
+            >
+              <Skeleton className="size-[60px] shrink-0 lg:size-20" />
+              <span className="flex flex-1 flex-col gap-2">
+                <Skeleton className="h-4 w-3/5" />
+                <Skeleton className="h-3 w-2/5" />
+              </span>
+              <Skeleton className="h-5 w-12 shrink-0" />
+            </li>
+          ))}
+        </ul>
+        <Skeleton className="h-[440px] rounded-xl max-lg:hidden" />
+      </div>
+    </div>
   )
 }

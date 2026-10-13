@@ -35,7 +35,7 @@ import {
   useFormField,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { TODO_URL } from '@/config/footer'
+import { PRIVACY_URL, TERMS_URL } from '@/config/links'
 import { useApiError } from '@/i18n/use-api-error'
 import { useCountdown } from '@/lib/use-countdown'
 import { cn } from '@/lib/utils'
@@ -160,6 +160,7 @@ export function RegisterForm({
           <SocialButtons
             layout="row"
             disabled={pending}
+            pending={social.isPending ? social.variables : undefined}
             onSelect={signUpWith}
           />
         </div>
@@ -310,16 +311,15 @@ export function RegisterForm({
             t={t}
             i18nKey="register.legal"
             components={{
-              // TODO_URL: legal pages are not routed yet
               terms: (
                 <a
-                  href={TODO_URL}
+                  href={TERMS_URL}
                   className="text-foreground underline underline-offset-2"
                 />
               ),
               privacy: (
                 <a
-                  href={TODO_URL}
+                  href={PRIVACY_URL}
                   className="text-foreground underline underline-offset-2"
                 />
               ),

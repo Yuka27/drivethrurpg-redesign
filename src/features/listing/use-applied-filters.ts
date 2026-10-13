@@ -9,7 +9,8 @@ import { useLanguageName } from '@/i18n/format'
 import { joinList, splitList } from '@/lib/search-params'
 
 /**
- * The filters that are on, as removable chips ("Rule System: OSR"), and
+ * The filters that are on, as removable chips ("Rule System: OSR") and as
+ * `removals` (each with the search without it, for "loosen one"), and
  * `togglePick` to turn one facet value on or off. Shared by the listing and
  * the wishlist, which use the same filters.
  */
@@ -22,6 +23,11 @@ export function useAppliedFilters(
   const languageName = useLanguageName()
   const priceLabel = usePriceLabel()
 
+  const withoutPick = (facet: ListingFacet, value: string): FilterPatch => ({
+    [facet]: joinList(
+      splitList(search[facet]).filter((item) => item !== value),
+    ),
+  })
   const togglePick = (facet: ListingFacet, value: string) => {
     const picked = splitList(search[facet])
     onSearchChange({
@@ -34,13 +40,14 @@ export function useAppliedFilters(
     })
   }
 
-  const applied: Array<AppliedFilter> = [
+  // every filter that is on, and what the search is without it
+  const removals: Array<{ key: string; label: string; patch: FilterPatch }> = [
     ...(search.onSale
       ? [
           {
             key: 'onSale',
             label: `${t('groups.promotions')}: ${t('onSale')}`,
-            onRemove: () => onSearchChange({ onSale: false, page: 1 }),
+            patch: { onSale: false },
           },
         ]
       : []),
@@ -51,7 +58,7 @@ export function useAppliedFilters(
           options(facet).find((option) => option.value === value)?.label ??
           value
         }`,
-        onRemove: () => togglePick(facet, value),
+        patch: withoutPick(facet, value),
       })),
     ),
     ...(search.priceMax === undefined
@@ -60,21 +67,28 @@ export function useAppliedFilters(
           {
             key: 'price',
             label: `${t('groups.price')}: ${priceLabel(search.priceMax)}`,
-            onRemove: () => onSearchChange({ priceMax: undefined, page: 1 }),
+            patch: { priceMax: undefined },
           },
         ]),
     ...splitList(search.language).map((code) => ({
       key: `language:${code}`,
       label: `${t('groups.language')}: ${languageName(code)}`,
-      onRemove: () =>
-        onSearchChange({
-          language: joinList(
-            splitList(search.language).filter((item) => item !== code),
-          ),
-          page: 1,
-        }),
+      patch: {
+        language: joinList(
+          splitList(search.language).filter((item) => item !== code),
+        ),
+      },
     })),
   ]
 
-  return { applied, togglePick }
+  // as removable chips: "Rule System: OSR"
+  const applied: Array<AppliedFilter> = removals.map(
+    ({ key, label, patch }) => ({
+      key,
+      label,
+      onRemove: () => onSearchChange({ ...patch, page: 1 }),
+    }),
+  )
+
+  return { applied, removals, togglePick }
 }

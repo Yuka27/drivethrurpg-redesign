@@ -4,8 +4,11 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
+import { FollowingEmpty } from './account-empty'
 import { AccountPage } from './account-page'
+import { ErrorState } from '@/components/site/empty-state'
 import { OptionSelect } from '@/components/site/option-select'
+import { LoadingStatus } from '@/components/site/loading-status'
 import { SearchField } from '@/components/site/search-field'
 import {
   useFollow,
@@ -25,6 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { useFormatDate } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
@@ -113,38 +117,55 @@ export function FollowingPage() {
           </div>
         )}
 
-        {following.isError && (
-          <p className="text-sm text-destructive">{t('loadError')}</p>
-        )}
-
-        {empty ? (
-          <div className="rounded-xl bg-card p-6 text-sm">
-            <p>{t('following.empty')}</p>
-            <p className="mt-1 text-muted-foreground">
-              {t('following.emptyHint')}
-            </p>
-          </div>
-        ) : (
-          following.data && (
+        {following.isError ? (
+          <ErrorState
+            title={t('following.loadErrorTitle')}
+            onRetry={() => void following.refetch()}
+            className="rounded-xl bg-card"
+          />
+        ) : following.isPending ? (
+          <div>
+            <LoadingStatus />
             <ul
-              aria-label={t('following.title')}
+              aria-hidden
               className="flex flex-col gap-3 rounded-xl bg-card p-6"
             >
-              {visible.length === 0 && (
-                <li className="py-2 text-sm text-muted-foreground">
-                  {t('following.noMatches', { query: query.trim() })}
+              {Array.from({ length: 4 }, (_, index) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-4 border-muted not-first:border-t not-first:pt-3"
+                >
+                  <Skeleton className="size-10 shrink-0 rounded-lg" />
+                  <div className="flex flex-1 flex-col gap-2">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                  <Skeleton className="h-9 w-32 rounded-lg max-lg:hidden" />
                 </li>
-              )}
-              {visible.map((item, index) => (
-                <FollowedRow
-                  key={item.publisher.id}
-                  item={item}
-                  first={index === 0}
-                  onUnfollow={() => unfollowWithUndo(item)}
-                />
               ))}
             </ul>
-          )
+          </div>
+        ) : empty ? (
+          <FollowingEmpty />
+        ) : (
+          <ul
+            aria-label={t('following.title')}
+            className="flex flex-col gap-3 rounded-xl bg-card p-6"
+          >
+            {visible.length === 0 && (
+              <li className="py-2 text-sm text-muted-foreground">
+                {t('following.noMatches', { query: query.trim() })}
+              </li>
+            )}
+            {visible.map((item, index) => (
+              <FollowedRow
+                key={item.publisher.id}
+                item={item}
+                first={index === 0}
+                onUnfollow={() => unfollowWithUndo(item)}
+              />
+            ))}
+          </ul>
         )}
       </div>
     </AccountPage>

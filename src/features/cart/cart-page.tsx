@@ -1,15 +1,26 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowLeftIcon, ShoppingCartIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 
-import { CartLine } from './cart-line'
+import { CartItem } from './cart-item'
 import { CartRecommendations } from './cart-recommendations'
-import { GiftCard } from './gift-card'
+import { GiftOption } from './gift-option'
 import { CheckoutButton, checkoutBlocked, OrderSummary } from './order-summary'
-import { cartItemCount, useCart } from '@/api/cart'
-import type { Cart } from '@/api/cart'
+import { cartItemCount, useCart, useMoveSavedToCart } from '@/api/cart'
+import type { Cart, CartLine } from '@/api/cart'
+import { assetUrl } from '@/api/client'
+import {
+  EmptyActions,
+  EmptyLabel,
+  EmptyState,
+  ErrorState,
+} from '@/components/site/empty-state'
+import { LoadingStatus } from '@/components/site/loading-status'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatMoney } from '@/i18n/format'
+import { useApiError } from '@/i18n/use-api-error'
 
 /**
  * /cart (Figma "Cart"). Desktop: the lines and the gift card on the left, the
@@ -35,17 +46,15 @@ export function CartPage() {
         </Link>
 
         {query.isError ? (
-          <p className="text-sm text-destructive">{t('loadError')}</p>
+          <ErrorState
+            title={t('loadErrorTitle')}
+            onRetry={() => void query.refetch()}
+            className="rounded-xl bg-card"
+          />
         ) : !cart ? (
-          <div
-            aria-busy
-            className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_379px] lg:gap-8"
-          >
-            <div className="h-[406px] animate-pulse rounded-xl bg-card" />
-            <div className="h-[470px] animate-pulse rounded-xl bg-card max-lg:hidden" />
-          </div>
+          <CartSkeleton />
         ) : cart.lines.length === 0 ? (
-          <EmptyCart />
+          <EmptyCart saved={cart.savedForLater} />
         ) : (
           <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_379px] lg:items-start lg:gap-8">
             <div className="flex flex-col gap-4">
@@ -60,10 +69,10 @@ export function CartPage() {
                 className="flex flex-col gap-2 rounded-xl bg-card px-4 pt-6 pb-4"
               >
                 {cart.lines.map((line) => (
-                  <CartLine key={line.lineId} line={line} />
+                  <CartItem key={line.lineId} line={line} />
                 ))}
               </ul>
-              <GiftCard cart={cart} />
+              <GiftOption cart={cart} />
             </div>
             <OrderSummary cart={cart} />
           </div>
@@ -77,22 +86,87 @@ export function CartPage() {
   )
 }
 
-function EmptyCart() {
+/**
+ * Mockup "Cart: empty": back to the store, and anything saved for later
+ * (each can move back to the cart).
+ */
+function EmptyCart({ saved }: { saved: Array<CartLine> }) {
   const { t } = useTranslation('cart')
+  const apiError = useApiError()
+  const formatMoney = useFormatMoney()
+  const move = useMoveSavedToCart()
+
   return (
     <div className="flex flex-col items-start gap-4">
       <h1 className="font-sans text-2xl leading-8 font-bold">{t('heading')}</h1>
-      <div className="flex w-full flex-col items-center gap-3 rounded-xl bg-card px-4 py-10 text-center">
-        <ShoppingCartIcon
-          aria-hidden
-          className="size-8 text-muted-foreground"
-        />
-        <p className="font-bold">{t('empty.title')}</p>
-        <p className="text-sm text-muted-foreground">{t('empty.text')}</p>
-        <Button asChild className="rounded-lg">
-          <Link to="/titles">{t('empty.browse')}</Link>
-        </Button>
-      </div>
+      <EmptyState
+        icon={<ShoppingCartIcon />}
+        title={t('empty.title')}
+        text={t('empty.text')}
+        className="w-full rounded-xl bg-card"
+      >
+        <EmptyActions>
+          <Button asChild className="rounded-lg">
+            <Link to="/titles">{t('empty.browse')}</Link>
+          </Button>
+        </EmptyActions>
+        {saved.length > 0 && (
+          <>
+            <EmptyLabel id="saved-for-later">
+              {t('empty.saved', { count: saved.length })}
+            </EmptyLabel>
+            <ul
+              aria-labelledby="saved-for-later"
+              className="grid w-full max-w-[400px] gap-2 text-left"
+            >
+              {saved.map((line) => (
+                <li
+                  key={line.lineId}
+                  className="flex items-center gap-3 rounded-[10px] border bg-background p-2.5"
+                >
+                  <span className="aspect-[3/4] w-14 shrink-0 overflow-hidden rounded-md border bg-muted">
+                    {line.title.cover && (
+                      <img
+                        src={assetUrl(line.title.cover.url)}
+                        alt=""
+                        className="size-full object-cover"
+                      />
+                    )}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-bold">
+                      {line.title.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {line.formatLabel} · {formatMoney(line.unitPrice)}
+                    </span>
+                  </span>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={move.isPending}
+                    aria-label={t('empty.moveLabel', {
+                      title: line.title.name,
+                    })}
+                    onClick={() =>
+                      move.mutate(line.lineId, {
+                        onSuccess: () =>
+                          toast.success(
+                            t('empty.moved', { title: line.title.name }),
+                          ),
+                        onError: (error) => toast.error(apiError(error)),
+                      })
+                    }
+                    className="border"
+                  >
+                    {t('empty.moveToCart')}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </EmptyState>
     </div>
   )
 }
@@ -125,6 +199,46 @@ function CheckoutBar({ cart }: { cart: Cart }) {
       {blocked && (
         <p className="text-xs text-warning">{t('summary.giftNeedsEmail')}</p>
       )}
+    </div>
+  )
+}
+
+/** The cart's outline while GET /cart loads: heading, lines, the summary. */
+function CartSkeleton() {
+  return (
+    <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_379px] lg:items-start lg:gap-8">
+      <LoadingStatus />
+      <div aria-hidden className="flex flex-col gap-4">
+        <Skeleton className="h-8 w-40" />
+        <div className="flex flex-col gap-5 rounded-xl bg-card px-4 pt-6 pb-4">
+          {Array.from({ length: 3 }, (_, index) => (
+            <div key={index} className="flex gap-4">
+              <Skeleton className="h-[92px] w-[69px] shrink-0" />
+              <div className="flex flex-1 flex-col gap-2 py-1">
+                <Skeleton className="h-3 w-1/4" />
+                <Skeleton className="h-4 w-3/5" />
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <Skeleton className="h-5 w-14 shrink-0" />
+            </div>
+          ))}
+        </div>
+        <Skeleton className="h-16 rounded-xl bg-card" />
+      </div>
+      <div
+        aria-hidden
+        className="flex flex-col gap-4 rounded-xl bg-card p-6 max-lg:hidden"
+      >
+        <Skeleton className="h-6 w-36" />
+        {Array.from({ length: 3 }, (_, index) => (
+          <div key={index} className="flex justify-between">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        ))}
+        <Skeleton className="h-9" />
+        <Skeleton className="mt-2 h-10 rounded-lg" />
+      </div>
     </div>
   )
 }

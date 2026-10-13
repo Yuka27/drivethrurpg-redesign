@@ -45,6 +45,7 @@ function cartOf(lines: Array<CartLine>, extra: Partial<Cart> = {}): Cart {
   return {
     id: 'crt_1',
     lines,
+    savedForLater: [],
     promo: null,
     gift: { enabled: false },
     totals: {
@@ -275,14 +276,27 @@ describe('CartPage', () => {
     ).toHaveTextContent('Add')
   })
 
-  it('says when the cart is empty', async () => {
-    mockCart(cartOf([]))
-    await renderWithProviders(<CartPage />)
-
-    expect(await screen.findByText('Your cart is empty')).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Browse titles' })).toHaveAttribute(
-      'href',
-      '/titles',
+  it('says when the cart is empty, and brings back what was saved for later', async () => {
+    const { bodies } = mockCart(
+      { ...cartOf([]), savedForLater: [print] },
+      {
+        'POST /cart/saved/ln_2/move-to-cart': { body: {} },
+      },
     )
+    const { user: u } = await renderWithProviders(<CartPage />)
+
+    expect(
+      await screen.findByRole('heading', { name: 'Your cart is empty' }),
+    ).toBeVisible()
+    expect(
+      screen.getByRole('link', { name: 'Continue shopping' }),
+    ).toHaveAttribute('href', '/titles')
+    const saved = screen.getByRole('list', { name: 'Saved for later · 1' })
+    expect(within(saved).getByText('Vaesen')).toBeVisible()
+
+    await u.click(
+      within(saved).getByRole('button', { name: 'Move Vaesen to cart' }),
+    )
+    expect(bodies('POST /cart/saved/ln_2/move-to-cart')).toHaveLength(1)
   })
 })

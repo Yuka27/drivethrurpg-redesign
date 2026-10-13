@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { describe, expect, it, vi } from 'vite-plus/test'
 
-import { libraryItem, search as makeSearch } from './library-fixtures'
+import { libraryItem, search as makeSearch } from '@/test/library'
 import { LibraryPage } from './library-page'
 import type { LibrarySearch } from './library-search'
 import { assetUrl } from '@/api/client'
@@ -183,8 +183,16 @@ describe('LibraryPage', () => {
     )
 
     expect(
-      await screen.findByText('No titles match these filters.'),
+      await screen.findByRole('heading', {
+        name: 'Nothing in your library matches these filters',
+      }),
     ).toBeVisible()
+    expect(
+      screen.getByText('You own 3 titles. None of them match.'),
+    ).toBeVisible()
+    expect(
+      screen.getByRole('link', { name: 'Bought it recently? Check Orders →' }),
+    ).toHaveAttribute('href', '/orders')
     await user.click(screen.getByRole('button', { name: 'Clear filters' }))
     expect(cards()).toHaveLength(3)
   })
@@ -348,9 +356,13 @@ describe('LibraryPage', () => {
     await renderWithProviders(<Harness initial={makeSearch()} />)
 
     expect(
-      await screen.findByText(
-        'Your library is empty. Titles you buy or receive as gifts appear here.',
-      ),
+      await screen.findByRole('heading', { name: 'Your library is empty' }),
     ).toBeVisible()
+    expect(
+      screen.getByRole('link', { name: 'Browse the store' }),
+    ).toHaveAttribute('href', '/titles')
+    expect(
+      screen.getByRole('link', { name: /Looking for free titles\?/ }),
+    ).toHaveAttribute('href', '/titles?priceMax=0')
   })
 })

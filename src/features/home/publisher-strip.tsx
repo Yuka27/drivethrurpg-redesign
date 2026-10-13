@@ -5,20 +5,26 @@ import { SectionHeading } from './section-heading'
 import { usePublisher } from '@/api/publishers'
 import { useTitleFacets } from '@/api/titles'
 import { PublisherLogo } from '@/components/site/publisher-logo'
+import { Skeleton } from '@/components/ui/skeleton'
 
 /** Figma: eight logos in a row on desktop. */
 const SHOWN = 8
 
+const STRIP_CLASS =
+  '-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-1 lg:grid lg:grid-cols-8 lg:overflow-visible'
+
 /** Figma "Browse by Publisher": logo tiles of the publishers with the most titles. */
 export function PublisherStrip() {
   const { t } = useTranslation('home')
-  const publishers = useTitleFacets({}).data?.publishers.slice(0, SHOWN) ?? []
+  const facets = useTitleFacets({})
+  const publishers = facets.data?.publishers.slice(0, SHOWN) ?? []
+  if (facets.isPending) return <PublisherStripSkeleton />
   if (publishers.length === 0) return null
 
   return (
     <section aria-labelledby="publishers" className="flex flex-col gap-4">
       <SectionHeading id="publishers">{t('publishers')}</SectionHeading>
-      <ul className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-1 lg:grid lg:grid-cols-8 lg:overflow-visible">
+      <ul className={STRIP_CLASS}>
         {publishers.map((publisher) => (
           <PublisherTile
             key={publisher.value}
@@ -50,5 +56,22 @@ function PublisherTile({ id, name }: { id: string; name: string }) {
         />
       </Link>
     </li>
+  )
+}
+
+/** The strip's outline while the publishers load. */
+function PublisherStripSkeleton() {
+  return (
+    <div aria-hidden className="flex flex-col gap-4">
+      <Skeleton className="h-7 w-48" />
+      <div className={STRIP_CLASS}>
+        {Array.from({ length: SHOWN }, (_, index) => (
+          <Skeleton
+            key={index}
+            className="size-[140px] shrink-0 rounded-xl lg:aspect-square lg:size-auto"
+          />
+        ))}
+      </div>
+    </div>
   )
 }

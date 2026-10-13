@@ -2,7 +2,7 @@ import { act, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vite-plus/test'
 
 import { HomePage } from './home-page'
-import type { TitleCard } from '@/api/titles'
+import type { TitleSummary } from '@/api/titles'
 import { useRecentlyViewed } from '@/stores/recently-viewed'
 import { mockApi, user } from '@/test/api'
 import type { Handler } from '@/test/api'
@@ -11,7 +11,10 @@ import { renderWithProviders } from '@/test/render'
 afterEach(() => useRecentlyViewed.setState({ titles: [] }))
 
 const usd = (amount: number) => ({ amount, currency: 'USD' })
-function title(id: string, overrides: Partial<TitleCard> = {}): TitleCard {
+function title(
+  id: string,
+  overrides: Partial<TitleSummary> = {},
+): TitleSummary {
   return {
     id,
     title: `Title ${id}`,

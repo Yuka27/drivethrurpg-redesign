@@ -51,7 +51,6 @@
     "list": "Lista"
   },
   "loadError": "Nie udało się wczytać tytułów. Spróbuj później.",
-  "noResults": "Żaden tytuł nie pasuje do tych filtrów.",
   "clearFilters": "Wyczyść filtry",
   "rating": {
     "label_one": "Ocena {{average}} na 5, {{count}} opinia",
@@ -104,5 +103,39 @@
       "vtt": "VTT"
     }
   },
-  "recentlyViewed": "Ostatnio oglądane"
+  "recentlyViewed": "Ostatnio oglądane",
+  "emptyState": {
+    "title": "Żadne tytuły nie pasują do tych filtrów",
+    "text": "Usuń filtr, aby zobaczyć więcej.",
+    "clearAll": "Wyczyść wszystkie filtry",
+    "loosen": "Albo poluzuj jeden",
+    "remove": "Usuń „{{filter}}”",
+    "count_one": "{{formatted}} tytuł",
+    "count_few": "{{formatted}} tytuły",
+    "count_many": "{{formatted}} tytułów",
+    "count_other": "{{formatted}} tytułu"
+  },
+  "search": {
+    "heading": "Wyniki dla „{{q}}”",
+    "count_one": "{{formatted}} tytuł",
+    "count_few": "{{formatted}} tytuły",
+    "count_many": "{{formatted}} tytułów",
+    "count_other": "{{formatted}} tytułu",
+    "withFilters": "z Twoimi filtrami",
+    "publishers": "Pasujący wydawcy",
+    "publisher": "Wydawca",
+    "follow": "Obserwuj",
+    "following": "Obserwujesz",
+    "followLabel": "Obserwuj: {{name}}",
+    "none": {
+      "title": "Brak wyników dla „{{q}}”",
+      "didYouMean": "Czy chodziło Ci o <fix>{{fix}}</fix>?",
+      "text": "Nie znaleźliśmy pasującego tytułu ani wydawcy.",
+      "tip1": "Sprawdź pisownię albo wpisz krótsze słowo.",
+      "tip2": "Szukaj systemu, np. „Year Zero”, albo wydawcy.",
+      "tip3": "Użyj mniej słów: „horror” zamiast „straszny horror na jedną sesję”.",
+      "popular": "Popularne wyszukiwania",
+      "browse": "Przeglądaj wszystkie tytuły"
+    }
+  }
 }

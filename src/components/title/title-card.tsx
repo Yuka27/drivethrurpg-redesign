@@ -9,7 +9,7 @@ import { RatingStars } from './rating-stars'
 import { CartButton, WishlistButton } from './title-actions'
 import { TitlePrice } from './title-price'
 import { assetUrl } from '@/api/client'
-import type { TitleCard as Title } from '@/api/titles'
+import type { TitleSummary as Title } from '@/api/titles'
 import { cn } from '@/lib/utils'
 
 /** Cover, with the title's page behind it (the title text is the link people read). */

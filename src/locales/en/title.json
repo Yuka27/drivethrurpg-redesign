@@ -108,5 +108,14 @@
     "replies_other": "{{count}} replies",
     "reply": "Reply",
     "flag": "Report"
-  }
+  },
+  "unavailable": {
+    "title": "This title is no longer available",
+    "text": "The publisher has removed it from the store.",
+    "owned": "Already own it?",
+    "ownedText": "Your copy stays in your Library and can still be downloaded.",
+    "library": "Go to my Library",
+    "similar": "Similar titles"
+  },
+  "loadErrorTitle": "We couldn’t load this title"
 }

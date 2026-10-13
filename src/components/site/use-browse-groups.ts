@@ -26,17 +26,19 @@ export type BrowseGroup = {
  * The header's "browse" menus (desktop dropdowns, mobile accordions): each
  * facet's values with the most titles, from GET /titles/facets, each a link to
  * the listing filtered by it. A facet the API returns empty (Genre, until the
- * API has genres) is left out.
+ * API has genres) is left out. Undefined while the facets load.
  */
-export function useBrowseGroups(): Array<BrowseGroup> {
+export function useBrowseGroups(): Array<BrowseGroup> | undefined {
   const { t } = useTranslation('listing')
-  const facets = useTitleFacets({}).data
-  if (!facets) return []
+  const facets = useTitleFacets({})
+  if (facets.isPending) return undefined
+  if (!facets.data) return []
+  const data = facets.data
 
   return GROUPS.map(([facet, key]) => ({
     facet,
     title: t(`groups.${facet}`),
-    options: facets[key].slice(0, SHOWN).map((value) => ({
+    options: data[key].slice(0, SHOWN).map((value) => ({
       value: value.value,
       label:
         facet === 'publisher'

@@ -26,6 +26,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { linkTarget, utilityMenus } from '@/config/utility-menus'
 import { useFormatNumber } from '@/i18n/format'
@@ -192,51 +193,62 @@ function MenuNav({ onNavigate }: { onNavigate: () => void }) {
 
   return (
     <>
-      {groups.length > 0 && (
-        <nav aria-label={t('nav.label')} className="flex flex-col gap-1">
-          <h2 className={sectionTitleClass}>{t('menu.browse')}</h2>
-          <Accordion type="single" collapsible>
-            {groups.map((group) => (
-              <AccordionItem
-                key={group.facet}
-                value={group.facet}
-                className="border-muted last:border-b"
-              >
-                <AccordionTrigger className={triggerClass}>
-                  {group.title}
-                </AccordionTrigger>
-                <AccordionContent className="pb-2">
-                  <ul>
-                    {group.options.map((option) => (
-                      <li key={option.value}>
+      {!groups ? (
+        <div aria-hidden className="flex flex-col gap-1">
+          <Skeleton className="mb-2 h-3 w-16" />
+          {Array.from({ length: 4 }, (_, index) => (
+            <div key={index} className="border-b border-muted py-3">
+              <Skeleton className="h-4 w-28" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        groups.length > 0 && (
+          <nav aria-label={t('nav.label')} className="flex flex-col gap-1">
+            <h2 className={sectionTitleClass}>{t('menu.browse')}</h2>
+            <Accordion type="single" collapsible>
+              {groups.map((group) => (
+                <AccordionItem
+                  key={group.facet}
+                  value={group.facet}
+                  className="border-muted last:border-b"
+                >
+                  <AccordionTrigger className={triggerClass}>
+                    {group.title}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-2">
+                    <ul>
+                      {group.options.map((option) => (
+                        <li key={option.value}>
+                          <Link
+                            to="/titles"
+                            search={{ [group.facet]: option.value }}
+                            onClick={onNavigate}
+                            className={linkClass}
+                          >
+                            <span className="truncate">{option.label}</span>
+                            <span className="text-xs tabular-nums">
+                              {formatNumber(option.count)}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                      <li>
                         <Link
                           to="/titles"
-                          search={{ [group.facet]: option.value }}
                           onClick={onNavigate}
-                          className={linkClass}
+                          className={`${linkClass} font-medium text-primary`}
                         >
-                          <span className="truncate">{option.label}</span>
-                          <span className="text-xs tabular-nums">
-                            {formatNumber(option.count)}
-                          </span>
+                          {t('nav.browseAll')}
                         </Link>
                       </li>
-                    ))}
-                    <li>
-                      <Link
-                        to="/titles"
-                        onClick={onNavigate}
-                        className={`${linkClass} font-medium text-primary`}
-                      >
-                        {t('nav.browseAll')}
-                      </Link>
-                    </li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </nav>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </nav>
+        )
       )}
       <nav aria-label={t('nav.moreLabel')} className="flex flex-col gap-1">
         <h2 className={sectionTitleClass}>{t('menu.more')}</h2>

@@ -12,6 +12,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu'
+import { Skeleton } from '@/components/ui/skeleton'
 import { linkTarget, utilityMenus } from '@/config/utility-menus'
 import { useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
@@ -38,6 +39,7 @@ export function SiteNav() {
   const onListing = useMatch({ from: '/_site/titles/', shouldThrow: false })
   const onCart = useMatch({ from: '/_site/cart', shouldThrow: false })
   const onWishlist = useMatch({ from: '/_auth/wishlist', shouldThrow: false })
+  const onSearch = useMatch({ from: '/_site/search', shouldThrow: false })
   const onTitle = useMatch({
     from: '/_site/titles/$titleId',
     shouldThrow: false,
@@ -45,7 +47,7 @@ export function SiteNav() {
 
   return (
     <div className="flex h-12 items-center justify-between max-lg:hidden">
-      {onListing || onCart || onWishlist ? (
+      {onListing || onCart || onWishlist || onSearch ? (
         <Link
           to="/"
           className="flex items-center gap-1 rounded-full px-2 text-xs font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -56,9 +58,16 @@ export function SiteNav() {
       ) : (
         <NavigationMenu viewport={false} aria-label={t('nav.label')}>
           <NavigationMenuList className="gap-3">
-            {groups.map((group) => (
-              <BrowseMenu key={group.facet} group={group} />
-            ))}
+            {groups
+              ? groups.map((group) => (
+                  <BrowseMenu key={group.facet} group={group} />
+                ))
+              : // the menus' places while the facets load
+                [72, 56, 92, 88, 56].map((width, index) => (
+                  <li key={index} aria-hidden className="px-2">
+                    <Skeleton className="h-4" style={{ width }} />
+                  </li>
+                ))}
           </NavigationMenuList>
         </NavigationMenu>
       )}

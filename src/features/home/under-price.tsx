@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { SectionHeading } from './section-heading'
 import { useTitles } from '@/api/titles'
 import { ShelfCard } from '@/components/title/shelf-card'
+import { ShelfSkeleton } from '@/components/title/title-skeletons'
 import { usePriceLabel } from '@/features/listing/use-price-label'
 import { cn } from '@/lib/utils'
 
@@ -16,8 +17,9 @@ export function UnderPrice({ className }: { className?: string }) {
   const { t } = useTranslation('home')
   const priceLabel = usePriceLabel()
   // the API takes minor units
-  const titles = useTitles({ priceMax: MAX * 100 }, { page: 1, pageSize: 8 })
-    .data?.items
+  const query = useTitles({ priceMax: MAX * 100 }, { page: 1, pageSize: 8 })
+  const titles = query.data?.items
+  if (query.isPending) return <ShelfSkeleton className={className} />
   if (!titles?.length) return null
 
   return (

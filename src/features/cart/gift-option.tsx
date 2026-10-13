@@ -37,7 +37,7 @@ type Gift = z.infer<typeof GiftSchema>
  * who it is for and an optional message. Each field saves when the buyer
  * leaves it, once the email is valid; checkout waits for that email.
  */
-export function GiftCard({ cart }: { cart: Cart }) {
+export function GiftOption({ cart }: { cart: Cart }) {
   const { t } = useTranslation('cart')
   const apiError = useApiError()
   const switchId = useId()

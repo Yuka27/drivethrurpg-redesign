@@ -39,6 +39,32 @@ describe('TitlePage', () => {
     expect(tags.getByText('Human-centered without AI')).toBeVisible()
   })
 
+  it('leads with the short description, and gives the whole one in Overview', async () => {
+    mockTitle()
+    await renderTitle()
+
+    expect(
+      within(header()).getByText('Stockholm, 1897: the monsters are real.'),
+    ).toBeInTheDocument()
+    const overview = screen.getByRole('region', { name: 'Overview' })
+    expect(within(overview).getByText('A city of nightmares.')).toBeVisible()
+    expect(within(overview).getByText('Second paragraph.')).toBeVisible()
+    // the header no longer repeats the description's first paragraph
+    expect(screen.getAllByText('A city of nightmares.')).toHaveLength(1)
+  })
+
+  it('leaves the lead out when there is no short description', async () => {
+    mockTitle({
+      'GET /titles/ttl_vaesen': { body: { ...vaesen, shortDescription: null } },
+    })
+    await renderTitle()
+
+    expect(within(header()).queryByText('A city of nightmares.')).toBeNull()
+    expect(
+      within(header()).queryByText('Stockholm, 1897: the monsters are real.'),
+    ).toBeNull()
+  })
+
   it('lets the buyer pick an edition, then adds that one', async () => {
     const success = vi.spyOn(toast, 'success')
     const { bodies } = mockTitle({
@@ -105,15 +131,33 @@ describe('TitlePage', () => {
     ).toBeNull()
   })
 
-  it('says when a title is no longer sold', async () => {
+  it('says when a title is no longer sold, and that an owner keeps it', async () => {
     mockTitle({
-      'GET /titles/ttl_vaesen': { body: { ...vaesen, available: false } },
+      'GET /titles/ttl_vaesen': {
+        body: { ...vaesen, available: false, owned: true },
+      },
     })
-    await renderTitle()
+    await renderWithProviders(<TitlePage titleId="ttl_vaesen" />)
 
     expect(
-      within(buy()).getByRole('button', { name: 'No longer available' }),
-    ).toBeDisabled()
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'This title is no longer available',
+      }),
+    ).toBeVisible()
+    expect(screen.getByText(vaesen.title)).toBeVisible()
+    expect(screen.getByRole('note')).toHaveTextContent(
+      'Already own it? Your copy stays in your Library',
+    )
+    expect(
+      screen.getByRole('link', { name: 'Go to my Library' }),
+    ).toHaveAttribute('href', '/library')
+    // similar titles instead
+    expect(
+      await screen.findByRole('link', {
+        name: 'Coriolis: The Flowers of Algorab',
+      }),
+    ).toHaveAttribute('href', '/titles/ttl_coriolis')
   })
 
   it('follows the publisher, and asks a guest to log in first', async () => {

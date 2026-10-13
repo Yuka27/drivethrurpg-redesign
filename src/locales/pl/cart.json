@@ -4,8 +4,12 @@
   "loadError": "Nie udało się wczytać koszyka. Spróbuj ponownie później.",
   "empty": {
     "title": "Twój koszyk jest pusty",
-    "text": "Znajdź swoją następną przygodę w katalogu.",
-    "browse": "Przeglądaj tytuły"
+    "text": "Dodane tytuły poczekają tutaj.",
+    "browse": "Kontynuuj zakupy",
+    "saved": "Zapisane na później · {{count}}",
+    "moveToCart": "Przenieś do koszyka",
+    "moveLabel": "Przenieś {{title}} do koszyka",
+    "moved": "{{title}} wróciło do koszyka."
   },
   "summary": {
     "itemCount_one": "{{count}} produkt",
@@ -65,5 +69,6 @@
     "note": "Wyślemy odbiorcy link do odebrania prezentu. Nic nie trafi do Twojej biblioteki."
   },
   "alsoBought": "Klienci kupili również",
-  "add": "Dodaj"
+  "add": "Dodaj",
+  "loadErrorTitle": "Nie udało się wczytać koszyka"
 }

@@ -5,13 +5,30 @@
   "actions": {
     "opensInNewTab": "(opens in a new tab)",
     "tryAgain": "Try again",
-    "backHome": "Back to home",
     "close": "Close"
   },
   "header": {
     "search": {
       "label": "Search titles",
-      "placeholder": "Type to search..."
+      "placeholder": "Type to search...",
+      "suggestions": "Search suggestions",
+      "clear": "Clear search",
+      "close": "Close search",
+      "recent": "Recent searches",
+      "clearRecent": "Clear all",
+      "removeRecent": "Remove {{q}} from recent searches",
+      "popular": "Popular searches",
+      "suggested": "Suggested searches",
+      "titles": "Titles",
+      "publishers": "Publishers",
+      "publisher": "Publisher",
+      "fill": "Use “{{q}}” in the search field",
+      "seeAll": "See all results for <q>“{{q}}”</q>",
+      "noMatch": "No quick matches for “{{q}}”",
+      "noMatchHint": "Check the spelling, or search the whole catalog.",
+      "hintMove": "to move",
+      "hintSearch": "to search",
+      "hintClose": "to close"
     },
     "currency": "Currency",
     "language": "Language",
@@ -115,7 +132,13 @@
       "title": "Testing",
       "note": "Simulates links from emails; no real emails are sent.",
       "resetPassword": "Set new password",
-      "resetPasswordExpired": "Set new password (expired link)"
+      "resetPasswordExpired": "Set new password (expired link)",
+      "gift": "Gift link:",
+      "giftReady": "ready",
+      "giftClaimedByMe": "claimed by you",
+      "giftClaimed": "claimed by someone else",
+      "giftExpired": "expired",
+      "giftInvalid": "broken link"
     }
   },
   "newsletter": {
@@ -132,13 +155,8 @@
     "saveFailedDetail": "They are still applied on this device."
   },
   "pages": {
-    "notFound": {
-      "title": "Critical miss",
-      "body": "This page doesn't exist."
-    },
     "error": {
-      "title": "Something went wrong",
-      "unexpected": "Unexpected error"
+      "title": "Something went wrong"
     }
   },
   "errors": {
@@ -149,6 +167,7 @@
     "email_taken": "An account with this email already exists.",
     "weak_password": "Use at least 10 characters for your password.",
     "invalid_email": "Enter a valid email address.",
+    "gift_already_claimed": "Someone already claimed this gift.",
     "gift_expired": "This gift has expired.",
     "gift_not_found": "We couldn't find this gift.",
     "promo_invalid": "This promo code isn't valid.",
@@ -162,6 +181,15 @@
     "region": "Notifications"
   },
   "validation": {
+    "firstNameRequired": "Enter your first name.",
+    "lastNameRequired": "Enter your last name.",
+    "addressRequired": "Enter your street address.",
+    "postalCodeRequired": "Enter your postal code.",
+    "cityRequired": "Enter your city.",
+    "cardNumberInvalid": "Enter a valid card number.",
+    "expiryInvalid": "Enter a valid expiry date, MM / YY.",
+    "cvcInvalid": "Enter the 3 or 4 digits on the back of the card.",
+    "emailRequired": "Enter your email address.",
     "codeRequired": "Enter a code.",
     "recipientEmailRequired": "Enter the recipient's email.",
     "emailInvalid": "Enter a valid email address.",
@@ -192,5 +220,37 @@
     "remove": "Remove filter: {{filter}}",
     "quick": "Quick filters"
   },
-  "comingSoon": "This is not available yet."
+  "comingSoon": "This is not available yet.",
+  "emptyStates": {
+    "browseStore": "Browse the store",
+    "error": {
+      "text": "This is on our side or your connection. Your things are safe.",
+      "support": "Contact support",
+      "status": "Check service status →"
+    },
+    "notFound": {
+      "code": "404",
+      "title": "Critical miss",
+      "text": "You rolled a 1. That page doesn’t exist or has moved.",
+      "home": "Go to the homepage",
+      "search": "Search the store",
+      "headTo": "Or head to",
+      "newReleases": "New releases",
+      "deals": "Deal of the Day",
+      "library": "My Library",
+      "support": "Support"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAll": "Mark all as read",
+    "settings": "Notification settings",
+    "unread": "Unread",
+    "emptyTitle": "You’re all caught up",
+    "emptyText": "New files, sale alerts and gifts will appear here.",
+    "loadError": "We couldn’t load your notifications."
+  },
+  "status": {
+    "loading": "Loading…"
+  }
 }

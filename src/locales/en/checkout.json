@@ -1,3 +1,111 @@
 {
-  "heading": "Checkout"
+  "heading": "Checkout",
+  "secure": "Secure checkout",
+  "backToCart": "Back to cart",
+  "continueShopping": "Continue shopping",
+  "loadError": "We could not start the checkout. Go back to your cart and try again.",
+  "empty": "Your cart is empty, so there is nothing to check out.",
+  "sections": {
+    "contact": "Contact",
+    "address": "Billing & shipping address",
+    "billing": "Billing address",
+    "shipping": "Shipping address",
+    "delivery": "Delivery",
+    "payment": "Payment"
+  },
+  "contact": {
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "emailHint": "We send your receipt and download links here.",
+    "haveAccount": "Have an account?",
+    "login": "Log in",
+    "loginRest": "to use saved details",
+    "notYou": "Not you?"
+  },
+  "address": {
+    "country": "Country",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "line1": "Address",
+    "postalCode": "Postal code",
+    "city": "City",
+    "change": "Change",
+    "saved": "Saved addresses",
+    "useNew": "Use a new address",
+    "shipHere": "Ship the printed items to this address"
+  },
+  "delivery": {
+    "hint": "PDFs are available to download as soon as you pay."
+  },
+  "payment": {
+    "methods": "Payment method",
+    "card": "Card",
+    "paypal": "PayPal",
+    "applePay": "Apple Pay",
+    "cardNumber": "Card number",
+    "expiry": "Expiry",
+    "expiryPlaceholder": "MM / YY",
+    "cvc": "Security code",
+    "cvcPlaceholder": "CVC",
+    "savedCard": "{{brand}} ending {{last4}}",
+    "expires": "Expires {{date}}",
+    "useAnother": "Use another",
+    "useSaved": "Use a saved card",
+    "redirect": "You’ll be sent to {{provider}} to approve the payment, then return here."
+  },
+  "gift": {
+    "none": "Not a gift",
+    "noneHint": "Digital titles go to your Library.",
+    "make": "Make it a gift",
+    "on": "A gift for {{email}}",
+    "onHint": "We email them a link to claim the digital titles.",
+    "change": "Change"
+  },
+  "declined": {
+    "title": "Payment didn’t go through",
+    "text": "Your bank declined the card. Nothing was charged. Try another card or payment method.",
+    "field": "Your card was declined."
+  },
+  "summary": {
+    "title": "Order summary",
+    "show": "Show order summary",
+    "hide": "Hide order summary",
+    "subtotal": "Subtotal",
+    "saleSavings": "Sale savings",
+    "promo": "Promo code {{code}}",
+    "shipping": "Shipping ({{rate}})",
+    "total": "Total",
+    "vat": "Includes {{amount}} VAT ({{rate}})",
+    "pay": "Pay {{amount}}",
+    "processing": "Processing…",
+    "fine": "Payments are encrypted. By paying you agree to the <terms>Terms</terms>. Digital titles are available to download immediately.",
+    "qty": "Quantity: {{count}}"
+  },
+  "confirmation": {
+    "title": "Thanks, your order is confirmed",
+    "sentTo": "We sent the receipt to <b>{{email}}</b>.",
+    "sent": "We sent the receipt to your email.",
+    "ready": "Your PDFs are ready to download now.",
+    "number": "Order number",
+    "totalPaid": "Total paid",
+    "paidWith": "Paid with",
+    "card": "Card",
+    "savedCard": "{{brand}} ending {{last4}}",
+    "pdfReady": "PDF ready to download",
+    "ships": "Printed copy ships in {{eta}}. Tracking by email.",
+    "shipsSoon": "Printed copy ships soon. Tracking by email.",
+    "keepTitle": "Keep these in your Library",
+    "keepText": "Your titles are tied to this email. Add a password to open your Library any time and re-download your files.",
+    "password": "Choose a password",
+    "passwordPlaceholder": "At least 10 characters",
+    "create": "Create account",
+    "created": "Your account is ready. Log in to open your Library.",
+    "login": "Log in",
+    "skip": "Skip and continue shopping",
+    "receipt": "Download receipt",
+    "receiptFailed": "We could not open the receipt. Try again later.",
+    "library": "Go to my Library",
+    "details": "View order details",
+    "notFound": "We could not find this order."
+  }
 }

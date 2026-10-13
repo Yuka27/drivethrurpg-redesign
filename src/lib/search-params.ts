@@ -38,12 +38,9 @@ export const createSearchMemory = <T>(defaults: T) =>
   }))
 
 /**
- * ?language=pl or ?language=pl,de — content-language filter for /titles and /search,
- * passed as-is to the API's `language` query param. Codes come from GET /meta/locales.
+ * For list pages whose filters live in the URL (listing, search, wishlist):
+ * turning a page adds a history entry (Back returns to it), a filter change
+ * replaces the current one (Back does not step through every click).
  */
-export const languageFilter = searchText(
-  z
-    .string()
-    .regex(/^[a-z]{2}(,[a-z]{2})*$/)
-    .optional(),
-).catch(undefined)
+export const replacesHistory = (patch: object) =>
+  !('page' in patch && Object.keys(patch).length === 1)

@@ -6,6 +6,7 @@ import {
   defaultStringifySearch,
 } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
+import { PageSkeleton } from './components/site/page-skeleton'
 import { queryClient } from './lib/query-client'
 import { initI18n } from './i18n'
 import { detectInitialLanguage } from './i18n/detect'
@@ -20,6 +21,8 @@ const router = createRouter({
   stringifySearch: (search) =>
     defaultStringifySearch(search).replaceAll('%2C', ','),
   defaultPreload: 'intent',
+  // a route still getting ready (a page's code arriving) shows an outline
+  defaultPendingComponent: PageSkeleton,
   scrollRestoration: true,
 })
 

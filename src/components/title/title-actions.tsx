@@ -9,7 +9,7 @@ import {
   useToggleWishlist,
   useUndoWishlistRemove,
 } from '@/api/titles'
-import type { TitleCard } from '@/api/titles'
+import type { TitleSummary } from '@/api/titles'
 import { Button } from '@/components/ui/button'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
@@ -20,7 +20,7 @@ export function WishlistButton({
   title,
   className,
 }: {
-  title: TitleCard
+  title: TitleSummary
   className?: string
 }) {
   const { t } = useTranslation('listing')
@@ -94,7 +94,7 @@ export function CartButton({
   text,
   className,
 }: {
-  title: TitleCard
+  title: TitleSummary
   labelClassName?: string
   /** Replaces the "Add" label (and its icon), e.g. "Add to Cart - $2.47". */
   text?: string

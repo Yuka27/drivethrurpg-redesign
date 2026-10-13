@@ -1,0 +1,82 @@
+{
+  "heading": "Twój prezent",
+  "from": "Prezent od: {{name}}",
+  "waiting_one": "Czeka na Ciebie {{count}} tytuł",
+  "waiting_few": "Czekają na Ciebie {{count}} tytuły",
+  "waiting_many": "Czeka na Ciebie {{count}} tytułów",
+  "waiting_other": "Czeka na Ciebie {{count}} tytułu",
+  "sentTo": "Wysłano {{date}} na adres {{email}}",
+  "sent": "Wysłano {{date}}",
+  "claim": {
+    "title": "Odbierz prezent",
+    "createText": "Załóż darmowe konto, aby zachować je w Bibliotece. Nie potrzebujesz danych płatniczych.",
+    "loginText": "Zaloguj się, aby dodać je do Biblioteki.",
+    "tabs": "Sposób odbioru",
+    "create": "Załóż konto",
+    "login": "Zaloguj się",
+    "email": "E-mail",
+    "emailHint": "Prezent wysłano na ten adres. Możesz użyć innego.",
+    "choosePassword": "Wybierz hasło",
+    "password": "Hasło",
+    "passwordPlaceholder": "Co najmniej 10 znaków",
+    "createSubmit": "Załóż konto i odbierz",
+    "loginSubmit": "Zaloguj się i odbierz",
+    "terms": "Kontynuując, akceptujesz <terms>Regulamin</terms>.",
+    "forgot": "Nie pamiętasz hasła?",
+    "orContinueWith": "lub kontynuuj przez",
+    "creating": "Zakładamy konto…",
+    "loggingIn": "Logowanie…",
+    "claiming": "Odbieramy prezent…"
+  },
+  "ready": {
+    "title": "Dodaj do Biblioteki",
+    "text_one": "Ten tytuł trafi na Twoje konto, gotowy do pobrania.",
+    "text_few": "Te {{count}} tytuły trafią na Twoje konto, gotowe do pobrania.",
+    "text_many": "Te {{count}} tytułów trafi na Twoje konto, gotowe do pobrania.",
+    "text_other": "Te {{count}} tytułu trafi na Twoje konto, gotowe do pobrania.",
+    "notYou": "To nie Ty?",
+    "submit": "Odbierz prezent",
+    "fine": "Nadawca nie zapłaci ponownie i nie zobaczy Twojej Biblioteki.",
+    "claiming": "Odbieramy prezent…"
+  },
+  "done": {
+    "title": "Gotowe. Prezent jest w Twojej Bibliotece.",
+    "text_one": "{{name}} wysłał(a) Ci tytuł. Pobierz go teraz lub w dowolnej chwili z Biblioteki.",
+    "text_few": "{{name}} wysłał(a) Ci {{count}} tytuły. Pobierz je teraz lub w dowolnej chwili z Biblioteki.",
+    "text_many": "{{name}} wysłał(a) Ci {{count}} tytułów. Pobierz je teraz lub w dowolnej chwili z Biblioteki.",
+    "text_other": "{{name}} wysłał(a) Ci {{count}} tytułu. Pobierz je teraz lub w dowolnej chwili z Biblioteki.",
+    "library": "Przejdź do Biblioteki",
+    "thanksTitle": "Podziękuj: {{name}}",
+    "thanksHint": "Wyślemy Twoją wiadomość e-mailem. Opcjonalnie.",
+    "thanksLabel": "Twoja wiadomość",
+    "thanksPlaceholder": "Dzięki! Nie mogę się doczekać sesji.",
+    "thanksSubmit": "Wyślij podziękowanie",
+    "thanksSent": "Wysłano podziękowanie: {{name}}.",
+    "thanksSending": "Wysyłanie…"
+  },
+  "claimed": {
+    "title": "Ten prezent został już odebrany",
+    "text": "Trafił do Biblioteki {{date}}. Jeśli to Ty, Twoje tytuły czekają.",
+    "library": "Przejdź do Biblioteki",
+    "support": "Skontaktuj się z pomocą",
+    "fine": "To nie Ty? Daj nam znać, sprawdzimy to."
+  },
+  "expired": {
+    "title": "Ten link do prezentu wygasł",
+    "text": "Możemy wysłać nowy na adres, na który wysłano prezent.",
+    "resend": "Wyślij mi nowy link",
+    "sent": "Wysłano nowy link. Sprawdź skrzynkę.",
+    "fine": "Wysyłamy na {{email}}. Zły adres? Poproś osobę {{name}} o ponowne wysłanie prezentu.",
+    "resending": "Wysyłamy nowy link…"
+  },
+  "invalid": {
+    "title": "Nie możemy otworzyć tego linku",
+    "text": "Może został skopiowany niekompletnie. Otwórz link z oryginalnego e-maila albo wpisz z niego kod prezentu.",
+    "code": "Kod prezentu",
+    "find": "Znajdź mój prezent",
+    "stuck": "Nadal nie działa? <support>Skontaktuj się z pomocą</support>",
+    "finding": "Szukamy prezentu…"
+  },
+  "loadError": "Nie udało się wczytać prezentu",
+  "loadErrorText": "Sprawdź połączenie i spróbuj ponownie. Prezent jest bezpieczny."
+}
