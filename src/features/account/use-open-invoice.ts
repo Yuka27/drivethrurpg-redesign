@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { openInNewTab } from './open-in-new-tab'
+import { openInNewTab } from '@/lib/open-in-new-tab'
 import { useReceipt } from '@/api/orders'
 
 /** "Invoice" / "Download invoice (PDF)": opens the order's receipt PDF in a new tab. */

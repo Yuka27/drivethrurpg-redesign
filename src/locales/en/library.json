@@ -1,0 +1,56 @@
+{
+  "title": "My library",
+  "getApp": "Get the app",
+  "search": "Search in library",
+  "searchPlaceholder": "Search in library",
+  "selectAll": "Select all",
+  "showing": "Showing {{from}}–{{to}} of {{total}}",
+  "sort": "Sort",
+  "sortDisplay": "Sort: {{option}}",
+  "sorts": {
+    "added": "Recently added",
+    "updated": "Recently updated",
+    "title": "Title A–Z",
+    "publisher": "Publisher A–Z"
+  },
+  "status": {
+    "title": "Status",
+    "all": "All",
+    "updated": "Updated",
+    "gifts": "Gifts"
+  },
+  "facets": {
+    "system": "Rule System",
+    "type": "Product Type",
+    "format": "Format",
+    "publisher": "Publisher"
+  },
+  "searchFacet": {
+    "system": "Search rule systems",
+    "systemPlaceholder": "Search rule systems...",
+    "publisher": "Search publishers",
+    "publisherPlaceholder": "Search publishers..."
+  },
+  "card": {
+    "updated": "Updated",
+    "purchased": "Purchased {{date}}",
+    "giftFrom": "Gift from {{name}}",
+    "files_one": "{{count}} file, {{size}} MB",
+    "files_other": "{{count}} files, {{size}} MB",
+    "select": "Select {{title}}",
+    "download": "Download",
+    "downloadLabel": "Download {{title}}",
+    "downloadFile": "Download {{name}}",
+    "more": "More actions for {{title}}",
+    "viewProduct": "View product page",
+    "viewPublisher": "Publisher page",
+    "markSeen": "Mark update as seen"
+  },
+  "downloadSelected_one": "Download {{count}} title",
+  "downloadSelected_other": "Download {{count}} titles",
+  "downloadFailed": "We could not prepare the download. Try again.",
+  "empty": "Your library is empty. Titles you buy or receive as gifts appear here.",
+  "noResults": "No titles match these filters.",
+  "clearFilters": "Clear filters",
+  "loadError": "We could not load your library. Try again later."
+}

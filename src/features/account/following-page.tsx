@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { AccountPage } from './account-page'
-import { SearchField } from './search-field'
-import { PreferenceSelect } from './preference-controls'
+import { OptionSelect } from '@/components/site/option-select'
+import { SearchField } from '@/components/site/search-field'
 import { assetUrl } from '@/api/client'
 import {
   useFollow,
@@ -97,7 +97,7 @@ export function FollowingPage() {
               value={query}
               onChange={setQuery}
             />
-            <PreferenceSelect
+            <OptionSelect
               label={t('following.sort')}
               value={sort}
               options={(Object.keys(SORTS) as Array<Sort>).map((value) => ({

@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 
 import { pageTitleClass } from './account-page'
 import { brandName } from './card-brand'
-import { openInNewTab } from './open-in-new-tab'
+import { openInNewTab } from '@/lib/open-in-new-tab'
 import { useStatusLabel } from './order-status'
 import { useLastOrdersSearch } from './orders-search'
 import { useOpenInvoice } from './use-open-invoice'

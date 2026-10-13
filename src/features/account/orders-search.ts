@@ -1,7 +1,6 @@
 import { z } from 'zod'
-import { create } from 'zustand'
 
-import { searchText } from '@/lib/search-params'
+import { createSearchMemory, searchText } from '@/lib/search-params'
 
 export const PERIODS = ['month', 'quarter', 'year', 'all'] as const
 export type Period = (typeof PERIODS)[number]
@@ -27,15 +26,7 @@ export const OrdersSearchSchema = z.object({
 })
 export type OrdersSearch = z.infer<typeof OrdersSearchSchema>
 
-/**
- * The list the user last looked at, for the order page's "← Orders" link (which
- * should go back to that list, not to a fresh one). In memory only: the URL is
- * what survives a reload.
- */
-export const useLastOrdersSearch = create<{
-  search: OrdersSearch
-  remember: (search: OrdersSearch) => void
-}>()((set) => ({
-  search: ORDERS_SEARCH_DEFAULTS,
-  remember: (search) => set({ search }),
-}))
+/** The list the user last looked at, for "← Orders" and the sidebar/hub links. */
+export const useLastOrdersSearch = createSearchMemory<OrdersSearch>(
+  ORDERS_SEARCH_DEFAULTS,
+)

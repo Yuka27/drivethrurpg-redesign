@@ -3,5 +3,28 @@
   "filters": {
     "language": "Język",
     "anyLanguage": "Dowolny język"
+  },
+  "facets": {
+    "type": {
+      "adventure": "Przygoda",
+      "setting": "Świat gry",
+      "bestiary": "Bestiariusz",
+      "map_pack": "Zestaw map",
+      "zine": "Zin",
+      "tool": "Narzędzie",
+      "core_rulebook": "Podręcznik główny",
+      "supplement": "Dodatek"
+    },
+    "system": {
+      "d20_5e": "D20 / 5e",
+      "system_neutral": "Uniwersalny",
+      "osr": "OSR",
+      "pathfinder": "Pathfinder"
+    },
+    "format": {
+      "pdf": "PDF",
+      "print_pdf": "Druk + PDF",
+      "vtt": "VTT"
+    }
   }
 }

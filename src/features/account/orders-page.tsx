@@ -4,11 +4,11 @@ import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { AccountPage } from './account-page'
-import { SearchField } from './search-field'
+import { OptionSelect } from '@/components/site/option-select'
+import { SearchField } from '@/components/site/search-field'
 import { brandName } from './card-brand'
 import { useStatusLabel } from './order-status'
 import type { OrdersSearch, Period } from './orders-search'
-import { PreferenceSelect } from './preference-controls'
 import { useOpenInvoice } from './use-open-invoice'
 import { assetUrl } from '@/api/client'
 import { useOrder, useOrders, useTitleSummary } from '@/api/orders'
@@ -92,7 +92,7 @@ export function OrdersPage({
               onChange={(q) => filterBy({ q })}
             />
             <div className="flex gap-2">
-              <PreferenceSelect
+              <OptionSelect
                 label={t('orders.period')}
                 value={period}
                 options={(Object.keys(PERIOD_MONTHS) as Array<Period>).map(
@@ -101,7 +101,7 @@ export function OrdersPage({
                 onValueChange={(value) => filterBy({ period: value as Period })}
                 className={filterClass}
               />
-              <PreferenceSelect
+              <OptionSelect
                 label={t('orders.status')}
                 value={status}
                 options={[

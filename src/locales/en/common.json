@@ -150,5 +150,19 @@
     "prev": "Prev",
     "next": "Next",
     "page": "Page {{page}}"
+  },
+  "filters": {
+    "title": "Filters",
+    "description": "Narrow down the list. Changes apply right away.",
+    "clearAll": "Clear all",
+    "active": "filters on",
+    "selected_one": "{{count}} selected",
+    "selected_other": "{{count}} selected",
+    "more_one": "+ {{count}} more",
+    "more_other": "+ {{count}} more",
+    "showLess": "Show less",
+    "noMatches": "Nothing matches.",
+    "showResults_one": "Show {{count}} result",
+    "showResults_other": "Show {{count}} results"
   }
 }
