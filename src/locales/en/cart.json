@@ -6,10 +6,7 @@
     "title": "Your cart is empty",
     "text": "Titles you add will wait here.",
     "browse": "Continue shopping",
-    "saved": "Saved for later · {{count}}",
-    "moveToCart": "Move to cart",
-    "moveLabel": "Move {{title}} to cart",
-    "moved": "{{title}} is back in your cart."
+    "saved": "Saved for later · {{count}}"
   },
   "summary": {
     "itemCount_one": "{{count}} item",
@@ -50,7 +47,10 @@
     "remove": "Remove",
     "removeLabel": "Remove {{title}}",
     "removed": "{{title}} was removed from your cart.",
-    "undo": "Undo"
+    "undo": "Undo",
+    "saveForLater": "Save for later",
+    "saveLabel": "Save {{title}} for later",
+    "saved": "{{title}} was saved for later."
   },
   "gift": {
     "title": "This order is a gift",
@@ -66,5 +66,11 @@
   },
   "alsoBought": "Customers also bought",
   "add": "Add",
-  "loadErrorTitle": "We couldn’t load your cart"
+  "loadErrorTitle": "We couldn’t load your cart",
+  "saved": {
+    "heading": "Saved for later ({{count}})",
+    "moveToCart": "Move to cart",
+    "moveLabel": "Move {{title}} to cart",
+    "moved": "{{title}} is back in your cart."
+  }
 }

@@ -58,7 +58,7 @@ export function AppliedFilters({
           type="button"
           aria-expanded={expanded}
           onClick={() => setExpanded(!expanded)}
-          className="px-1 text-xs text-primary hover:underline"
+          className="px-1 text-xs text-primary-text hover:underline"
         >
           {expanded
             ? t('filters.showLess')
@@ -68,7 +68,7 @@ export function AppliedFilters({
       <button
         type="button"
         onClick={onClearAll}
-        className="px-1 text-xs text-primary hover:underline"
+        className="px-1 text-xs text-primary-text hover:underline"
       >
         {t('filters.clearAll')}
       </button>

@@ -45,7 +45,7 @@ export function FilterGroup({
           )}
         </span>
         {variant === 'sheet' && selectedCount > 0 && (
-          <span className="px-1 text-xs font-normal text-primary">
+          <span className="px-1 text-xs font-normal text-primary-text">
             {t('filters.selected', { count: selectedCount })}
           </span>
         )}

@@ -150,7 +150,7 @@ function NotificationsPanel({ onClose }: { onClose: () => void }) {
                 onError: (error) => toast.error(apiError(error)),
               })
             }
-            className="text-base font-medium text-primary hover:underline disabled:opacity-60"
+            className="text-base font-medium text-primary-text hover:underline disabled:opacity-60"
           >
             {t('notifications.markAll')}
           </button>

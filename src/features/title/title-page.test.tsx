@@ -324,3 +324,125 @@ describe('TitlePage while loading', () => {
     ).toBeVisible()
   })
 })
+
+describe('sorting and filtering reviews', () => {
+  const rated = (id: string, createdAt: string, helpfulCount: number) => ({
+    id,
+    author: { displayName: `Reader ${id}` },
+    rating: 4,
+    title: `Review ${id}`,
+    body: `Body ${id}`,
+    createdAt,
+    verifiedOwner: false,
+    helpfulCount,
+  })
+  // newest first, as GET …/reviews?sort=newest answers
+  const newest = [
+    rated('r1', '2026-08-15T10:00:00Z', 0),
+    rated('r2', '2026-07-14T10:00:00Z', 12),
+    rated('r3', '2026-06-01T10:00:00Z', 1),
+    rated('r4', '2026-05-01T10:00:00Z', 36),
+    rated('r5', '2026-04-01T10:00:00Z', 3),
+  ]
+  // the API's default order: most helpful first
+  const helpful = [newest[3], newest[1], newest[4], newest[2], newest[0]]
+
+  function mockReviews() {
+    return mockTitle({
+      'GET /titles/ttl_vaesen/reviews': ({ params }) => ({
+        body: {
+          items: params.get('sort') === 'newest' ? newest : helpful,
+          total: 5,
+          histogram: [0, 0, 0, 5, 0],
+        },
+      }),
+    })
+  }
+  const section = () =>
+    screen.getByRole('region', { name: 'Reviews & Discussions (6)' })
+  const names = () =>
+    within(section())
+      .getAllByRole('article')
+      .map((article) => article.querySelector('p')?.textContent)
+
+  it('lists newest first, and "Most helpful" follows the API’s ranking', async () => {
+    const { params } = mockReviews()
+    const { user: u } = await renderTitle()
+
+    await waitFor(() => expect(names()).toHaveLength(5))
+    expect(names()).toEqual([
+      'Davos S.',
+      'Reader r1',
+      'Reader r2',
+      'Reader r3',
+      'Reader r4',
+    ])
+    expect(params('GET /titles/ttl_vaesen/reviews')[0].get('sort')).toBe(
+      'newest',
+    )
+
+    await u.click(
+      within(section()).getByRole('combobox', { name: 'Sort reviews' }),
+    )
+    await u.click(await screen.findByRole('option', { name: 'Most helpful' }))
+
+    await waitFor(() =>
+      expect(names()).toEqual([
+        'Reader r4',
+        'Reader r2',
+        'Reader r5',
+        'Reader r3',
+        'Reader r1',
+      ]),
+    )
+    // the API's default order: no sort parameter
+    expect(params('GET /titles/ttl_vaesen/reviews').at(-1)?.get('sort')).toBe(
+      null,
+    )
+    // the thread (no helpful count) comes after the reviews
+    await u.click(within(section()).getByRole('button', { name: 'Page 2' }))
+    expect(names()).toEqual(['Davos S.'])
+  })
+
+  it('says how many found a review helpful, and nothing at zero', async () => {
+    mockReviews()
+    await renderTitle()
+
+    await waitFor(() => expect(names()).toHaveLength(5))
+    const article = (name: string) =>
+      within(section())
+        .getAllByRole('article')
+        .find((item) => item.querySelector('p')?.textContent === name)!
+    expect(article('Reader r4')).toHaveTextContent(
+      '36 people found this helpful',
+    )
+    expect(article('Reader r3')).toHaveTextContent(
+      '1 person found this helpful',
+    )
+    expect(
+      within(article('Reader r1')).queryByText(/found this helpful/),
+    ).toBeNull()
+  })
+
+  it('narrows the list to reviews or questions, counts adding up to the total', async () => {
+    mockReviews()
+    const { user: u } = await renderTitle()
+
+    const chips = await within(section()).findByRole('group', {
+      name: 'Show',
+    })
+    const chip = (name: RegExp) => within(chips).getByRole('button', { name })
+    expect(chip(/^All/)).toHaveTextContent('All (6)')
+    expect(chip(/^All/)).toHaveAttribute('aria-pressed', 'true')
+    expect(chip(/^Reviews/)).toHaveTextContent('Reviews (5)')
+    expect(chip(/^Questions/)).toHaveTextContent('Questions (1)')
+
+    await u.click(chip(/^Questions/))
+    expect(names()).toEqual(['Davos S.'])
+    expect(chip(/^Questions/)).toHaveAttribute('aria-pressed', 'true')
+
+    await u.click(chip(/^Reviews/))
+    expect(names()).toHaveLength(5)
+    expect(names()).not.toContain('Davos S.')
+  })
+})

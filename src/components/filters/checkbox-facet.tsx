@@ -89,7 +89,7 @@ export function CheckboxFacet({
           type="button"
           aria-expanded={expanded}
           onClick={() => setExpanded(!expanded)}
-          className="self-start px-6 text-xs text-primary hover:underline"
+          className="self-start px-6 text-xs text-primary-text hover:underline"
         >
           {expanded
             ? t('filters.showLess')

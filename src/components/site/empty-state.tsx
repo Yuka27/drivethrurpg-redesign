@@ -87,7 +87,7 @@ export function EmptyLink(props: ComponentProps<typeof Link>) {
   return (
     <Link
       {...props}
-      className="mt-3.5 block text-sm font-semibold text-primary hover:underline"
+      className="mt-3.5 block text-sm font-semibold text-primary-text hover:underline"
     />
   )
 }
@@ -128,7 +128,7 @@ export function ErrorState({
       </EmptyActions>
       <a
         href={STATUS_URL}
-        className="mt-3.5 block text-sm font-semibold text-primary hover:underline"
+        className="mt-3.5 block text-sm font-semibold text-primary-text hover:underline"
       >
         {t('emptyStates.error.status')}
       </a>

@@ -37,9 +37,10 @@ export function PromoBanner() {
         aria-hidden
         className="absolute inset-0 -z-10 bg-linear-to-t from-black/90 from-35% to-transparent to-75% lg:bg-linear-to-r lg:from-black/80 lg:from-28% lg:to-transparent lg:to-48%"
       />
-      <div className="mt-auto flex max-w-sm flex-col items-start gap-4 p-4 lg:mt-0 lg:p-0">
+      {/* always over a dark image: the dark theme's text colours, in both themes */}
+      <div className="dark mt-auto flex max-w-sm flex-col items-start gap-4 p-4 lg:mt-0 lg:p-0">
         <div className="flex flex-col gap-2">
-          <p className="text-sm font-bold text-primary uppercase">
+          <p className="text-sm font-bold text-primary-text uppercase">
             {t('banner.featured')}
           </p>
           <h2

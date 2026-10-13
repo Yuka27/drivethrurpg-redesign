@@ -132,7 +132,7 @@ function BrowseMenu({ group }: { group: BrowseGroup }) {
           <li className="mt-1 border-t border-muted pt-1">
             <NavigationMenuLink
               asChild
-              className={cn(itemClass, 'font-medium text-primary')}
+              className={cn(itemClass, 'font-medium text-primary-text')}
             >
               <Link to="/titles">{t('nav.browseAll')}</Link>
             </NavigationMenuLink>

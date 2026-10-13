@@ -106,7 +106,7 @@ export function AccountMenu({ user }: { user: Me }) {
         <DropdownMenuSeparator className="m-0" />
         <div className="p-1">
           <DropdownMenuItem
-            className={`${itemClass} text-primary focus:text-primary [&_svg:not([class*='text-'])]:text-primary`}
+            className={`${itemClass} text-primary-text focus:text-primary-text [&_svg:not([class*='text-'])]:text-primary-text`}
             disabled={logout.isPending}
             onSelect={() => logout.mutate()}
           >

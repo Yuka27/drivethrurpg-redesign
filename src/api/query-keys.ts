@@ -53,6 +53,9 @@ export const queryKeys = {
       kind: 'reviews' | 'discussions' | 'similar' | 'samples',
       prefs: Preferences,
     ) => ['titles', 'related', id, kind, prefs] as const,
+    /** a title's reviews in one order ("helpful" is the API's default) */
+    reviews: (id: string, sort: 'helpful' | 'newest', prefs: Preferences) =>
+      ['titles', 'related', id, 'reviews', sort, prefs] as const,
   },
   search: {
     results: (params: Record<string, unknown>, prefs: Preferences) =>

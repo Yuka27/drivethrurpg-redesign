@@ -107,7 +107,21 @@
     "replies_one": "{{count}} reply",
     "replies_other": "{{count}} replies",
     "reply": "Reply",
-    "flag": "Report"
+    "flag": "Report",
+    "sort": "Sort reviews",
+    "sortDisplay": "Sort: {{option}}",
+    "sorts": {
+      "newest": "Newest",
+      "helpful": "Most helpful"
+    },
+    "show": "Show",
+    "shows": {
+      "all": "All",
+      "reviews": "Reviews",
+      "questions": "Questions"
+    },
+    "helpful_one": "{{formatted}} person found this helpful",
+    "helpful_other": "{{formatted}} people found this helpful"
   },
   "unavailable": {
     "title": "This title is no longer available",

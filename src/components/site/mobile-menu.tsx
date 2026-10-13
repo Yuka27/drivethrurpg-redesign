@@ -160,7 +160,7 @@ export function MobileMenu() {
                   // the menu (and this button) goes away: return focus to the ☰ button
                   openAuth('register', { returnFocusTo: triggerRef.current })
                 }}
-                className="text-primary hover:underline"
+                className="text-primary-text hover:underline"
               >
                 {t('menu.createAccount')}
               </button>
@@ -237,7 +237,7 @@ function MenuNav({ onNavigate }: { onNavigate: () => void }) {
                         <Link
                           to="/titles"
                           onClick={onNavigate}
-                          className={`${linkClass} font-medium text-primary`}
+                          className={`${linkClass} font-medium text-primary-text`}
                         >
                           {t('nav.browseAll')}
                         </Link>

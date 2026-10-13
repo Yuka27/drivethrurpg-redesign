@@ -525,7 +525,7 @@ export function SearchBar({
                   components={{ q: <b /> }}
                 />
               </span>
-              <span className="flex shrink-0 items-center gap-1.5 font-bold text-primary">
+              <span className="flex shrink-0 items-center gap-1.5 font-bold text-primary-text">
                 Enter
                 <ArrowRightIcon aria-hidden className="size-3.5" />
               </span>

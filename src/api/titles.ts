@@ -276,6 +276,8 @@ const ReviewSchema = z.object({
   createdAt: z.string(),
   /** bought the title: Figma "Purchaser" */
   verifiedOwner: z.boolean().catch(false),
+  /** how many readers marked it helpful */
+  helpfulCount: z.number().int().catch(0),
 })
 export type Review = z.infer<typeof ReviewSchema>
 
@@ -307,17 +309,22 @@ const DiscussionsSchema = z.object({
  */
 const WHOLE = 100
 
-export function useTitleReviews(titleId: string) {
+/** The API's review orders: most helpful first (its default), or newest. */
+export type ReviewSort = 'helpful' | 'newest'
+
+export function useTitleReviews(titleId: string, sort: ReviewSort = 'newest') {
   const prefs = useRequestPrefs()
   return useQuery({
-    queryKey: queryKeys.titles.related(titleId, 'reviews', prefs),
+    queryKey: queryKeys.titles.reviews(titleId, sort, prefs),
     queryFn: ({ signal }) =>
       apiFetch(`/titles/${titleId}/reviews`, {
-        params: { pageSize: WHOLE },
+        params: { pageSize: WHOLE, sort: sort === 'newest' ? sort : undefined },
         schema: ReviewsSchema,
         prefs,
         signal,
       }),
+    // the other order stays on screen while this one loads
+    placeholderData: keepPreviousData,
   })
 }
 

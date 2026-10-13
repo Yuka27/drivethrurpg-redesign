@@ -316,3 +316,99 @@ describe('CartPage while loading', () => {
     expect(screen.queryByText(/Your cart is empty/)).toBeNull()
   })
 })
+
+describe('saving for later', () => {
+  /** GET /cart answers with whatever the last change left. */
+  function mockSaving(start: Cart) {
+    let current = start
+    const mocks = mockCart(start, {
+      'GET /cart': () => ({ body: current }),
+      'POST /cart/items/ln_1/save-for-later': () => {
+        current = cartOf([print], { savedForLater: [pdf] })
+        return { body: current }
+      },
+      'POST /cart/saved/ln_1/move-to-cart': () => {
+        current = cartOf([pdf, print])
+        return { body: {} }
+      },
+    })
+    return mocks
+  }
+  const savedList = () =>
+    screen.getByRole('list', { name: 'Saved for later (1)' })
+
+  it('sets a line aside, and Undo brings it back', async () => {
+    const success = vi.spyOn(toast, 'success')
+    const { bodies } = mockSaving(cartOf([pdf, print]))
+    const { user: u } = await renderCart()
+
+    await u.click(
+      screen.getAllByRole('button', {
+        name: 'Save Imperium Maledictum for later',
+      })[0],
+    )
+
+    await waitFor(() =>
+      expect(within(lines()).getAllByRole('listitem')).toHaveLength(1),
+    )
+    expect(within(savedList()).getByText('Imperium Maledictum')).toBeVisible()
+    expect(bodies('POST /cart/items/ln_1/save-for-later')).toHaveLength(1)
+
+    const [text, options] = success.mock.calls[0]
+    expect(text).toBe('Imperium Maledictum was saved for later.')
+    const action = options?.action as { label: string; onClick: () => void }
+    expect(action.label).toBe('Undo')
+    action.onClick()
+
+    await waitFor(() =>
+      expect(within(lines()).getAllByRole('listitem')).toHaveLength(2),
+    )
+    expect(bodies('POST /cart/saved/ln_1/move-to-cart')).toHaveLength(1)
+    expect(
+      screen.queryByRole('heading', { name: /Saved for later/ }),
+    ).toBeNull()
+  })
+
+  it('lists saved titles under the cart, each one tap from going back', async () => {
+    const success = vi.spyOn(toast, 'success')
+    const { bodies } = mockSaving(cartOf([print], { savedForLater: [pdf] }))
+    const { user: u } = await renderCart()
+
+    expect(
+      screen.getByRole('heading', { name: 'Saved for later (1)' }),
+    ).toBeVisible()
+    // set aside: not counted in the cart
+    expect(within(lines()).getAllByRole('listitem')).toHaveLength(1)
+
+    await u.click(
+      within(savedList()).getByRole('button', {
+        name: 'Move Imperium Maledictum to cart',
+      }),
+    )
+
+    await waitFor(() =>
+      expect(within(lines()).getAllByRole('listitem')).toHaveLength(2),
+    )
+    expect(bodies('POST /cart/saved/ln_1/move-to-cart')).toHaveLength(1)
+    expect(success).toHaveBeenCalledWith(
+      'Imperium Maledictum is back in your cart.',
+    )
+  })
+
+  it('offers Save for later on every line, downloads and printed alike', async () => {
+    mockSaving(cartOf([pdf, print]))
+    await renderCart()
+
+    for (const name of ['Imperium Maledictum', 'Vaesen'])
+      expect(
+        screen.getAllByRole('button', { name: `Save ${name} for later` }),
+      ).not.toHaveLength(0)
+    // the quantity rule is unchanged: a single download has no stepper
+    expect(
+      screen.queryByRole('button', { name: 'One more Imperium Maledictum' }),
+    ).toBeNull()
+    expect(
+      screen.getAllByRole('button', { name: 'One more Vaesen' }),
+    ).not.toHaveLength(0)
+  })
+})

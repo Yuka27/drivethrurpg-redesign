@@ -123,7 +123,23 @@
     "replies_many": "{{count}} odpowiedzi",
     "replies_other": "{{count}} odpowiedzi",
     "reply": "Odpowiedz",
-    "flag": "Zgłoś"
+    "flag": "Zgłoś",
+    "sort": "Sortuj opinie",
+    "sortDisplay": "Sortuj: {{option}}",
+    "sorts": {
+      "newest": "Najnowsze",
+      "helpful": "Najbardziej pomocne"
+    },
+    "show": "Pokaż",
+    "shows": {
+      "all": "Wszystko",
+      "reviews": "Opinie",
+      "questions": "Pytania"
+    },
+    "helpful_one": "{{formatted}} osoba uznała to za pomocne",
+    "helpful_few": "{{formatted}} osoby uznały to za pomocne",
+    "helpful_many": "{{formatted}} osób uznało to za pomocne",
+    "helpful_other": "{{formatted}} osoby uznały to za pomocne"
   },
   "unavailable": {
     "title": "Ten tytuł nie jest już dostępny",
