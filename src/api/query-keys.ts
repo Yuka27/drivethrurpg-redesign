@@ -78,6 +78,8 @@ export const queryKeys = {
     all: ['following'] as const,
     list: (prefs: Preferences) => ['following', 'list', prefs] as const,
     feed: (prefs: Preferences) => ['following', 'feed', prefs] as const,
+    /** every kind of follow (publishers, imprints, rule systems) */
+    targets: (prefs: Preferences) => ['following', 'targets', prefs] as const,
   },
   cart: (prefs: Preferences) => ['cart', prefs] as const,
   /** "Customers also bought" for the cart; under 'cart' so cart changes refetch it */

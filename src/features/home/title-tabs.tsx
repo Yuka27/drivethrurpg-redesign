@@ -1,12 +1,26 @@
 import { Link } from '@tanstack/react-router'
-import { ChevronRightIcon } from 'lucide-react'
-import { useId, useState } from 'react'
+import { ChevronRightIcon, RssIcon } from 'lucide-react'
+import { useEffect, useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { assetUrl } from '@/api/client'
+import {
+  feedUnavailable,
+  useFollowingTitles,
+  useFollowTargets,
+} from '@/api/following'
+import type { FollowTarget } from '@/api/following'
+import { useMe } from '@/api/me'
 import { useTitle } from '@/api/titles'
 import type { HomeSection, TitleSummary } from '@/api/titles'
+import {
+  EmptyActions,
+  EmptyState,
+  ErrorState,
+} from '@/components/site/empty-state'
+import { LoadingStatus } from '@/components/site/loading-status'
 import { OptionSelect } from '@/components/site/option-select'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ratingVerdict, Stars } from '@/components/title/rating-stars'
 import { CartButton, WishlistButton } from '@/components/title/title-actions'
@@ -14,15 +28,18 @@ import { TitlePrice } from '@/components/title/title-price'
 import { useFacetLabel } from '@/components/title/use-facet-label'
 import { useFormatDate, useFormatMoney, useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
+import { useFollowingSeen } from '@/stores/following-seen'
+import { tagClass } from '@/components/title/tag-class'
 
-/** Figma: five titles a tab. */
+/** Five titles a tab. */
 const SHOWN = 5
 
 /**
- * Figma's tabs ("New Releases", "Bestselling", "Specials", "Free & PWYW"),
- * as the API's home sections. "Popular Upcoming" has no data.
+ * The tabs ("New Releases", "Following", "Bestselling", "Specials", "Free &
+ * PWYW"): the API's home sections, and the feed of what the user follows
+ * (signed in only). "Popular Upcoming" has no data.
  */
-const TABS = ['new', 'bestselling', 'sale', 'free'] as const
+const TABS = ['new', 'following', 'bestselling', 'sale', 'free'] as const
 type Tab = (typeof TABS)[number]
 
 /**
@@ -37,20 +54,44 @@ export function TitleTabs({
 }) {
   const { t } = useTranslation('home')
   const id = useId()
-  const tabs = TABS.filter((tab) => (sections.get(tab)?.titles.length ?? 0) > 0)
-  const [tab, setTab] = useState<Tab | undefined>(tabs[0])
-  const current = tab && sections.get(tab)
-  const titles = current?.titles.slice(0, SHOWN) ?? []
-  const [previewId, setPreviewId] = useState<string>()
-  const preview = titles.find((title) => title.id === previewId) ?? titles[0]
+  const me = useMe().data
+  const signedIn = Boolean(me)
+  const targets = useFollowTargets(signedIn)
+  const feed = useFollowingTitles(signedIn)
+  // a feed that cannot be shown (no endpoint, another shape) hides the tab
+  const following =
+    signedIn &&
+    !(feed.isError && feedUnavailable(feed.error)) &&
+    !(targets.isError && feedUnavailable(targets.error))
 
-  if (!tab || !current) return null
+  const tabs = TABS.filter((item) =>
+    item === 'following'
+      ? following
+      : (sections.get(item)?.titles.length ?? 0) > 0,
+  )
+  const [picked, setPicked] = useState<Tab>()
+  const tab = picked && tabs.includes(picked) ? picked : tabs.at(0)
+
+  // newer releases than the user last saw in the tab: a dot on it
+  const latest = feed.data?.reduce<string | undefined>(
+    (newest, item) =>
+      item.releaseDate && (!newest || item.releaseDate > newest)
+        ? item.releaseDate
+        : newest,
+    undefined,
+  )
+  const seen = useFollowingSeen((state) => (me ? state.seen[me.id] : undefined))
+  const markSeen = useFollowingSeen((state) => state.markSeen)
+  useEffect(() => {
+    if (tab === 'following' && me && latest) markSeen(me.id, latest)
+  }, [tab, me, latest, markSeen])
+  const unseen =
+    tab !== 'following' && Boolean(latest && (!seen || latest > seen))
+
+  if (!tab) return null
   const panelId = `${id}-panel`
-
-  const select = (next: Tab) => {
-    setTab(next)
-    setPreviewId(undefined)
-  }
+  const followed = targets.data ?? []
+  const label = (item: Tab) => t(`tabs.${item}`)
 
   return (
     <section aria-label={t('lists')} className="flex flex-col gap-2 pt-4">
@@ -67,15 +108,24 @@ export function TitleTabs({
             id={`${id}-${item}`}
             aria-selected={item === tab}
             aria-controls={panelId}
-            onClick={() => select(item)}
+            // the dot, in words: "Following new"
+            aria-label={
+              item === 'following' && unseen
+                ? `${label(item)} ${t('tabs.unseen')}`
+                : undefined
+            }
+            onClick={() => setPicked(item)}
             className={cn(
-              'border-b-2 px-2.5 pt-0.5 pb-1 text-base',
+              'flex items-center gap-1.5 border-b-2 px-2.5 pt-0.5 pb-1 text-base',
               item === tab
                 ? 'border-primary font-semibold text-foreground'
                 : 'border-transparent text-muted-foreground hover:text-foreground',
             )}
           >
-            {t(`tabs.${item}`)}
+            {label(item)}
+            {item === 'following' && unseen && (
+              <span aria-hidden className="size-2 rounded-full bg-primary" />
+            )}
           </button>
         ))}
       </div>
@@ -85,77 +135,212 @@ export function TitleTabs({
           value={tab}
           options={tabs.map((item) => ({
             value: item,
-            label: t(`tabs.${item}`),
+            label:
+              item === 'following' && unseen
+                ? `${label(item)} · ${t('tabs.unseen')}`
+                : label(item),
           }))}
-          onValueChange={(value) => select(value as Tab)}
+          onValueChange={(value) => setPicked(value as Tab)}
           className="h-8 w-full justify-between border-0 bg-transparent px-0 text-base font-semibold shadow-none dark:bg-transparent"
         />
       </div>
 
-      <div
-        id={panelId}
-        role="tabpanel"
-        aria-labelledby={`${id}-${tab}`}
-        className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,424px)]"
-      >
-        <ul className="flex flex-col">
-          {titles.map((title) => (
-            <li key={title.id}>
-              <Link
-                to="/titles/$titleId"
-                params={{ titleId: title.id }}
-                onMouseEnter={() => setPreviewId(title.id)}
-                onFocus={() => setPreviewId(title.id)}
-                className={cn(
-                  'flex items-center gap-3 rounded-md px-1 py-2 lg:gap-4',
-                  title.id === preview.id && 'lg:bg-card',
-                )}
-              >
-                <span className="size-[60px] shrink-0 overflow-hidden rounded-md bg-muted lg:size-20">
-                  {title.cover && (
-                    <img
-                      src={assetUrl(title.cover.url)}
-                      alt=""
-                      loading="lazy"
-                      className="size-full object-cover"
-                    />
-                  )}
-                </span>
-                <TitleSummary title={title} />
-                <TitlePrice
-                  title={title}
-                  className="shrink-0 flex-col items-end gap-0 text-sm font-semibold lg:text-base"
-                />
-                <ChevronRightIcon
-                  aria-hidden
-                  className="size-3 shrink-0 lg:hidden"
-                />
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <TitlePreview title={preview} />
+      <div id={panelId} role="tabpanel" aria-labelledby={`${id}-${tab}`}>
+        {tab !== 'following' ? (
+          <TitleList
+            // a new tab starts its preview on its first title
+            key={tab}
+            titles={sections.get(tab)?.titles.slice(0, SHOWN) ?? []}
+            followed={tab === 'new' ? followed : []}
+          />
+        ) : targets.isPending || feed.isPending ? (
+          <RowsSkeleton />
+        ) : followed.length === 0 ? (
+          <EmptyState
+            icon={<RssIcon />}
+            title={t('following.emptyTitle')}
+            text={t('following.empty')}
+            className="rounded-xl bg-card"
+          >
+            <EmptyActions>
+              <Button asChild className="rounded-lg">
+                <Link to="/following">{t('following.manage')}</Link>
+              </Button>
+            </EmptyActions>
+          </EmptyState>
+        ) : feed.isError ? (
+          <ErrorState
+            title={t('following.loadError')}
+            onRetry={() => void feed.refetch()}
+            className="rounded-xl bg-card"
+          />
+        ) : feed.data.length === 0 ? (
+          <EmptyState
+            icon={<RssIcon />}
+            title={t('following.noneTitle')}
+            text={t('following.none')}
+            className="rounded-xl bg-card"
+          />
+        ) : (
+          <TitleList
+            key={tab}
+            titles={feed.data.slice(0, SHOWN)}
+            followed={followed}
+            withReasons
+          />
+        )}
       </div>
     </section>
   )
 }
 
-function TitleSummary({ title }: { title: TitleSummary }) {
+/**
+ * Why a title is in the Following feed: a followed publisher ("New from
+ * Chaosium"), else a followed rule system ("New for Pathfinder 2e"). The
+ * feed sends no reason, and titles carry no imprint to match.
+ */
+function useFollowReason(followed: Array<FollowTarget>) {
+  const { t } = useTranslation('home')
+  return (title: TitleSummary) => {
+    if (
+      title.publisher &&
+      followed.some(
+        (f) => f.type === 'publisher' && f.id === title.publisher?.id,
+      )
+    )
+      return t('following.fromPublisher', { name: title.publisher.name })
+    const system = followed.find(
+      (f) => f.type === 'rule_system' && f.id === title.ruleSystem,
+    )
+    return system ? t('following.forSystem', { name: system.name }) : undefined
+  }
+}
+
+/** Five rows and, on desktop, the preview of the hovered or focused one. */
+function TitleList({
+  titles,
+  followed,
+  withReasons = false,
+}: {
+  titles: Array<TitleSummary>
+  /** what the user follows: reasons (Following) or "Following" chips (New) */
+  followed: Array<FollowTarget>
+  withReasons?: boolean
+}) {
+  const { t } = useTranslation('home')
+  const [previewId, setPreviewId] = useState<string>()
+  const reason = useFollowReason(followed)
+  const preview = titles.find((title) => title.id === previewId) ?? titles.at(0)
+  if (!preview) return null
+
+  return (
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,424px)]">
+      <ul className="flex flex-col">
+        {titles.map((title) => (
+          <li key={title.id}>
+            <Link
+              to="/titles/$titleId"
+              params={{ titleId: title.id }}
+              onMouseEnter={() => setPreviewId(title.id)}
+              onFocus={() => setPreviewId(title.id)}
+              className={cn(
+                'flex items-center gap-3 rounded-md px-1 py-2 lg:gap-4',
+                title.id === preview.id && 'lg:bg-card',
+              )}
+            >
+              <span className="size-[60px] shrink-0 overflow-hidden rounded-md bg-muted lg:size-20">
+                {title.cover && (
+                  <img
+                    src={assetUrl(title.cover.url)}
+                    alt=""
+                    loading="lazy"
+                    className="size-full object-cover"
+                  />
+                )}
+              </span>
+              <RowText
+                title={title}
+                subtitle={withReasons ? reason(title) : undefined}
+                chip={
+                  !withReasons &&
+                  followed.some(
+                    (f) =>
+                      f.type === 'publisher' && f.id === title.publisher?.id,
+                  )
+                    ? t('following.chip')
+                    : undefined
+                }
+              />
+              <TitlePrice
+                title={title}
+                className="shrink-0 flex-col items-end gap-0 text-sm font-semibold lg:text-base"
+              />
+              <ChevronRightIcon
+                aria-hidden
+                className="size-3 shrink-0 lg:hidden"
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <TitlePreview title={preview} />
+    </div>
+  )
+}
+
+/** The title, then a reason (Following) or its type and system, and a chip. */
+function RowText({
+  title,
+  subtitle,
+  chip,
+}: {
+  title: TitleSummary
+  subtitle?: string
+  chip?: string
+}) {
   const facetLabel = useFacetLabel()
   return (
     <span className="flex min-w-0 flex-1 flex-col">
       <span className="line-clamp-2 text-sm font-semibold lg:line-clamp-1 lg:text-base">
         {title.title}
       </span>
-      <span className="truncate text-xs text-muted-foreground lg:text-sm">
-        {[
-          title.type && facetLabel('type', title.type),
-          title.ruleSystem && facetLabel('system', title.ruleSystem),
-        ]
-          .filter(Boolean)
-          .join(', ')}
+      <span className="flex min-w-0 items-center gap-2">
+        <span className="min-w-0 truncate text-xs text-muted-foreground lg:text-sm">
+          {subtitle ??
+            [
+              title.type && facetLabel('type', title.type),
+              title.ruleSystem && facetLabel('system', title.ruleSystem),
+            ]
+              .filter(Boolean)
+              .join(', ')}
+        </span>
+        {chip && <span className={cn(tagClass, 'shrink-0')}>{chip}</span>}
       </span>
     </span>
+  )
+}
+
+/** The Following tab's rows while its feed loads. */
+function RowsSkeleton() {
+  return (
+    <div>
+      <LoadingStatus />
+      <ul aria-hidden className="flex flex-col">
+        {Array.from({ length: SHOWN }, (_, index) => (
+          <li
+            key={index}
+            className="flex items-center gap-3 px-1 py-2 lg:gap-4"
+          >
+            <Skeleton className="size-[60px] shrink-0 lg:size-20" />
+            <span className="flex flex-1 flex-col gap-2">
+              <Skeleton className="h-4 w-3/5" />
+              <Skeleton className="h-3 w-2/5" />
+            </span>
+            <Skeleton className="h-5 w-12 shrink-0" />
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -221,7 +406,7 @@ function TitlePreview({ title }: { title: TitleSummary }) {
               average: formatAverage(title.rating.average),
             })}
           />
-          <span className="text-primary">
+          <span className="text-primary-text">
             {t(`title:rating.verdict.${ratingVerdict(title.rating.average)}`)} (
             {formatNumber(title.rating.count)})
           </span>
@@ -234,10 +419,7 @@ function TitlePreview({ title }: { title: TitleSummary }) {
         ]
           .filter(Boolean)
           .map((tag) => (
-            <li
-              key={tag}
-              className="inline-flex h-[22px] items-center rounded-md border border-border px-2 text-xs font-medium"
-            >
+            <li key={tag} className={tagClass}>
               {tag}
             </li>
           ))}
@@ -296,7 +478,7 @@ export function TitleTabsSkeleton() {
           />
         ))}
       </div>
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,424px)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,424px)]">
         <ul className="flex flex-col">
           {Array.from({ length: SHOWN }, (_, index) => (
             <li

@@ -48,12 +48,19 @@ const items = [
 ]
 
 /** /following/feed: 3 new titles from Free League, 1 from Cubicle 7, none from Lantern & Ash */
+const usd = (amount: number) => ({ amount, currency: 'USD' })
+const released = (id: string, publisherId: string) => ({
+  id,
+  title: `Title ${id}`,
+  publisher: { id: publisherId, name: publisherId },
+  price: usd(999),
+})
 const feed = {
   items: [
-    { publisher: { id: 'pub_free_league' } },
-    { publisher: { id: 'pub_free_league' } },
-    { publisher: { id: 'pub_free_league' } },
-    { publisher: { id: 'pub_cubicle7' } },
+    released('ttl_1', 'pub_free_league'),
+    released('ttl_2', 'pub_free_league'),
+    released('ttl_3', 'pub_free_league'),
+    released('ttl_4', 'pub_cubicle7'),
   ],
 }
 

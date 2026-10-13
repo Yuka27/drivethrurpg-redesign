@@ -3,14 +3,23 @@ import { afterEach, describe, expect, it } from 'vite-plus/test'
 
 import { HomePage } from './home-page'
 import type { TitleSummary } from '@/api/titles'
+import { useFollowingSeen } from '@/stores/following-seen'
 import { useRecentlyViewed } from '@/stores/recently-viewed'
-import { mockApi, user } from '@/test/api'
+import { apiError, mockApi, user } from '@/test/api'
 import type { Handler } from '@/test/api'
+import { libraryItem } from '@/test/library'
 import { renderWithProviders } from '@/test/render'
 
 afterEach(() => useRecentlyViewed.setState({ titles: [] }))
 
 const usd = (amount: number) => ({ amount, currency: 'USD' })
+const facet = (value: string, label: string, count: number) => ({
+  value,
+  label,
+  count,
+})
+const never = () => new Promise<never>(() => {})
+
 function title(
   id: string,
   overrides: Partial<TitleSummary> = {},
@@ -33,12 +42,6 @@ function title(
     ...overrides,
   }
 }
-
-const facet = (value: string, label: string, count: number) => ({
-  value,
-  label,
-  count,
-})
 
 function mockHome(overrides: Record<string, Handler> = {}) {
   return mockApi({
@@ -140,6 +143,11 @@ function mockHome(overrides: Record<string, Handler> = {}) {
         following: false,
       },
     },
+    // signed in, following nothing yet
+    'GET /following': { body: { items: [] } },
+    'GET /following/feed': { body: { items: [] } },
+    'GET /library': { body: { items: [] } },
+    'GET /wishlist': { body: { items: [], total: 0 } },
     ...overrides,
   })
 }
@@ -171,7 +179,7 @@ describe('HomePage', () => {
       within(tabs)
         .getAllByRole('tab')
         .map((tab) => tab.textContent),
-    ).toEqual(['New Releases', 'Bestselling', 'Specials'])
+    ).toEqual(['New Releases', 'Following', 'Bestselling', 'Specials'])
     const panel = screen.getByRole('tabpanel')
     expect(
       within(panel).getByRole('complementary', {
@@ -205,7 +213,7 @@ describe('HomePage', () => {
     ).toHaveAttribute('href', '/titles/ttl_eberron')
   })
 
-  it('features the three biggest rule systems', async () => {
+  it('falls back to the three biggest rule systems without genres', async () => {
     mockHome()
     await renderWithProviders(<HomePage />)
 
@@ -279,8 +287,6 @@ describe('useRecentlyViewed', () => {
 })
 
 describe('HomePage while loading', () => {
-  const never = () => new Promise<never>(() => {})
-
   it('outlines the sections instead of leaving them out', async () => {
     mockHome({
       'GET /home': never,
@@ -300,5 +306,218 @@ describe('HomePage while loading', () => {
     expect(
       screen.getByRole('link', { name: 'Browse all titles' }),
     ).toBeVisible()
+  })
+})
+
+describe('the Following tab', () => {
+  const follows = {
+    items: [
+      {
+        type: 'publisher',
+        publisher: { id: 'pub_red_door', name: 'Red Door Games' },
+        followedAt: '2026-01-01T10:00:00Z',
+        emailNewReleases: true,
+      },
+      {
+        type: 'rule_system',
+        target: { id: 'year_zero', name: 'Year Zero Engine' },
+        followedAt: '2026-02-01T10:00:00Z',
+        emailNewReleases: false,
+      },
+    ],
+  }
+  const feed = {
+    items: [
+      {
+        ...title('ttl_crown', { title: 'Hollow Crown' }),
+        releaseDate: '2026-10-01',
+      },
+      {
+        ...title('ttl_frost', {
+          title: 'Frost Lines',
+          publisher: { id: 'pub_other', name: 'Other House' },
+          ruleSystem: 'year_zero',
+        }),
+        releaseDate: '2026-09-20',
+      },
+    ],
+  }
+  afterEach(() => useFollowingSeen.setState({ seen: {} }))
+  const tabNames = () =>
+    screen.getAllByRole('tab').map((tab) => tab.textContent.trim())
+  const panel = () => screen.getByRole('tabpanel')
+
+  it('is not there for a guest', async () => {
+    mockHome({ 'GET /me': apiError(401, 'unauthorized') })
+    await renderWithProviders(<HomePage />)
+
+    await screen.findByRole('tab', { name: 'New Releases' })
+    expect(tabNames()).not.toContain('Following')
+  })
+
+  it('invites a user who follows nothing to start', async () => {
+    mockHome()
+    const { user: u } = await renderWithProviders(<HomePage />)
+
+    await u.click(await screen.findByRole('tab', { name: 'Following' }))
+
+    expect(
+      await within(panel()).findByText(
+        'Follow a publisher, imprint or system to see their new releases here.',
+      ),
+    ).toBeVisible()
+    expect(
+      within(panel()).getByRole('link', { name: 'Go to Following' }),
+    ).toHaveAttribute('href', '/following')
+  })
+
+  it('lists what is new from what the user follows, saying why, and marks it seen', async () => {
+    mockHome({
+      'GET /following': { body: follows },
+      'GET /following/feed': { body: feed },
+    })
+    const { user: u } = await renderWithProviders(<HomePage />)
+
+    // second, after New Releases, with a dot for unseen releases
+    await waitFor(() =>
+      expect(
+        screen
+          .getAllByRole('tab')
+          .map((tab) => tab.getAttribute('aria-label') ?? tab.textContent),
+      ).toEqual(['New Releases', 'Following new', 'Bestselling', 'Specials']),
+    )
+    // New Releases: a chip on rows from a followed publisher
+    expect(within(panel()).getAllByText('Following')).not.toHaveLength(0)
+
+    await u.click(screen.getByRole('tab', { name: 'Following new' }))
+
+    expect(
+      await within(panel()).findByText('New from Red Door Games'),
+    ).toBeVisible()
+    expect(within(panel()).getByText('New for Year Zero Engine')).toBeVisible()
+    expect(useFollowingSeen.getState().seen[user.id]).toBe('2026-10-01')
+
+    await u.click(screen.getByRole('tab', { name: 'New Releases' }))
+    expect(screen.getByRole('tab', { name: 'Following' })).toBeVisible()
+  })
+
+  it('is hidden when the feed is not there', async () => {
+    mockHome({
+      'GET /following': { body: follows },
+      'GET /following/feed': apiError(404, 'not_found'),
+    })
+    await renderWithProviders(<HomePage />)
+
+    await screen.findByRole('tab', { name: 'New Releases' })
+    await waitFor(() => expect(tabNames()).not.toContain('Following'))
+  })
+})
+
+describe('Featured for you', () => {
+  const genres = {
+    formats: [],
+    types: [],
+    ruleSystems: [facet('osr', 'osr', 2)],
+    publishers: [],
+    genres: [
+      facet('horror', 'Horror', 6),
+      facet('fantasy', 'Fantasy', 8),
+      facet('sci_fi', 'Sci-Fi', 4),
+      facet('mystery', 'Mystery', 2),
+    ],
+  }
+  /** Each group's heading and reason, once all three are there. */
+  const groups = async () => {
+    const featured = await screen.findByRole('region', {
+      name: /Featured for you|Popular this week/,
+    })
+    await waitFor(() =>
+      expect(
+        within(featured).getAllByRole('heading', { level: 3 }),
+      ).toHaveLength(3),
+    )
+    return within(featured)
+      .getAllByRole('heading', { level: 3 })
+      .map((heading) => [
+        heading.textContent,
+        heading.nextElementSibling?.textContent,
+      ])
+  }
+
+  it('groups by the biggest genres and says why each is there', async () => {
+    const { params } = mockHome({
+      'GET /titles/facets': { body: genres },
+      'GET /library': {
+        body: {
+          items: [
+            libraryItem('l1', { genre: 'fantasy' }),
+            libraryItem('l2', { genre: 'fantasy' }),
+            libraryItem('l3', { genre: 'fantasy' }),
+            libraryItem('l4', { genre: 'horror' }),
+          ],
+        },
+      },
+      'GET /wishlist': {
+        body: {
+          items: [
+            { titleId: 'w1', title: 'W', price: usd(999), genre: 'sci_fi' },
+          ],
+          total: 1,
+        },
+      },
+    })
+    await renderWithProviders(<HomePage />)
+
+    await waitFor(async () =>
+      expect(await groups()).toEqual([
+        ['Fantasy', 'Because you own 3 Fantasy titles'],
+        ['Horror', 'Because you own 1 Horror title'],
+        ['Sci-Fi', 'Because it’s on your wishlist'],
+      ]),
+    )
+    expect(
+      params('GET /titles').some((sent) => sent.get('genre') === 'fantasy'),
+    ).toBe(true)
+  })
+
+  it('shows a guest what is popular, without the "why"', async () => {
+    mockHome({
+      'GET /me': apiError(401, 'unauthorized'),
+      'GET /titles/facets': { body: genres },
+    })
+    await renderWithProviders(<HomePage />)
+
+    expect(
+      await screen.findByRole('heading', { name: 'Popular this week' }),
+    ).toBeVisible()
+    expect((await groups())[0]).toEqual(['Fantasy', 'Popular in Fantasy'])
+    expect(
+      screen.queryByRole('button', { name: 'Why am I seeing this?' }),
+    ).toBeNull()
+  })
+
+  it('explains the picks in a popover that links to preferences', async () => {
+    mockHome({ 'GET /titles/facets': { body: genres } })
+    const { user: u } = await renderWithProviders(<HomePage />)
+
+    const why = await screen.findByRole('button', {
+      name: 'Why am I seeing this?',
+    })
+    await u.click(why)
+
+    expect(
+      await screen.findByText(
+        /These genres come from the titles in your library/,
+      ),
+    ).toBeVisible()
+    expect(
+      screen.getByRole('link', { name: 'Edit your preferences' }),
+    ).toHaveAttribute('href', '/account/preferences')
+
+    await u.keyboard('{Escape}')
+    await waitFor(() =>
+      expect(screen.queryByText(/These genres come from/)).toBeNull(),
+    )
+    expect(why).toHaveFocus()
   })
 })

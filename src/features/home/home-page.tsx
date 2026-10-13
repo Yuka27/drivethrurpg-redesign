@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { CatalogBanner } from './catalog-banner'
-import { FeaturedSystems } from './featured-systems'
+import { FeaturedForYou } from './featured-for-you'
 import { PromoTiles, PromoTilesSkeleton } from './promo-tiles'
 import { PublisherStrip } from './publisher-strip'
 import { TitleTabs, TitleTabsSkeleton } from './title-tabs'
@@ -38,7 +38,7 @@ export function HomePage() {
           </>
         )
       )}
-      <FeaturedSystems />
+      <FeaturedForYou />
       <CatalogBanner />
       <PublisherStrip />
       {/* Figma: on phones only */}

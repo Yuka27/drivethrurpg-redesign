@@ -15,6 +15,7 @@ const WishlistItemSchema = z.object({
   cover: z.object({ url: z.string(), alt: z.string() }).nullable().catch(null),
   type: z.string().nullable().catch(null),
   ruleSystem: z.string().nullable().catch(null),
+  genre: z.string().nullable().catch(null),
   format: z.string().nullable().catch(null),
   price: MoneySchema,
   listPrice: MoneySchema.nullable().catch(null),
@@ -39,9 +40,10 @@ const ALL = 100
  * GET /wishlist, the whole of it (as the library does): the API takes no
  * filters, so the page filters, counts, sorts and pages in the browser.
  */
-export function useWishlist() {
+export function useWishlist(enabled = true) {
   const prefs = useRequestPrefs()
   return useQuery({
+    enabled,
     queryKey: queryKeys.wishlist(prefs),
     queryFn: ({ signal }) =>
       apiFetch('/wishlist', {

@@ -7,18 +7,44 @@
     "new": "Nowości",
     "bestselling": "Bestsellery",
     "sale": "Okazje",
-    "free": "Za darmo i co łaska"
+    "free": "Za darmo i co łaska",
+    "following": "Obserwowane",
+    "unseen": "nowe"
   },
   "preview": "Podgląd: {{title}}",
   "byline": "Autorstwa {{names}}",
   "released": "Dodano do katalogu",
   "featured": "Polecane dla ciebie",
-  "featuredSystem": "Polecany system",
   "catalog": {
     "stats": "Tytułów: {{titles}} · systemów: {{systems}} · aktualizacja codziennie",
     "heading": "Wszystko znajdziesz w pełnym katalogu",
     "browse": "Przeglądaj wszystkie tytuły"
   },
   "publishers": "Przeglądaj według wydawcy",
-  "seeMore": "Zobacz też:"
+  "seeMore": "Zobacz też:",
+  "following": {
+    "emptyTitle": "Nic jeszcze nie obserwujesz",
+    "empty": "Obserwuj wydawcę, imprint lub system, aby zobaczyć tu ich nowości.",
+    "manage": "Przejdź do obserwowanych",
+    "loadError": "Nie udało się wczytać nowości z obserwowanych",
+    "noneTitle": "Na razie nic nowego",
+    "none": "Nowości od obserwowanych pojawią się tutaj.",
+    "fromPublisher": "Nowość od {{name}}",
+    "forSystem": "Nowość do {{name}}",
+    "chip": "Obserwujesz"
+  },
+  "popular": "Popularne w tym tygodniu",
+  "why": {
+    "button": "Dlaczego to widzę?",
+    "text": "Te gatunki wynikają z tytułów w Twojej bibliotece i na liście życzeń oraz z tego, co obserwujesz.",
+    "link": "Zmień preferencje"
+  },
+  "groupReason": {
+    "owned_one": "Bo masz {{count}} tytuł z gatunku {{genre}}",
+    "owned_few": "Bo masz {{count}} tytuły z gatunku {{genre}}",
+    "owned_many": "Bo masz {{count}} tytułów z gatunku {{genre}}",
+    "owned_other": "Bo masz {{count}} tytułu z gatunku {{genre}}",
+    "wishlist": "Bo jest na Twojej liście życzeń",
+    "popular": "Popularne w gatunku {{genre}}"
+  }
 }

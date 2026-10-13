@@ -7,18 +7,42 @@
     "new": "New Releases",
     "bestselling": "Bestselling",
     "sale": "Specials",
-    "free": "Free & PWYW"
+    "free": "Free & PWYW",
+    "following": "Following",
+    "unseen": "new"
   },
   "preview": "Preview: {{title}}",
   "byline": "By {{names}}",
   "released": "Added to Catalog",
   "featured": "Featured for you",
-  "featuredSystem": "Featured system",
   "catalog": {
     "stats": "{{titles}} titles · {{systems}} systems · updated daily",
     "heading": "Everything lives in the full catalog",
     "browse": "Browse all titles"
   },
   "publishers": "Browse by Publisher",
-  "seeMore": "See more:"
+  "seeMore": "See more:",
+  "following": {
+    "emptyTitle": "You don’t follow anything yet",
+    "empty": "Follow a publisher, imprint or system to see their new releases here.",
+    "manage": "Go to Following",
+    "loadError": "We couldn’t load the releases you follow",
+    "noneTitle": "Nothing new yet",
+    "none": "New releases from what you follow will show up here.",
+    "fromPublisher": "New from {{name}}",
+    "forSystem": "New for {{name}}",
+    "chip": "Following"
+  },
+  "popular": "Popular this week",
+  "why": {
+    "button": "Why am I seeing this?",
+    "text": "These genres come from the titles in your library and wishlist, and the topics you follow.",
+    "link": "Edit your preferences"
+  },
+  "groupReason": {
+    "owned_one": "Because you own {{count}} {{genre}} title",
+    "owned_other": "Because you own {{count}} {{genre}} titles",
+    "wishlist": "Because it’s on your wishlist",
+    "popular": "Popular in {{genre}}"
+  }
 }

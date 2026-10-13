@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
 
-import { apiFetch, useRequestPrefs } from './client'
+import { ApiError, apiFetch, useRequestPrefs } from './client'
 import { queryKeys } from './query-keys'
+import { TitleSummarySchema } from './titles'
 
 /** The list is short; ask for all of it in one page instead of paginating. */
 const PAGE_SIZE = 100
@@ -34,30 +35,95 @@ export function useFollowing() {
   })
 }
 
+const FeedTitleSchema = TitleSummarySchema.extend({
+  releaseDate: z.string().nullish(),
+})
+export type FeedTitle = z.infer<typeof FeedTitleSchema>
+const FeedSchema = z.object({ items: z.array(FeedTitleSchema) })
+
 /**
- * New titles per followed publisher ("3 new"), counted from GET /following/feed:
- * the new releases from the publishers the user follows.
+ * GET /following/feed: the new releases from everything the user follows,
+ * newest first. One query for its one cache entry; the hooks below select
+ * what they need from it.
  */
-export function useNewTitleCounts() {
+function useFeed<T>(
+  select: (feed: z.infer<typeof FeedSchema>) => T,
+  enabled = true,
+) {
   const prefs = useRequestPrefs()
   return useQuery({
     queryKey: queryKeys.following.feed(prefs),
     queryFn: ({ signal }) =>
       apiFetch('/following/feed', {
         params: { pageSize: PAGE_SIZE },
-        schema: z.object({
-          items: z.array(z.object({ publisher: z.object({ id: z.string() }) })),
-        }),
+        schema: FeedSchema,
         prefs,
         signal,
       }),
-    select: ({ items }) => {
-      const counts = new Map<string, number>()
-      for (const { publisher } of items) {
+    select,
+    enabled,
+  })
+}
+
+/** New titles per followed publisher ("3 new"), counted from the feed. */
+export const useNewTitleCounts = () =>
+  useFeed(({ items }) => {
+    const counts = new Map<string, number>()
+    for (const { publisher } of items) {
+      if (publisher)
         counts.set(publisher.id, (counts.get(publisher.id) ?? 0) + 1)
-      }
-      return counts
-    },
+    }
+    return counts
+  })
+
+/** The feed's titles (home's "Following" tab), for a signed-in user only. */
+export const useFollowingTitles = (enabled: boolean) =>
+  useFeed(({ items }) => items, enabled)
+
+/**
+ * The feed cannot be shown at all: no such endpoint (404) or an answer of
+ * another shape. Anything else (offline, 5xx) is worth a retry.
+ */
+export const feedUnavailable = (error: unknown) =>
+  (error instanceof ApiError && error.status === 404) ||
+  error instanceof z.ZodError
+
+const FollowTargetSchema = z.union([
+  z.object({
+    type: z.literal('publisher').catch('publisher'),
+    publisher: z.object({ id: z.string(), name: z.string() }),
+  }),
+  z.object({
+    type: z.string(),
+    target: z.object({ id: z.string(), name: z.string() }),
+  }),
+])
+export type FollowTarget = {
+  /** "publisher", "imprint", "rule_system" */
+  type: string
+  id: string
+  name: string
+}
+
+/** GET /following?type=all: publishers, imprints and rule systems followed. */
+export function useFollowTargets(enabled: boolean) {
+  const prefs = useRequestPrefs()
+  return useQuery({
+    queryKey: queryKeys.following.targets(prefs),
+    queryFn: ({ signal }) =>
+      apiFetch('/following', {
+        params: { type: 'all', pageSize: PAGE_SIZE },
+        schema: z.object({ items: z.array(FollowTargetSchema) }),
+        prefs,
+        signal,
+      }).then(({ items }): Array<FollowTarget> =>
+        items.map((item) =>
+          'publisher' in item
+            ? { type: 'publisher', ...item.publisher }
+            : { type: item.type, ...item.target },
+        ),
+      ),
+    enabled,
   })
 }
 

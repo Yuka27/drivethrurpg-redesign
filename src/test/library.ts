@@ -15,6 +15,7 @@ export function libraryItem(
     cover: { url: `/img/${id}.jpg`, alt: '' },
     type: 'adventure',
     ruleSystem: 'osr',
+    genre: null,
     formats: ['pdf'],
     purchasedAt: '2026-04-01T09:00:00Z',
     lastUpdatedAt: null,

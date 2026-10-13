@@ -25,6 +25,7 @@ function item(
     cover: null,
     type: 'adventure',
     ruleSystem: 'year_zero',
+    genre: null,
     format: 'pdf',
     price: usd(1999),
     listPrice: usd(1999),
