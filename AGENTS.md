@@ -22,7 +22,7 @@ A client-side redesign of the DriveThruRPG storefront, built against a mock REST
 - **Data:** TanStack Query for server state (`src/api/`, with query keys centralized in `src/api/query-keys.ts`), Zustand for client state (`src/stores/`).
 - **Forms:** react-hook-form with Zod schemas via `@hookform/resolvers`.
 - **i18n:** i18next/react-i18next with namespaced JSON in `src/locales/<lang>/` (`en`, `pl`). `en-XA` is a dev-only pseudo-locale generated from English at runtime to expose hard-coded strings. `npm run i18n:check` fails when a locale's keys differ from English and warns about unused English keys.
-- **Environment:** `src/lib/env.ts` validates `import.meta.env` with Zod at startup. `VITE_API_URL` is required; `VITE_MOCK_USER=guest` is optional and makes the mock API return the logged-out state.
+- **Environment:** `src/lib/env.ts` validates `import.meta.env` with Zod (`parseEnv`). Vite bakes the variables in at build time. `VITE_API_URL` is required: the API's bare origin (no path, no `/api/v1`; a trailing slash is stripped); the client adds `/api/v1`. `VITE_MOCK_USER=guest` is optional and makes the mock API return the logged-out state. `main.tsx` checks `envProblem` before anything else and loads the app (`bootstrap.tsx`) only when it is null; otherwise `lib/config-error.ts` draws a plain "This build is not configured" screen (plain DOM, English: nothing else has loaded), never a blank page. Every image or file path the API sends (`/img/…`, `/files/…`) goes through `assetUrl` (`api/client.ts`, on `resolveAssetUrl`): it puts root-relative paths on the API origin, passes absolute URLs through and keeps null/undefined as undefined. Deployment (Cloudflare Pages, `npm run build` → `dist`, Node 24 from `.node-version`) is in the README; `public/_headers` sets the caching, and there is deliberately no `_redirects` or `404.html` (Pages then serves `index.html` for deep links).
 
 ### Organization
 
@@ -72,7 +72,7 @@ Use these repository-specific rules when translating a Figma design into this co
 - **Layout:** a custom `container` utility gives the mockups' 1240px max width with 24px gutters. Breakpoints are Tailwind defaults; none are customized.
 - **Components:** shadcn/ui primitives in `src/components/ui/`, styled with `class-variance-authority`, merged with the `cn()` helper from `src/lib/utils.ts` (clsx + tailwind-merge). No Storybook.
 - **Icons:** `lucide-react`, the icon library declared in `components.json`. Keep icon-only controls labeled for assistive technology, and give them an `IconTooltip` (`components/site/icon-tooltip.tsx`) with the same words for sighted users (the header icons, the heart and the icon-only cart button, the grid/list switch).
-- **Assets:** brand logos in `src/assets/logos/` and social login icons in `src/assets/social/`, imported through Vite. There is no `public/` directory; add one only for files that need stable root-relative URLs.
+- **Assets:** brand logos in `src/assets/logos/` and social login icons in `src/assets/social/`, imported through Vite. `public/` holds only files that need stable root-relative URLs (`_headers` for Cloudflare Pages).
 - **Animation:** `tw-animate-css` for enter/exit utilities. Respect reduced motion (see `src/lib/use-reduced-motion.ts`).
 - **Toasts:** `sonner`, mounted once in `src/routes/__root.tsx`.
 
