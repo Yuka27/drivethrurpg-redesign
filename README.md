@@ -13,7 +13,7 @@ _Home page mockups from the Figma case study._
 
 |                      |                                                                                                                                                                             |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Live prototype**   | <CLOUDFLARE_PAGES_URL>                                                                                                                                                      |
+| **Live prototype**   | https://drivethrurpg-redesign.paulinatargo.workers.dev/                                                                                                                     |
 | **Figma case study** | https://www.figma.com/design/pckNOLhUrC8jyhUZDyIrVT/DriveThruRPG--UX-UI-Redesign?node-id=0-1&p=f&t=BJ7keTKOfF5q00QW-0 (research, audit, wireframes, mockups, design system) |
 | **Mock API docs**    | https://drivethrurpg-mock-api.onrender.com/docs#/ (OpenAPI / Swagger UI)                                                                                                    |
 | **Test coverage**    | https://yuka27.github.io/drivethrurpg-redesign/ (Vitest report, rebuilt on every push)                                                                                      |
