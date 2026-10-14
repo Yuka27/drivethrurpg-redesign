@@ -6,10 +6,7 @@
     "title": "Twój koszyk jest pusty",
     "text": "Dodane tytuły poczekają tutaj.",
     "browse": "Kontynuuj zakupy",
-    "saved": "Zapisane na później · {{count}}",
-    "moveToCart": "Przenieś do koszyka",
-    "moveLabel": "Przenieś {{title}} do koszyka",
-    "moved": "{{title}} wróciło do koszyka."
+    "saved": "Zapisane na później · {{count}}"
   },
   "summary": {
     "itemCount_one": "{{count}} produkt",
@@ -54,7 +51,10 @@
     "remove": "Usuń",
     "removeLabel": "Usuń {{title}}",
     "removed": "Usunięto {{title}} z koszyka.",
-    "undo": "Cofnij"
+    "undo": "Cofnij",
+    "saveForLater": "Zapisz na później",
+    "saveLabel": "Zapisz {{title}} na później",
+    "saved": "Zapisano {{title}} na później."
   },
   "gift": {
     "title": "To zamówienie jest prezentem",
@@ -70,5 +70,11 @@
   },
   "alsoBought": "Klienci kupili również",
   "add": "Dodaj",
-  "loadErrorTitle": "Nie udało się wczytać koszyka"
+  "loadErrorTitle": "Nie udało się wczytać koszyka",
+  "saved": {
+    "heading": "Zapisane na później ({{count}})",
+    "moveToCart": "Przenieś do koszyka",
+    "moveLabel": "Przenieś {{title}} do koszyka",
+    "moved": "{{title}} wróciło do koszyka."
+  }
 }

@@ -1,48 +1,41 @@
 import { useTranslation } from 'react-i18next'
 
 import { CatalogBanner } from './catalog-banner'
-import { FeaturedSystems } from './featured-systems'
-import { PromoTiles, PromoTilesSkeleton } from './promo-tiles'
+import { FeaturedForYou } from './featured-for-you'
+import { HeroCarousel } from './hero-carousel'
+import { PromoTiles } from './promo-tiles'
 import { PublisherStrip } from './publisher-strip'
 import { TitleTabs, TitleTabsSkeleton } from './title-tabs'
-import { UnderPrice } from './under-price'
 import { useHomeSections } from '@/api/titles'
-import { PromoBanner } from '@/components/site/promo-banner'
 import { RecentlyViewed } from '@/components/title/recently-viewed'
 
 /**
- * The home page. Its lists come from GET /home (sale, new, bestselling, free);
- * "Featured", the catalogue numbers and the publishers from the catalogue
- * itself (GET /titles, /titles/facets); "Recently Viewed" from this device.
+ * The home page. The hero, promos, publishers and lists come from GET /home;
+ * "Featured" and the catalogue numbers from the catalogue itself (GET
+ * /titles, /titles/facets); "Recently Viewed" from this device.
  */
 export function HomePage() {
   const { t } = useTranslation('home')
   const home = useHomeSections()
   const sections = home.data
 
-  // Figma: sections 20px apart on phones, 32px on desktop
+  // the hero 8px under the header and over the promos; the other sections
+  // 20px apart on phones, 32px on desktop
   return (
-    <div className="container flex flex-col gap-5 pt-5 pb-8 lg:gap-8 lg:pt-8">
+    <div className="container flex flex-col gap-5 pt-2 pb-8 lg:gap-8">
       <h1 className="sr-only">{t('heading')}</h1>
-      <PromoBanner />
+      <div className="flex flex-col gap-2">
+        <HeroCarousel />
+        <PromoTiles />
+      </div>
       {home.isPending ? (
-        <>
-          <PromoTilesSkeleton />
-          <TitleTabsSkeleton />
-        </>
+        <TitleTabsSkeleton />
       ) : (
-        sections && (
-          <>
-            <PromoTiles titles={sections.get('sale')?.titles ?? []} />
-            <TitleTabs sections={sections} />
-          </>
-        )
+        sections && <TitleTabs sections={sections} />
       )}
-      <FeaturedSystems />
+      <FeaturedForYou />
       <CatalogBanner />
       <PublisherStrip />
-      {/* Figma: on phones only */}
-      <UnderPrice className="lg:hidden" />
       <RecentlyViewed />
     </div>
   )

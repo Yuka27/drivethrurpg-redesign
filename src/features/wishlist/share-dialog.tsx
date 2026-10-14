@@ -18,7 +18,7 @@ import { Switch } from '@/components/ui/switch'
 import { useApiError } from '@/i18n/use-api-error'
 
 /**
- * Figma "Share": a dialog to turn the public link on or off
+ * A dialog to turn the public link on or off
  * (PATCH /wishlist/settings) and copy it. Nothing goes public without the
  * switch.
  */

@@ -4,29 +4,44 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useTitleDiscussions, useTitleReviews } from '@/api/titles'
-import type { Discussion, Review, TitleDetail } from '@/api/titles'
+import type { Discussion, Review, ReviewSort, TitleDetail } from '@/api/titles'
+import { OptionSelect } from '@/components/site/option-select'
 import { Pagination } from '@/components/site/pagination'
 import { Stars } from '@/components/title/rating-stars'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatDate, useFormatNumber } from '@/i18n/format'
 import { useComingSoon } from '@/lib/use-coming-soon'
+import { cn } from '@/lib/utils'
 
-/** Figma: five entries a page. */
+/** Five entries a page. */
 const PAGE_SIZE = 5
+
+const SORTS = ['newest', 'helpful'] as const satisfies ReadonlyArray<ReviewSort>
+
+/** Which entries the chips show; discussion threads are the questions. */
+const SHOWS = ['all', 'reviews', 'questions'] as const
+type Show = (typeof SHOWS)[number]
 
 type Entry =
   | { kind: 'review'; date: string; review: Review }
   | { kind: 'discussion'; date: string; discussion: Discussion }
 
+const byDate = (a: Entry, b: Entry) => b.date.localeCompare(a.date)
+
 /**
- * Figma "Reviews & Discussions": the rating summary, then reviews and discussion
- * threads in one list, newest first. Replying, flagging and starting a thread
- * have no API yet.
+ * The rating summary, then reviews and discussion threads in one list.
+ * Newest: by date. Most helpful: the reviews in the API's order, then the
+ * threads (they have no helpful count). The chips narrow the list in the
+ * browser. Replying, flagging, voting "helpful" and starting a thread have no
+ * API yet.
  */
 export function ReviewsSection({ title }: { title: TitleDetail }) {
   const { t } = useTranslation('title')
-  const reviewsQuery = useTitleReviews(title.id)
+  const formatNumber = useFormatNumber()
+  const [sort, setSort] = useState<ReviewSort>('newest')
+  const [show, setShow] = useState<Show>('all')
+  const reviewsQuery = useTitleReviews(title.id, sort)
   const discussionsQuery = useTitleDiscussions(title.id)
   const reviews = reviewsQuery.data
   const discussions = discussionsQuery.data
@@ -34,19 +49,36 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
   const comingSoon = useComingSoon()
   const [page, setPage] = useState(1)
 
-  const entries: Array<Entry> = [
-    ...(reviews?.items ?? []).map((review) => ({
-      kind: 'review' as const,
-      date: review.createdAt,
-      review,
-    })),
-    ...(discussions?.items ?? []).map((discussion) => ({
+  const reviewEntries: Array<Entry> = (reviews?.items ?? []).map((review) => ({
+    kind: 'review' as const,
+    date: review.createdAt,
+    review,
+  }))
+  const threadEntries: Array<Entry> = (discussions?.items ?? [])
+    .map((discussion) => ({
       kind: 'discussion' as const,
       date: discussion.lastReplyAt ?? discussion.createdAt,
       discussion,
-    })),
-  ].sort((a, b) => b.date.localeCompare(a.date))
-  const total = (reviews?.total ?? 0) + (discussions?.total ?? 0)
+    }))
+    .sort(byDate)
+  const merged =
+    sort === 'newest'
+      ? [...reviewEntries, ...threadEntries].sort(byDate)
+      : [...reviewEntries, ...threadEntries]
+  const entries = merged.filter(
+    (entry) =>
+      show === 'all' ||
+      (show === 'reviews'
+        ? entry.kind === 'review'
+        : entry.kind === 'discussion'),
+  )
+  const counts: Record<Show, number> = {
+    reviews: reviews?.total ?? 0,
+    questions: discussions?.total ?? 0,
+    all: (reviews?.total ?? 0) + (discussions?.total ?? 0),
+  }
+  const total = counts.all
+  const sortLabel = (value: ReviewSort) => t(`reviews.sorts.${value}`)
   const pageCount = Math.max(1, Math.ceil(entries.length / PAGE_SIZE))
   const shown = entries.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
@@ -65,14 +97,30 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
             ? t('stickyNav.reviews')
             : t('reviews.heading', { count: total })}
         </h2>
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={comingSoon}
-          className="h-8 max-sm:w-full"
-        >
-          {t('reviews.startDiscussion')}
-        </Button>
+        <div className="flex items-center gap-2 max-sm:w-full">
+          <OptionSelect
+            label={t('reviews.sort')}
+            value={sort}
+            options={SORTS.map((value) => ({
+              value,
+              label: sortLabel(value),
+            }))}
+            onValueChange={(value) => {
+              setSort(value as ReviewSort)
+              setPage(1)
+            }}
+            display={t('reviews.sortDisplay', { option: sortLabel(sort) })}
+            className="h-8 text-xs data-[size=default]:h-8"
+          />
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={comingSoon}
+            className="h-8 max-sm:flex-1"
+          >
+            {t('reviews.startDiscussion')}
+          </Button>
+        </div>
       </div>
 
       {loading && <ReviewsSkeleton rating={Boolean(title.rating)} />}
@@ -83,6 +131,37 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
           count={title.rating.count}
           histogram={reviews.histogram}
         />
+      )}
+
+      {!loading && total > 0 && (
+        <div
+          role="group"
+          aria-label={t('reviews.show')}
+          className="flex flex-wrap gap-2"
+        >
+          {SHOWS.map((value) => (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={show === value}
+              onClick={() => {
+                setShow(value)
+                setPage(1)
+              }}
+              className={cn(
+                'inline-flex h-7 items-center rounded-md border px-2.5 text-xs font-medium focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
+                show === value
+                  ? 'border-primary text-primary-text'
+                  : 'border-border hover:bg-accent',
+              )}
+            >
+              {t(`reviews.shows.${value}`)}{' '}
+              <span className="tabular-nums">
+                ({formatNumber(counts[value])})
+              </span>
+            </button>
+          ))}
+        </div>
       )}
 
       {!loading && shown.length > 0 && (
@@ -116,7 +195,7 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
   )
 }
 
-/** Figma "raiting card": the average, then one bar per star with its share. */
+/** The rating card: the average, then one bar per star with its share. */
 function RatingSummary({
   average,
   count,
@@ -237,6 +316,7 @@ function ReviewItem({
   onAction: () => void
 }) {
   const { t } = useTranslation('title')
+  const formatNumber = useFormatNumber()
   return (
     <article className={cardClass}>
       <EntryHeader name={review.author.displayName} date={review.createdAt}>
@@ -254,6 +334,14 @@ function ReviewItem({
         {review.title && <p className="font-semibold">{review.title}</p>}
         <p>{review.body}</p>
       </div>
+      {review.helpfulCount > 0 && (
+        <p className="text-xs text-muted-foreground">
+          {t('reviews.helpful', {
+            count: review.helpfulCount,
+            formatted: formatNumber(review.helpfulCount),
+          })}
+        </p>
+      )}
       <EntryActions onAction={onAction} />
     </article>
   )

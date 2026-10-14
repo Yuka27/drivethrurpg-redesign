@@ -68,7 +68,7 @@ export function FilterSheet({
             <button
               type="button"
               onClick={onClearAll}
-              className="px-1 text-xs text-primary hover:underline"
+              className="px-1 text-xs text-primary-text hover:underline"
             >
               {t('filters.clearAll')}
             </button>

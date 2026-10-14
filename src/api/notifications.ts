@@ -23,7 +23,7 @@ const NotificationsSchema = z.object({
 })
 type Notifications = z.infer<typeof NotificationsSchema>
 
-/** Figma: the latest few; the panel scrolls. */
+/** The latest few; the panel scrolls. */
 const PAGE_SIZE = 20
 
 /** GET /notifications, newest first (loaded when the panel opens). */
@@ -80,7 +80,6 @@ function useMarkRead<V>(
   })
 }
 
-/** POST /notifications/read-all */
 export const useMarkAllRead = () =>
   useMarkRead(
     () =>

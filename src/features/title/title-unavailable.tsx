@@ -12,11 +12,11 @@ import {
 import { CoverLinks } from '@/components/title/cover-links'
 import { Button } from '@/components/ui/button'
 
-/** Mockup: three replacements. */
+/** Three replacements. */
 const SIMILAR = 3
 
 /**
- * Mockup "Product: no longer available": what happened, that an owner's copy
+ * No longer sold: what happened, that an owner's copy
  * is safe (and where it is), then similar titles instead.
  */
 export function TitleUnavailable({ title }: { title: TitleDetail }) {

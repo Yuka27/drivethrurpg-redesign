@@ -117,6 +117,16 @@ export const useSetLineQty = () =>
     }),
   )
 
+/** POST /cart/items/{lineId}/save-for-later: the line moves to `savedForLater`. */
+export const useSaveForLater = () =>
+  useCartMutation((lineId: string) =>
+    apiFetch(`/cart/items/${lineId}/save-for-later`, {
+      method: 'POST',
+      body: {},
+      schema: CartSchema,
+    }),
+  )
+
 /** POST /cart/saved/{lineId}/move-to-cart: a saved line back in the cart. */
 export function useMoveSavedToCart() {
   const queryClient = useQueryClient()

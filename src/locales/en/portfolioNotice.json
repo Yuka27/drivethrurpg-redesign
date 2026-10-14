@@ -1,0 +1,53 @@
+{
+  "badge": "Portfolio project · Not a real store",
+  "badgeShort": "Not a real store",
+  "title": "You are looking at a design case study, not a shop.",
+  "titleShort": "A design case study, not a shop.",
+  "lead": "This is a UX/UI redesign of a tabletop RPG marketplace, built to show my design and front-end work. Browse, search, fill a cart and click through checkout as much as you like: it all runs against a mock API.",
+  "leadShort": "A UX/UI redesign of a tabletop RPG marketplace, made for my portfolio. Everything runs on a mock API: no payments, no real accounts, sample data only. Not affiliated with DriveThruRPG or any publisher.",
+  "facts": {
+    "label": "What this is not",
+    "sale": {
+      "title": "Nothing is for sale",
+      "text": "No payments, no orders, no real accounts."
+    },
+    "data": {
+      "title": "Sample data only",
+      "text": "Prices, reviews and libraries are made up."
+    },
+    "affiliation": {
+      "title": "Not affiliated",
+      "text": "Not endorsed by DriveThruRPG or any publisher."
+    }
+  },
+  "explore": "Explore the project",
+  "links": {
+    "figma": {
+      "title": "Figma case study",
+      "titleShort": "Figma",
+      "text": "Research, wireframes, mockups"
+    },
+    "github": {
+      "title": "GitHub",
+      "titleShort": "GitHub",
+      "text": "Front-end source code"
+    },
+    "apiDocs": {
+      "title": "Mock API docs",
+      "titleShort": "API docs",
+      "text": "OpenAPI, try every endpoint"
+    },
+    "coverage": {
+      "title": "Test coverage",
+      "titleShort": "Test coverage",
+      "text": "Live Vitest report"
+    }
+  },
+  "opensInNewTab": "(opens in a new tab)",
+  "dontShowAgain": "Don’t show this again",
+  "enter": "Enter the prototype",
+  "close": "Close notice",
+  "smallPrint": "Designed and built by theNoy as a portfolio piece. Product covers, logos and names belong to their publishers and are used here for demonstration only.",
+  "smallPrintShort": "By theNoy. Covers, logos and names belong to their publishers, used for demonstration only.",
+  "footerLink": "About this project"
+}

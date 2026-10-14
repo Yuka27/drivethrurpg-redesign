@@ -45,7 +45,7 @@ export function AddressesCard() {
       id="addresses"
       title={t('addresses.title')}
       description={t('addresses.subtitle')}
-      // Figma: in the header on desktop, a full-width button under the list on mobile
+      // in the header on desktop, a full-width button under the list on mobile
       action={addButton('max-lg:hidden')}
     >
       {addresses.isError && (

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { HeartIcon, LibraryBigIcon, ShoppingCartIcon } from 'lucide-react'
+import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
@@ -10,6 +11,7 @@ import {
   useUndoWishlistRemove,
 } from '@/api/titles'
 import type { TitleSummary } from '@/api/titles'
+import { IconTooltip } from '@/components/site/icon-tooltip'
 import { Button } from '@/components/ui/button'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
@@ -20,7 +22,8 @@ export function WishlistButton({
   title,
   className,
 }: {
-  title: TitleSummary
+  /** a card's title, or anything else with these (the home preview) */
+  title: Pick<TitleSummary, 'id' | 'title' | 'inWishlist'>
   className?: string
 }) {
   const { t } = useTranslation('listing')
@@ -32,53 +35,58 @@ export function WishlistButton({
   const on = title.inWishlist
 
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      aria-pressed={on}
-      aria-label={t('card.wishlist', { title: title.title })}
-      onClick={(event) => {
-        if (!me) {
-          openAuth('login', { returnFocusTo: event.currentTarget })
-          return
-        }
-        toggle.mutate(
-          { titleId: title.id, on: !on },
-          {
-            onSuccess: (result) => {
-              // taken off: offer it back
-              const token = result?.undoToken
-              toast.success(
-                t(on ? 'card.wishlistRemoved' : 'card.wishlistAdded', {
-                  title: title.title,
-                }),
-                token
-                  ? {
-                      action: {
-                        label: t('card.undo'),
-                        onClick: () =>
-                          undo.mutate(token, {
-                            onError: (error) => toast.error(apiError(error)),
-                          }),
-                      },
-                    }
-                  : undefined,
-              )
-            },
-            onError: (error) => toast.error(apiError(error)),
-          },
-        )
-      }}
-      className={cn(
-        'rounded-lg border-border bg-background shadow-none dark:bg-background',
-        className,
-      )}
+    <IconTooltip
+      label={t(on ? 'card.wishlistRemove' : 'card.wishlistAdd')}
+      side="top"
     >
-      <HeartIcon
-        aria-hidden
-        className={cn(on && 'fill-primary text-primary')}
-      />
-    </Button>
+      <Button
+        variant="outline"
+        size="icon"
+        aria-pressed={on}
+        aria-label={t('card.wishlist', { title: title.title })}
+        onClick={(event) => {
+          if (!me) {
+            openAuth('login', { returnFocusTo: event.currentTarget })
+            return
+          }
+          toggle.mutate(
+            { titleId: title.id, on: !on },
+            {
+              onSuccess: (result) => {
+                // taken off: offer it back
+                const token = result?.undoToken
+                toast.success(
+                  t(on ? 'card.wishlistRemoved' : 'card.wishlistAdded', {
+                    title: title.title,
+                  }),
+                  token
+                    ? {
+                        action: {
+                          label: t('card.undo'),
+                          onClick: () =>
+                            undo.mutate(token, {
+                              onError: (error) => toast.error(apiError(error)),
+                            }),
+                        },
+                      }
+                    : undefined,
+                )
+              },
+              onError: (error) => toast.error(apiError(error)),
+            },
+          )
+        }}
+        className={cn(
+          'rounded-lg border-border bg-background shadow-none dark:bg-background',
+          className,
+        )}
+      >
+        <HeartIcon
+          aria-hidden
+          className={cn(on && 'fill-primary text-primary')}
+        />
+      </Button>
+    </IconTooltip>
   )
 }
 
@@ -106,8 +114,18 @@ export function CartButton({
   const navigate = useNavigate()
   const label = labelClassName !== undefined
 
+  // icon only: the words in a tooltip
+  const tooltip = (button: ReactElement, words: string) =>
+    label ? (
+      button
+    ) : (
+      <IconTooltip label={words} side="top">
+        {button}
+      </IconTooltip>
+    )
+
   if (title.owned)
-    return (
+    return tooltip(
       <Button
         asChild
         variant="outline"
@@ -126,10 +144,11 @@ export function CartButton({
             <span className={labelClassName}>{t('card.inLibrary')}</span>
           )}
         </Link>
-      </Button>
+      </Button>,
+      t('card.inLibrary'),
     )
 
-  return (
+  return tooltip(
     <Button
       size={label ? 'sm' : 'icon'}
       disabled={add.isPending}
@@ -154,6 +173,7 @@ export function CartButton({
           {text ?? t('card.addToCartShort')}
         </span>
       )}
-    </Button>
+    </Button>,
+    t('card.addToCartShort'),
   )
 }

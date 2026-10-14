@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { apiLanguage } from './languages'
 import type { Money } from '@/api/client'
@@ -73,11 +74,19 @@ export function useRegionName() {
   }, [locale])
 }
 
-/** "pl" -> "Polish" (in English UI) / "polski" (in Polish UI), via Intl.DisplayNames. */
+/**
+ * "es" -> "Spanish" (in English UI) / "hiszpański" (in Polish UI): the
+ * translation files' `common:languages` first (so en-XA shows them too), else
+ * Intl.DisplayNames for a language they do not name.
+ */
 export function useLanguageName() {
   const locale = useLocale()
+  const { t } = useTranslation('common')
   return useMemo(() => {
     const names = new Intl.DisplayNames([locale], { type: 'language' })
-    return (code: string) => names.of(code) ?? code
-  }, [locale])
+    return (code: string) =>
+      t(`languages.${code}` as 'languages.en', {
+        defaultValue: names.of(code) ?? code,
+      })
+  }, [locale, t])
 }

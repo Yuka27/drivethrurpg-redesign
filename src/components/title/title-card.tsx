@@ -10,6 +10,7 @@ import { CartButton, WishlistButton } from './title-actions'
 import { TitlePrice } from './title-price'
 import { assetUrl } from '@/api/client'
 import type { TitleSummary as Title } from '@/api/titles'
+import { useLanguageName } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
 /** Cover, with the title's page behind it (the title text is the link people read). */
@@ -53,6 +54,7 @@ export function TitleHeading({
   className?: string
 }) {
   const otherLanguage = useIsOtherLanguage(title.textLanguage)
+  const languageName = useLanguageName()
 
   return (
     <div className={cn('min-w-0', className)}>
@@ -65,7 +67,10 @@ export function TitleHeading({
               className="shrink-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             >
               <LanguagesIcon aria-hidden className="size-3" />
-              <span className="sr-only">{title.textLanguage}</span>
+              {/* the name ("Spanish"), never the code */}
+              <span className="sr-only">
+                {languageName(title.textLanguage)}
+              </span>
             </span>
           </ContentLanguageTooltip>
         )}
@@ -84,7 +89,7 @@ export function TitleHeading({
 }
 
 /**
- * A title in the listing's card view. Figma: cover (235px on phones, 306px on
+ * A title in the listing's card view: cover (235px on phones, 306px on
  * desktop) with the heart on it, then publisher, title, stars, price and cart.
  */
 export function TitleCard({ title }: { title: Title }) {

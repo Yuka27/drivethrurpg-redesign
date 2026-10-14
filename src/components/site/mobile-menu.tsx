@@ -1,5 +1,11 @@
 import { Link } from '@tanstack/react-router'
-import { HeartIcon, MenuIcon, PanelLeftCloseIcon } from 'lucide-react'
+import {
+  DownloadIcon,
+  HeartIcon,
+  LibraryBigIcon,
+  MenuIcon,
+  PanelLeftCloseIcon,
+} from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ReactNode } from 'react'
@@ -8,7 +14,6 @@ import { CurrencySelect, LanguageSelect } from './preference-selects'
 import { LoginButton } from './login-button'
 import { ThemeSegmented } from './theme-toggle'
 import { useBrowseGroups } from './use-browse-groups'
-import { UserAvatar } from './user-avatar'
 import { useLogout } from '@/api/auth'
 import { useMe } from '@/api/me'
 import {
@@ -28,7 +33,10 @@ import {
 } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
+import { APP_DOWNLOAD_URL } from '@/config/links'
 import { linkTarget, utilityMenus } from '@/config/utility-menus'
+import { useLastOrdersSearch } from '@/features/account/orders-search'
+import { useLastLibrarySearch } from '@/features/library/library-search'
 import { useFormatNumber } from '@/i18n/format'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
 import { usePreferencesStore } from '@/stores/preferences'
@@ -41,9 +49,12 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const close = () => setOpen(false)
-  const { data: me } = useMe()
+  const { data: me, isPending: meLoading } = useMe()
   const logout = useLogout()
   const openAuth = useAuthDialogStore((state) => state.openAuth)
+  // back to the library and the orders as the user left them
+  const librarySearch = useLastLibrarySearch((state) => state.search)
+  const ordersSearch = useLastOrdersSearch((state) => state.search)
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -79,15 +90,85 @@ export function MobileMenu() {
         </SheetDescription>
 
         <div className="flex flex-col gap-3 px-4 py-2">
-          <Link
-            to="/wishlist"
-            onClick={close}
-            className="flex h-8 items-center gap-1 self-start text-sm font-medium hover:underline"
-          >
-            <HeartIcon aria-hidden className="size-4" />
-            {t('menu.wishlist')}
-          </Link>
+          <div className="flex flex-col items-start gap-1">
+            <Link to="/wishlist" onClick={close} className={quickLinkClass}>
+              <HeartIcon aria-hidden className="size-4" />
+              {t('menu.wishlist')}
+            </Link>
+            {me && (
+              <Link
+                to="/library"
+                search={librarySearch}
+                onClick={close}
+                className={quickLinkClass}
+              >
+                <LibraryBigIcon aria-hidden className="size-4" />
+                {t('menu.library')}
+              </Link>
+            )}
+            {/* the library apps: for someone with a library */}
+            {me && (
+              <a
+                href={APP_DOWNLOAD_URL}
+                onClick={close}
+                className={quickLinkClass}
+              >
+                <DownloadIcon aria-hidden className="size-4" />
+                {t('account.getTheApp')}
+              </a>
+            )}
+          </div>
           <MenuNav onNavigate={close} />
+          {/* mobile has no avatar menu: the account pages live here */}
+          {me && (
+            <nav
+              aria-labelledby={`${aiSwitchId}-settings`}
+              className="flex flex-col gap-1"
+            >
+              <h2 id={`${aiSwitchId}-settings`} className={sectionTitleClass}>
+                {t('menu.settings')}
+              </h2>
+              <ul>
+                <li>
+                  <Link
+                    to="/account/settings"
+                    onClick={close}
+                    className={pageLinkClass}
+                  >
+                    {t('menu.account')}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/account/preferences"
+                    onClick={close}
+                    className={pageLinkClass}
+                  >
+                    {t('account.preferences')}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/orders"
+                    search={ordersSearch}
+                    onClick={close}
+                    className={pageLinkClass}
+                  >
+                    {t('account.orders')}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/following"
+                    onClick={close}
+                    className={pageLinkClass}
+                  >
+                    {t('account.following')}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          )}
         </div>
 
         <section
@@ -95,7 +176,7 @@ export function MobileMenu() {
           className="flex flex-col gap-3 px-4 py-2"
         >
           <h2 id={`${aiSwitchId}-prefs`} className={sectionTitleClass}>
-            {t('menu.preferences')}
+            {t('menu.quickPreferences')}
           </h2>
           <MenuRow label={t('menu.currency')}>
             <CurrencySelect />
@@ -118,27 +199,20 @@ export function MobileMenu() {
           </div>
         </section>
 
-        {me ? (
-          // not in Figma: mobile has no avatar menu, so account + log out live here
-          <div className="flex flex-col gap-3 p-5">
-            <div className="flex items-center gap-2">
-              <UserAvatar user={me} className="size-10" />
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold">{me.displayName}</p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {me.email}
-                </p>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full"
+        {meLoading ? (
+          <div aria-hidden className="flex justify-center p-5">
+            <Skeleton className="h-5 w-16" />
+          </div>
+        ) : me ? (
+          <div className="flex justify-center p-5">
+            <button
+              type="button"
               disabled={logout.isPending}
               onClick={() => logout.mutate(undefined, { onSuccess: close })}
+              className="rounded-md px-2 py-1 text-sm text-primary-text outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-60"
             >
               {logout.isPending ? t('account.loggingOut') : t('account.logout')}
-            </Button>
+            </button>
           </div>
         ) : (
           <div className="flex flex-col gap-2 p-5">
@@ -160,7 +234,7 @@ export function MobileMenu() {
                   // the menu (and this button) goes away: return focus to the ☰ button
                   openAuth('register', { returnFocusTo: triggerRef.current })
                 }}
-                className="text-primary hover:underline"
+                className="text-primary-text hover:underline"
               >
                 {t('menu.createAccount')}
               </button>
@@ -172,6 +246,14 @@ export function MobileMenu() {
   )
 }
 
+/** Wishlist and My library: an icon and a word, 32px high. */
+const quickLinkClass =
+  'flex h-8 items-center gap-1 rounded-md text-sm font-medium outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50'
+
+/** The account pages: rows like the accordions above, without a chevron. */
+const pageLinkClass =
+  'flex rounded-md border-b border-muted py-2.5 text-sm font-medium outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50'
+
 const sectionTitleClass =
   'font-sans text-xs font-bold tracking-normal text-muted-foreground uppercase'
 
@@ -182,7 +264,7 @@ const linkClass =
   'flex items-center justify-between gap-4 rounded-md px-2 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground'
 
 /**
- * Figma mobile menu: "Browse" (the catalogue facets, each value a link to the
+ * The mobile menu: "Browse" (the catalogue facets, each value a link to the
  * listing filtered by it) and "More" (links out to the main site), as
  * accordions. Following a link closes the menu.
  */
@@ -237,7 +319,7 @@ function MenuNav({ onNavigate }: { onNavigate: () => void }) {
                         <Link
                           to="/titles"
                           onClick={onNavigate}
-                          className={`${linkClass} font-medium text-primary`}
+                          className={`${linkClass} font-medium text-primary-text`}
                         >
                           {t('nav.browseAll')}
                         </Link>

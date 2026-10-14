@@ -1,15 +1,14 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowLeftIcon, ShoppingCartIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 
 import { CartItem } from './cart-item'
 import { CartRecommendations } from './cart-recommendations'
 import { GiftOption } from './gift-option'
+import { SavedForLaterList } from './saved-for-later'
 import { CheckoutButton, checkoutBlocked, OrderSummary } from './order-summary'
-import { cartItemCount, useCart, useMoveSavedToCart } from '@/api/cart'
+import { cartItemCount, useCart } from '@/api/cart'
 import type { Cart, CartLine } from '@/api/cart'
-import { assetUrl } from '@/api/client'
 import {
   EmptyActions,
   EmptyLabel,
@@ -20,10 +19,9 @@ import { LoadingStatus } from '@/components/site/loading-status'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatMoney } from '@/i18n/format'
-import { useApiError } from '@/i18n/use-api-error'
 
 /**
- * /cart (Figma "Cart"). Desktop: the lines and the gift card on the left, the
+ * /cart. Desktop: the lines and the gift card on the left, the
  * order summary on the right. Phones: one column, with a bar stuck to the
  * bottom of the screen: the item count, the total and "Checkout".
  */
@@ -73,6 +71,24 @@ export function CartPage() {
                 ))}
               </ul>
               <GiftOption cart={cart} />
+              {cart.savedForLater.length > 0 && (
+                <section
+                  aria-labelledby="saved-heading"
+                  className="flex flex-col gap-3 rounded-xl bg-card p-4"
+                >
+                  <h2
+                    id="saved-heading"
+                    className="font-sans text-base leading-6 font-bold"
+                  >
+                    {t('saved.heading', { count: cart.savedForLater.length })}
+                  </h2>
+                  <SavedForLaterList
+                    saved={cart.savedForLater}
+                    labelledBy="saved-heading"
+                    className="sm:grid-cols-2"
+                  />
+                </section>
+              )}
             </div>
             <OrderSummary cart={cart} />
           </div>
@@ -87,14 +103,11 @@ export function CartPage() {
 }
 
 /**
- * Mockup "Cart: empty": back to the store, and anything saved for later
+ * An empty cart: back to the store, and anything saved for later
  * (each can move back to the cart).
  */
 function EmptyCart({ saved }: { saved: Array<CartLine> }) {
   const { t } = useTranslation('cart')
-  const apiError = useApiError()
-  const formatMoney = useFormatMoney()
-  const move = useMoveSavedToCart()
 
   return (
     <div className="flex flex-col items-start gap-4">
@@ -115,55 +128,11 @@ function EmptyCart({ saved }: { saved: Array<CartLine> }) {
             <EmptyLabel id="saved-for-later">
               {t('empty.saved', { count: saved.length })}
             </EmptyLabel>
-            <ul
-              aria-labelledby="saved-for-later"
-              className="grid w-full max-w-[400px] gap-2 text-left"
-            >
-              {saved.map((line) => (
-                <li
-                  key={line.lineId}
-                  className="flex items-center gap-3 rounded-[10px] border bg-background p-2.5"
-                >
-                  <span className="aspect-[3/4] w-14 shrink-0 overflow-hidden rounded-md border bg-muted">
-                    {line.title.cover && (
-                      <img
-                        src={assetUrl(line.title.cover.url)}
-                        alt=""
-                        className="size-full object-cover"
-                      />
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-bold">
-                      {line.title.name}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {line.formatLabel} · {formatMoney(line.unitPrice)}
-                    </span>
-                  </span>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    disabled={move.isPending}
-                    aria-label={t('empty.moveLabel', {
-                      title: line.title.name,
-                    })}
-                    onClick={() =>
-                      move.mutate(line.lineId, {
-                        onSuccess: () =>
-                          toast.success(
-                            t('empty.moved', { title: line.title.name }),
-                          ),
-                        onError: (error) => toast.error(apiError(error)),
-                      })
-                    }
-                    className="border"
-                  >
-                    {t('empty.moveToCart')}
-                  </Button>
-                </li>
-              ))}
-            </ul>
+            <SavedForLaterList
+              saved={saved}
+              labelledBy="saved-for-later"
+              className="w-full max-w-[400px] text-left"
+            />
           </>
         )}
       </EmptyState>
@@ -172,7 +141,7 @@ function EmptyCart({ saved }: { saved: Array<CartLine> }) {
 }
 
 /**
- * Figma mobile: the total and "Checkout" stuck to the bottom of the screen
+ * Phones: the total and "Checkout" stuck to the bottom of the screen
  * while the cart scrolls. Sticky, not fixed, so it stops at the end of the
  * cart and never covers the site footer.
  */

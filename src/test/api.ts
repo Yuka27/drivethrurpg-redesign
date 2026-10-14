@@ -74,7 +74,33 @@ export const apiError = (
   extra: { field?: string; retryAfter?: number } = {},
 ): Reply => ({ status, body: { error: { code, message: code, ...extra } } })
 
-const usd = (amount: number) => ({ amount, currency: 'USD' })
+/** Money as the API sends it: minor units (1999 = $19.99). */
+export const usd = (amount: number) => ({ amount, currency: 'USD' })
+
+/** One facet value, as GET /titles/facets lists it. */
+export const facet = (value: string, label: string, count: number) => ({
+  value,
+  label,
+  count,
+})
+
+/** A handler that never answers: the request stays loading. */
+export const never = () => new Promise<never>(() => {})
+
+/** A GET /meta/locales body: dollars, English and Polish. */
+export const locales = {
+  currencies: [{ code: 'USD', symbol: '$', label: 'US dollar' }],
+  languages: [
+    { code: 'en', short: 'EN', label: 'English' },
+    { code: 'pl', short: 'PL', label: 'Polski' },
+  ],
+  defaults: {
+    currency: 'USD',
+    language: 'en',
+    showAiGenerated: false,
+    theme: 'dark',
+  },
+}
 
 /** A GET /cart body: `items` copies of one PDF (none for 0). */
 export const cart = (items: number) => ({

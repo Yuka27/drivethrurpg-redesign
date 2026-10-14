@@ -14,7 +14,6 @@ export function AccountSettings({
   breadcrumb = false,
   className,
 }: {
-  /** mobile only: "My account › Account" back to the hub */
   breadcrumb?: boolean
   className?: string
 }) {

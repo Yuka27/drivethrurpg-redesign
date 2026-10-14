@@ -56,7 +56,7 @@ function SystemGroup({ group }: { group: LinkGroup }) {
           aria-expanded={expanded}
           aria-controls={listId}
           onClick={() => setExpanded((value) => !value)}
-          className="flex h-6 items-center rounded-full px-2 text-xs font-medium text-primary hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+          className="flex h-6 items-center rounded-full px-2 text-xs font-medium text-primary-text hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
         >
           {expanded
             ? t('footer.showLess')

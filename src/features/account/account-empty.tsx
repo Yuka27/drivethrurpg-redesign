@@ -16,7 +16,7 @@ import { useApiError } from '@/i18n/use-api-error'
 import { useComingSoon } from '@/lib/use-coming-soon'
 
 /**
- * Mockup "Orders: none yet": short and quiet. The store, and a word for those
+ * No orders yet: short and quiet. The store, and a word for those
  * who ordered as a guest.
  */
 export function OrdersEmpty() {
@@ -39,7 +39,7 @@ export function OrdersEmpty() {
       <button
         type="button"
         onClick={comingSoon}
-        className="mt-3.5 text-sm font-semibold text-primary hover:underline"
+        className="mt-3.5 text-sm font-semibold text-primary-text hover:underline"
       >
         {t('orders.guestOrder')}
       </button>
@@ -47,11 +47,11 @@ export function OrdersEmpty() {
   )
 }
 
-/** Mockup: three publishers to follow first. */
+/** Three publishers to follow first. */
 const SUGGESTED = 3
 
 /**
- * Mockup "Following: no publishers": following only helps after a first
+ * No follows yet: following only helps after a first
  * follow, so the empty state offers the publishers with the most titles in the
  * user's library, each one tap to follow.
  */
@@ -115,9 +115,12 @@ export function FollowingEmpty() {
                   disabled={follow.isPending}
                   aria-label={t('following.followLabel', { name })}
                   onClick={() =>
-                    follow.mutate(id, {
-                      onError: (error) => toast.error(apiError(error)),
-                    })
+                    follow.mutate(
+                      { kind: 'publisher', id },
+                      {
+                        onError: (error) => toast.error(apiError(error)),
+                      },
+                    )
                   }
                   className="border"
                 >

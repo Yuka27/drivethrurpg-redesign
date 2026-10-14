@@ -6,7 +6,7 @@ import { CartButton } from '@/components/title/title-actions'
 import { ShelfSkeleton } from '@/components/title/title-skeletons'
 
 /**
- * Figma "Customers also bought": GET /cart/recommendations as 200px cards
+ * "Customers also bought": GET /cart/recommendations as 200px cards
  * sliding sideways, each with "Add" (the card's first edition, as on the
  * listing; an owned title links to the library instead).
  */

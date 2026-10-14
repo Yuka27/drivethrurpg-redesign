@@ -16,7 +16,7 @@ import { useFormatNumber } from '@/i18n/format'
 const SHOWN = 3
 
 /**
- * Mockup "Listing: filters too narrow": clear them all, or remove one at a
+ * Filters too narrow: clear them all, or remove one at a
  * time, each with the number of titles it would bring back (one cheap
  * GET /titles each).
  */

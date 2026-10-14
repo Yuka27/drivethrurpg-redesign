@@ -77,11 +77,13 @@ describe('setLanguage', () => {
     expect(predicate?.(query(['no-prefs-key']))).toBe(true)
     expect(predicate?.(query(['titles', { language: 'en' }]))).toBe(false)
 
-    const patch = fetchMock.mock.calls.find(
-      ([, init]) => init?.method === 'PATCH',
+    const [url, init] =
+      fetchMock.mock.calls.find(([, options]) => options?.method === 'PATCH') ??
+      []
+    expect(url instanceof URL ? url.href : url).toMatch(
+      /\/account\/preferences$/,
     )
-    expect(String(patch?.[0])).toMatch(/\/account\/preferences$/)
-    expect(JSON.parse(String(patch?.[1]?.body))).toEqual({
+    expect(JSON.parse(init?.body as string)).toEqual({
       content: { language: 'pl' },
     })
 

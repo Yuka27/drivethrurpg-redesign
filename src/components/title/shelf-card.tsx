@@ -7,8 +7,8 @@ import type { TitleSummary } from '@/api/titles'
 import { cn } from '@/lib/utils'
 
 /**
- * Figma's 200px cover card for sideways shelves (home "Under $5", the cart's
- * "Customers also bought"): the cover, the title, the price and an optional
+ * A 200px cover card for sideways shelves (the cart's "Customers also
+ * bought"): the cover, the title, the price and an optional
  * action ("Add") beside it. The whole card opens the title (a stretched link),
  * the action stays its own button on top.
  */

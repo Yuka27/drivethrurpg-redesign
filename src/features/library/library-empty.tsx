@@ -15,7 +15,7 @@ const miniClass =
   'flex flex-col gap-0.5 rounded-[10px] border bg-card p-3 text-left hover:bg-secondary'
 
 /**
- * Mockup "Library: nothing yet": a beginning, not a failure. The store, and
+ * An empty library: a beginning, not a failure. The store, and
  * the three real reasons a library is empty: new here, a gift to claim, or
  * purchases on another account.
  */
@@ -80,7 +80,7 @@ function Mini({ title, hint }: { title: string; hint: ReactNode }) {
 }
 
 /**
- * Mockup "Library: no match": what was searched, how much the library holds,
+ * No match: what was searched, how much the library holds,
  * a way back, and where a missing purchase might be.
  */
 export function LibraryNoMatch({

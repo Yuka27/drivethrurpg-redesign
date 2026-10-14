@@ -9,7 +9,7 @@ export type QuickFilter = {
   onToggle: () => void
 }
 
-/** Figma: "QUICK FILTERS" then outline chips; an active one turns red. */
+/** "QUICK FILTERS" then outline chips; an active one turns red. */
 export function QuickFilters({
   filters,
   className,
@@ -40,7 +40,7 @@ export function QuickFilters({
           className={cn(
             'inline-flex h-[22px] items-center rounded-md border px-2 text-xs font-medium focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
             filter.active
-              ? 'border-primary text-primary'
+              ? 'border-primary text-primary-text'
               : 'border-border hover:bg-accent',
           )}
         >

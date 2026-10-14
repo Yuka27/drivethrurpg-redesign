@@ -5,11 +5,10 @@ import { ListingPage } from './listing-page'
 import { LISTING_SEARCH_DEFAULTS } from './listing-search'
 import type { TitleSummary } from '@/api/titles'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, mockApi, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 const vaesen: TitleSummary = {
   id: 'ttl_vaesen',
   title: 'Vaesen: Mythic Carpathia',
@@ -25,6 +24,7 @@ const vaesen: TitleSummary = {
   owned: false,
   inWishlist: false,
   textLanguage: 'en',
+  payWhatYouWant: false,
 }
 
 const facets = {
@@ -143,9 +143,19 @@ describe('matching publishers', () => {
     )
 
   it('shows the publisher with its count, and follows it in one tap', async () => {
+    let following = false
     const { bodies } = withPublisher(
       { body: user },
-      { 'POST /publishers/pub_free_league/follow': { body: {} } },
+      {
+        'POST /publishers/pub_free_league/follow': () => {
+          following = true
+          return { body: { following } }
+        },
+        // the refetch after the follow sees it, like the API
+        'GET /publishers/pub_free_league': () => ({
+          body: { ...freeLeague, following },
+        }),
+      },
     )
     const { user: u } = await renderResults('free league')
 

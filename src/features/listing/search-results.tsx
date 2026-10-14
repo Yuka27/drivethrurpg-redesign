@@ -4,7 +4,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { useMe } from '@/api/me'
-import { usePublisher, useTogglePublisherFollow } from '@/api/publishers'
+import { useToggleFollow } from '@/api/following'
+import { usePublisher } from '@/api/publishers'
 import { usePopularSearches, useSearchSuggestions } from '@/api/search'
 import {
   EmptyActions,
@@ -18,14 +19,14 @@ import { useFormatNumber } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
 
-/** Mockup: up to two publishers above the results. */
+/** Up to two publishers above the results. */
 const PUBLISHERS = 2
 
 const chipClass =
   'rounded-full border bg-secondary px-3.5 py-[7px] text-[13px] font-medium hover:border-foreground/35'
 
 /**
- * Mockup "Results": "Results for “vaesen”", how many (with the filters), and
+ * "Results for “vaesen”", how many (with the filters), and
  * the publishers whose name matches, each one tap to follow.
  */
 export function SearchHeader({
@@ -86,7 +87,7 @@ function PublisherCard({ id, name }: { id: string; name: string }) {
   const { data: me } = useMe()
   const openAuth = useAuthDialogStore((state) => state.openAuth)
   const publisher = usePublisher(id).data
-  const toggle = useTogglePublisherFollow()
+  const toggle = useToggleFollow()
   const following = Boolean(me) && Boolean(publisher?.following)
 
   return (
@@ -125,7 +126,7 @@ function PublisherCard({ id, name }: { id: string; name: string }) {
             return
           }
           toggle.mutate(
-            { publisherId: id, on: !following },
+            { kind: 'publisher', id, on: !following },
             { onError: (error) => toast.error(apiError(error)) },
           )
         }}
@@ -138,7 +139,7 @@ function PublisherCard({ id, name }: { id: string; name: string }) {
 }
 
 /**
- * Mockup "No results" (nothing for the words themselves, before any filter):
+ * No results (nothing for the words themselves, before any filter):
  * the fix the API suggests, tips, popular searches and the whole catalogue.
  */
 export function SearchNoResults({
@@ -168,7 +169,7 @@ export function SearchNoResults({
                 <button
                   type="button"
                   onClick={() => onSearch(didYouMean)}
-                  className="font-bold text-primary underline underline-offset-3"
+                  className="font-bold text-primary-text underline underline-offset-3"
                 />
               ),
             }}

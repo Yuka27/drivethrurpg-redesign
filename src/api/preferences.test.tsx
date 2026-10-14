@@ -4,20 +4,9 @@ import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 
 import { usePreferencesSync } from './preferences'
 import { useThemeStore } from '@/stores/theme'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, locales, mockApi, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
-
-const locales = {
-  currencies: [{ code: 'USD', symbol: '$', label: 'US dollar' }],
-  languages: [{ code: 'en', short: 'ENG', label: 'English' }],
-  defaults: {
-    currency: 'USD',
-    language: 'en',
-    showAiGenerated: false,
-    theme: 'dark',
-  },
-}
 
 const preferences = (theme?: string) => ({
   content: {

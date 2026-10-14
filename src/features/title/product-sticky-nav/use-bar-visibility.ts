@@ -8,7 +8,7 @@ export const headerHeight = () =>
   ) || 0
 
 /**
- * Prototype: the product bar slides in once the title block has gone. True
+ * The product bar slides in once the title block has gone. True
  * when the page's <h1> no longer shows below the sticky part (the site header
  * plus the breadcrumb row, `rowHeight`) and has left upwards, not downwards.
  * An IntersectionObserver whose top edge is that sticky line, no scroll events.

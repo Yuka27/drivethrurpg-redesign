@@ -60,7 +60,7 @@ export function RegisterSuccess({
   const [changing, setChanging] = useState(false)
   const resend = useResendConfirmation()
   const linkClass =
-    'text-foreground underline underline-offset-2 hover:text-primary'
+    'text-foreground underline underline-offset-2 hover:text-primary-text'
 
   // the form the user was in has gone: tell screen readers what happened
   useEffect(() => titleRef.current?.focus(), [])

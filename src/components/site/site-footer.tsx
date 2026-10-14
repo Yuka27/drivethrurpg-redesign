@@ -5,6 +5,7 @@ import { FooterLink } from './footer-link'
 import { NewsletterForm } from './newsletter-form'
 import { SystemGroups } from './system-groups'
 import { TestingLinks } from './testing-links'
+import { AboutProjectLink } from '@/features/portfolio-notice/about-project-link'
 import {
   brandLinks,
   copyrightKey,
@@ -27,6 +28,9 @@ export function SiteFooter() {
                   <FooterLink link={link} />
                 </li>
               ))}
+              <li>
+                <AboutProjectLink />
+              </li>
             </ul>
           </nav>
           <NewsletterForm />

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { useAddEditionToCart } from '@/api/titles'
-import type { Edition, TitleDetail } from '@/api/titles'
+import type { TitleDetail } from '@/api/titles'
 import { useApiError } from '@/i18n/use-api-error'
 
 /** The edition chosen when the page opens: the first one in stock. */
@@ -29,14 +29,14 @@ export function chosenEdition(title: TitleDetail, sku: string | undefined) {
  * POST /cart/items with the chosen edition (and PUT /cart/gift for a gift),
  * then a toast with "View cart". Shared by the buy box and the sticky bar.
  */
-export function useAddToCart(title: TitleDetail) {
+export function useAddToCart(title: Pick<TitleDetail, 'title'>) {
   const { t } = useTranslation('title')
   const apiError = useApiError()
   const navigate = useNavigate()
   const add = useAddEditionToCart()
 
   const addToCart = (
-    edition: Edition,
+    edition: { sku: string },
     {
       gift = false,
       onSuccess,

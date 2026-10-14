@@ -33,7 +33,7 @@ const GiftSchema = z.object({
 type Gift = z.infer<typeof GiftSchema>
 
 /**
- * Figma "This order is a gift": a switch (PUT /cart/gift), and once it is on,
+ * "This order is a gift": a switch (PUT /cart/gift), and once it is on,
  * who it is for and an optional message. Each field saves when the buyer
  * leaves it, once the email is valid; checkout waits for that email.
  */

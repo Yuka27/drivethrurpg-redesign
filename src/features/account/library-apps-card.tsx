@@ -6,7 +6,8 @@ import { useComingSoon } from '@/lib/use-coming-soon'
 
 /**
  * Keys for apps that read the library.
- * TODO(api): there is no endpoint for app keys yet, so the count is always 0.
+ * TODO: wire up /library/app-keys (in the API, not built here yet); until then
+ * the count is always 0.
  */
 export function LibraryAppsCard() {
   const { t } = useTranslation('account')

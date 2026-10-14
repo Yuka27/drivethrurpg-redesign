@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { SUPPORT_URL } from '@/config/links'
 import { AuthDialog } from '@/features/auth/auth-dialog'
 import { Toaster } from '@/components/ui/sonner'
+import { PortfolioNotice } from '@/features/portfolio-notice/portfolio-notice'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 export const Route = createRootRoute({
@@ -24,7 +25,7 @@ export const Route = createRootRoute({
   notFoundComponent: NotFound,
 })
 
-/** The mockup's d20: a 404 is a critical miss. */
+/** A d20: a 404 is a critical miss. */
 function D20Icon() {
   return (
     <svg
@@ -47,7 +48,7 @@ const chipClass =
   'rounded-full border bg-card px-3.5 py-[7px] text-[13px] hover:bg-secondary'
 
 /**
- * Mockup "404": a light RPG joke where nothing is at stake, and still the way
+ * 404: a light RPG joke where nothing is at stake, and still the way
  * home, the store and the usual places. Inside the site's header and footer.
  */
 function NotFound() {
@@ -115,7 +116,7 @@ function NotFound() {
 }
 
 /**
- * Anything a page threw: the mockup's "couldn't load", with a retry. It takes
+ * Anything a page threw: "couldn't load", with a retry. It takes
  * the root component's place, so it brings the app-wide pieces itself.
  */
 function RootError() {
@@ -149,7 +150,7 @@ function RootComponent() {
   )
 }
 
-/** What every screen needs around it: tooltips, the auth modal, toasts. */
+/** What every screen needs around it: tooltips, the auth modal, toasts, the portfolio notice. */
 function AppChrome({ children }: { children: ReactNode }) {
   const { t } = useTranslation()
   return (
@@ -157,6 +158,7 @@ function AppChrome({ children }: { children: ReactNode }) {
       {children}
       <AuthDialog />
       <Toaster containerAriaLabel={t('toasts.region')} />
+      <PortfolioNotice />
     </TooltipProvider>
   )
 }

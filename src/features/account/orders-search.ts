@@ -5,7 +5,7 @@ import { createSearchMemory, searchText } from '@/lib/search-params'
 export const PERIODS = ['month', 'quarter', 'year', 'all'] as const
 export type Period = (typeof PERIODS)[number]
 
-/** What the order list opens on. Figma: "Last month". Defaults stay out of the URL. */
+/** What the order list opens on ("Last month"). Defaults stay out of the URL. */
 export const ORDERS_SEARCH_DEFAULTS = {
   period: 'month' as Period,
   status: 'all',

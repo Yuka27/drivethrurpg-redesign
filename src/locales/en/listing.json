@@ -28,7 +28,8 @@
     "upTo": "Up to {{price}}",
     "upToLabel": "Highest price",
     "upToPlaceholder": "Up to",
-    "go": "Go"
+    "go": "Go",
+    "payWhatYouWant": "Pay what you want"
   },
   "quick": {
     "d20_5e": "D&D 5e",
@@ -71,7 +72,9 @@
     "viewCart": "View cart",
     "was": "was",
     "tags": "Tags",
-    "discount": "Discount"
+    "discount": "Discount",
+    "wishlistAdd": "Add to wishlist",
+    "wishlistRemove": "Remove from wishlist"
   },
   "facets": {
     "type": {
@@ -91,12 +94,27 @@
       "pathfinder": "Pathfinder",
       "year_zero": "Year Zero Engine",
       "imperium_maledictum": "Imperium Maledictum",
-      "coriolis": "Coriolis"
+      "coriolis": "Coriolis",
+      "call_of_cthulhu": "Call of Cthulhu",
+      "storyteller": "Storyteller System",
+      "cosmere_rpg": "Cosmere RPG",
+      "solo_journaling": "Solo journaling",
+      "starfinder": "Starfinder",
+      "dragonbane": "Dragonbane",
+      "vileborn": "Vileborn",
+      "shadowrun": "Shadowrun",
+      "marvel_multiverse": "Marvel Multiverse RPG",
+      "at_the_gates": "At the Gates"
     },
     "format": {
       "pdf": "PDF",
       "print_pdf": "Print + PDF",
       "vtt": "VTT"
+    },
+    "genre": {
+      "fantasy": "Fantasy",
+      "horror": "Horror",
+      "sci_fi": "Sci-Fi"
     }
   },
   "recentlyViewed": "Recently Viewed",
@@ -129,5 +147,13 @@
       "popular": "Popular searches",
       "browse": "Browse all titles"
     }
-  }
+  },
+  "followGenre": {
+    "follow": "Follow {{name}}",
+    "followed": "You follow {{name}}.",
+    "unfollowed": "You no longer follow {{name}}."
+  },
+  "recentlyViewedClear": "Clear",
+  "recentlyViewedClearLabel": "Clear recently viewed",
+  "recentlyViewedCleared": "Recently viewed cleared."
 }

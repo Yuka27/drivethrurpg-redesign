@@ -72,7 +72,7 @@ const library = [
   libraryItem('salt', {
     name: 'Salt & Lanternlight',
     ruleSystem: 'system_neutral',
-    publisher: { id: 'pub_northwind', name: 'Northwind Press' },
+    publisher: { id: 'pub_onyx_path', name: 'Onyx Path Publishing' },
     giftFrom: { displayName: 'Jon Snow' },
     purchasedAt: '2026-06-12T09:00:00Z',
   }),

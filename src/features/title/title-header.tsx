@@ -7,6 +7,7 @@ import type { TitleDetail } from '@/api/titles'
 import { ContentLanguageBadge } from '@/components/title/content-language-note'
 import { ratingVerdict, Stars } from '@/components/title/rating-stars'
 import { useFacetLabel } from '@/components/title/use-facet-label'
+import { PdfPreviewLink } from './pdf-preview-link'
 import { useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
@@ -14,8 +15,8 @@ const tagClass =
   'inline-flex h-[22px] items-center gap-1 rounded-sm px-2 text-xs font-medium'
 
 /**
- * Cover, title, who made it, rating, tags and the first lines of the
- * description. Figma: side by side on desktop, centred under the cover on phones.
+ * Cover, title, who made it, rating, tags and the short description. Side
+ * by side on desktop, centred under the cover on phones.
  */
 export function TitleHeader({
   title,
@@ -109,6 +110,10 @@ export function TitleHeader({
             {t(title.contentFlags.aiGenerated ? 'aiGenerated' : 'humanMade')}
           </li>
         </ul>
+        {/* 14px under the tags: the column's 8px gap and 6px more */}
+        {title.sampleFile && (
+          <PdfPreviewLink file={title.sampleFile} className="mt-1.5" />
+        )}
         <ContentLanguageBadge textLanguage={title.textLanguage} />
 
         {lead && (

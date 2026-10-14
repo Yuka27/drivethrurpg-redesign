@@ -168,8 +168,8 @@
   },
   "following": {
     "title": "Obserwowane",
-    "subtitle": "Zarządzaj obserwowanymi wydawcami i liniami gier oraz tym, jak dowiadujesz się o nowościach.",
-    "search": "Szukaj w obserwowanych wydawcach",
+    "subtitle": "Zarządzaj obserwowanymi wydawcami, seriami, systemami gier i gatunkami oraz tym, jak dostajesz o nich wiadomości.",
+    "search": "Szukaj wśród obserwowanych",
     "searchPlaceholder": "Szukaj",
     "sort": "Sortuj",
     "sortDisplay": "Sortuj: {{option}}",
@@ -196,7 +196,7 @@
     "unfollow": "Przestań obserwować",
     "unfollowed": "Nie obserwujesz już {{name}}.",
     "undo": "Cofnij",
-    "noMatches": "Brak wydawców pasujących do „{{query}}”.",
+    "noMatches": "Nic z obserwowanych nie pasuje do „{{query}}”.",
     "emptyTitle": "Nie obserwujesz żadnych wydawców",
     "emptyText": "Obserwuj wydawcę, aby dostawać powiadomienia o nowościach i aktualizacjach.",
     "fromLibrary": "Wydawcy z tytułami w Twojej bibliotece",
@@ -206,7 +206,16 @@
     "inLibrary_other": "{{count}} tytułu w Twojej bibliotece",
     "follow": "Obserwuj",
     "followLabel": "Obserwuj: {{name}}",
-    "loadErrorTitle": "Nie udało się wczytać obserwowanych"
+    "loadErrorTitle": "Nie udało się wczytać obserwowanych",
+    "since": "Obserwujesz od {{date}}",
+    "viewTitles": "Zobacz tytuły",
+    "groups": {
+      "publisher": "Wydawcy",
+      "product_line": "Serie",
+      "imprint": "Imprinty",
+      "rule_system": "Systemy gier",
+      "genre": "Gatunki"
+    }
   },
   "orders": {
     "title": "Zamówienia",

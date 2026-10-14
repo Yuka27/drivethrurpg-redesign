@@ -5,14 +5,13 @@ import { useTranslation } from 'react-i18next'
 import { PRICE_BANDS } from './listing-search'
 import type { FilterPatch, FilterSearch, ListingFacet } from './listing-search'
 import { usePriceLabel } from './use-price-label'
-import { useLocales } from '@/api/meta'
 import { CheckboxFacet } from '@/components/filters/checkbox-facet'
 import type { FacetOption } from '@/components/filters/facet-option'
 import { FilterGroup } from '@/components/filters/filter-group'
 import { RadioFacet } from '@/components/filters/radio-facet'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useCurrencySymbol, useLanguageName } from '@/i18n/format'
+import { useCurrencySymbol } from '@/i18n/format'
 import { joinList, splitList } from '@/lib/search-params'
 
 const SEARCH_BOX = {
@@ -30,25 +29,26 @@ const SEARCH_BOX = {
  * The listing's filters, for the desktop sidebar and the mobile sheet alike:
  * Promotions, Genre (when the API has genres), Rule System, Product Type,
  * Price, Format, Publisher, Language. A facet without options is left out;
- * the wishlist reuses it without Language (`languages={false}`).
+ * the wishlist reuses it without Language (it passes no `languageOptions`).
  */
 export function ListingFilterPanel({
   search,
   onSearchChange,
   facetOptions,
   variant,
-  languages: showLanguages = true,
+  languageOptions: languages = [],
+  priceCount,
 }: {
   search: FilterSearch
   onSearchChange: (patch: FilterPatch) => void
   facetOptions: (facet: ListingFacet) => Array<FacetOption>
   variant: 'sidebar' | 'sheet'
-  /** false: no Language group (data without a text language) */
-  languages?: boolean
+  /** the titles' languages; none: no Language group */
+  languageOptions?: Array<FacetOption>
+  /** titles per highest price, when known */
+  priceCount?: (max: number | undefined) => number | undefined
 }) {
   const { t } = useTranslation('listing')
-  const locales = useLocales()
-  const languageName = useLanguageName()
 
   const facetGroup = (facet: ListingFacet) => {
     const options = facetOptions(facet)
@@ -79,12 +79,6 @@ export function ListingFilterPanel({
     )
   }
 
-  const languages = (showLanguages ? (locales.data?.languages ?? []) : []).map(
-    (language) => ({
-      value: language.code,
-      label: languageName(language.code),
-    }),
-  )
   const pickedLanguages = splitList(search.language)
 
   return (
@@ -93,7 +87,7 @@ export function ListingFilterPanel({
         title={t('groups.promotions')}
         selectedCount={search.onSale ? 1 : 0}
         variant={variant}
-        // Figma: the sheet opens on the first group
+        // the sheet opens on the first group
         defaultOpen
       >
         <CheckboxFacet
@@ -115,6 +109,7 @@ export function ListingFilterPanel({
         variant={variant}
       >
         <PriceFilter
+          count={priceCount}
           value={search.priceMax}
           onChange={(priceMax) => onSearchChange({ priceMax, page: 1 })}
         />
@@ -143,13 +138,15 @@ export function ListingFilterPanel({
 }
 
 /**
- * Figma: price bands as radios, then a custom range. The API filters by the
+ * Price bands as radios, then a custom range. The API filters by the
  * highest price only, so the custom part is one "up to" field.
  */
 function PriceFilter({
+  count,
   value,
   onChange,
 }: {
+  count?: (max: number | undefined) => number | undefined
   value: number | undefined
   onChange: (priceMax: number | undefined) => void
 }) {
@@ -165,12 +162,15 @@ function PriceFilter({
 
   const isBand = value === undefined || PRICE_BANDS.includes(value as never)
   const options = [
-    { value: 'any', label: t('price.any') },
+    { value: 'any', label: t('price.any'), count: count?.(undefined) },
     ...PRICE_BANDS.map((band) => ({
       value: String(band),
       label: priceLabel(band),
+      count: count?.(band),
     })),
-    ...(isBand ? [] : [{ value: 'custom', label: priceLabel(value) }]),
+    ...(isBand
+      ? []
+      : [{ value: 'custom', label: priceLabel(value), count: count?.(value) }]),
   ]
 
   const apply = (event: FormEvent) => {

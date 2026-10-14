@@ -44,7 +44,7 @@ import { useAuthDialogStore } from '@/stores/auth-dialog'
 import { useCheckoutResult } from '@/stores/checkout-result'
 
 /**
- * /checkout (mockup docs/Checkout — DriveThruRPG.html): one page, short
+ * /checkout: one page, short
  * numbered sections and no account wall. A guest gives an email and an
  * address; an account sees its saved details as one-line summaries. The
  * summary stays beside the form on desktop and folds into one line on phones.

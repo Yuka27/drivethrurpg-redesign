@@ -41,7 +41,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { SUPPORT_URL } from '@/config/links'
-import { LibraryButton } from '@/features/account/order-detail-page'
+import { LibraryButton } from '@/components/title/library-button'
 import { FormAlert } from '@/features/auth/shared/form-alert'
 import { useFormatDate } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
@@ -49,7 +49,7 @@ import { useApplyApiError } from '@/lib/forms'
 import { cn } from '@/lib/utils'
 
 /**
- * /gift/$token (mockup docs/Gift Claim Page — DriveThruRPG.html): what a
+ * /gift/$token: what a
  * recipient sees after tapping the link in the gift email. Ready: the gift
  * beside a way to claim it (create an account or log in, or one button when
  * logged in). Then: claimed (by them: the downloads and an optional thank-you;
@@ -111,7 +111,7 @@ export function GiftClaimPage({ token }: { token: string }) {
   }
 }
 
-/** Mockup "center": an icon in a circle, a heading, a line, then actions. */
+/** An icon in a circle, a heading, a line, then actions. */
 function Centered({
   icon,
   ok,
@@ -433,7 +433,7 @@ function InvalidLink() {
             support: (
               <a
                 href={SUPPORT_URL}
-                className="font-semibold text-primary hover:underline"
+                className="font-semibold text-primary-text hover:underline"
               />
             ),
           }}

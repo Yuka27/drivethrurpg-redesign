@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatNumber } from '@/i18n/format'
 
-/** Figma "mini banner": how big the catalogue is, and the way into it. */
+/** How big the catalogue is, and the way into it. */
 export function CatalogBanner() {
   const { t } = useTranslation('home')
   const formatNumber = useFormatNumber()

@@ -176,12 +176,9 @@ export function TitlePage({ titleId }: { titleId: string }) {
                     publisherId={data.publisher.id}
                     name={data.publisher.name}
                   />
-                  <FollowCard
-                    publisherId={data.publisher.id}
-                    name={data.publisher.name}
-                  />
                 </>
               )}
+              <FollowCard title={data} />
             </div>
             <div className="order-5">
               <AlsoBought titleId={data.id} ruleSystem={data.ruleSystem} />

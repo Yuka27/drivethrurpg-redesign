@@ -11,10 +11,11 @@ export function libraryItem(
   return {
     id,
     title: { id: `ttl_${id}`, name },
-    publisher: { id: 'pub_red_door', name: 'Red Door Games' },
+    publisher: { id: 'pub_green_ronin', name: 'Green Ronin Publishing' },
     cover: { url: `/img/${id}.jpg`, alt: '' },
     type: 'adventure',
     ruleSystem: 'osr',
+    genre: null,
     formats: ['pdf'],
     purchasedAt: '2026-04-01T09:00:00Z',
     lastUpdatedAt: null,

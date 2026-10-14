@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react'
+import { act, screen, waitFor, within } from '@testing-library/react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { describe, expect, it, vi } from 'vite-plus/test'
@@ -8,11 +8,10 @@ import { LISTING_SEARCH_DEFAULTS } from './listing-search'
 import type { ListingSearch } from './listing-search'
 import type { TitleSummary } from '@/api/titles'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, facet, locales, mockApi, never, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 function title(
   id: string,
   overrides: Partial<TitleSummary> = {},
@@ -20,7 +19,7 @@ function title(
   return {
     id,
     title: `Title ${id}`,
-    publisher: { id: 'pub_red_door', name: 'Red Door Games' },
+    publisher: { id: 'pub_green_ronin', name: 'Green Ronin Publishing' },
     cover: { url: `/img/${id}.jpg`, alt: '' },
     type: 'adventure',
     ruleSystem: 'osr',
@@ -32,6 +31,7 @@ function title(
     owned: false,
     inWishlist: false,
     textLanguage: 'en',
+    payWhatYouWant: false,
     ...overrides,
   }
 }
@@ -57,12 +57,6 @@ const catalogue = [
     owned: true,
   }),
 ]
-
-const facet = (value: string, label: string, count: number) => ({
-  value,
-  label,
-  count,
-})
 
 /** A small fake of GET /titles: filters on system and priceMax, like the API. */
 function titlesHandler(items: Array<TitleSummary>): Handler {
@@ -107,24 +101,14 @@ function mockListing(
               facet('year_zero', 'year zero', 1),
               facet('d20_5e', 'd20 5e', 1),
             ],
-        publishers: [facet('pub_red_door', 'Red Door Games', 3)],
+        publishers: [facet('pub_green_ronin', 'Green Ronin Publishing', 3)],
+        // like the API: a language pick narrows the language counts too
+        languages: params.get('language')
+          ? [facet('en', 'English', 1), facet('pl', 'Polski', 1)]
+          : [facet('en', 'English', 3), facet('pl', 'Polski', 1)],
       },
     }),
-    'GET /meta/locales': {
-      body: {
-        currencies: [{ code: 'USD', symbol: '$', label: 'US dollar' }],
-        languages: [
-          { code: 'en', label: 'English', short: 'EN' },
-          { code: 'pl', label: 'Polski', short: 'PL' },
-        ],
-        defaults: {
-          currency: 'USD',
-          language: 'en',
-          showAiGenerated: false,
-          theme: 'dark',
-        },
-      },
-    },
+    'GET /meta/locales': { body: locales },
     'GET /home': { body: { hero: [], sections: [] } },
     ...overrides,
   })
@@ -164,10 +148,14 @@ const titlesShown = () =>
     .getAllByRole('heading', { level: 2 })
     .map((heading) => heading.textContent)
 const sidebar = () => screen.getByRole('complementary', { name: 'Filters' })
+/** The last request of `key`; for GET /titles the page of titles, not a count (pageSize 1). */
 const lastParams = (
   params: (key: string) => Array<URLSearchParams>,
   key: string,
-) => params(key).at(-1)
+) =>
+  params(key)
+    .filter((sent) => sent.get('pageSize') !== '1')
+    .at(-1)
 
 describe('ListingPage', () => {
   it('shows a page of titles as cards', async () => {
@@ -434,7 +422,6 @@ describe('ListingPage', () => {
   })
 
   it('shows skeletons, not an empty page, while titles and facets load', async () => {
-    const never = () => new Promise<never>(() => {})
     mockListing({ 'GET /titles': never, 'GET /titles/facets': never })
     await renderWithProviders(
       <Harness initial={{ ...LISTING_SEARCH_DEFAULTS, view: 'list' }} />,
@@ -450,5 +437,159 @@ describe('ListingPage', () => {
     expect(within(list).queryAllByRole('listitem')).toHaveLength(0)
     expect(list.children).toHaveLength(8)
     expect(within(sidebar()).queryAllByRole('checkbox')).toHaveLength(0)
+  })
+})
+
+describe('price and language counts', () => {
+  /** The count shown beside a filter value in the sidebar. */
+  const countOf = (label: string) =>
+    within(sidebar()).getByText(label, { selector: 'label' }).parentElement
+      ?.lastElementChild?.textContent
+
+  it('counts the titles in each price band', async () => {
+    mockListing()
+    await renderListing()
+
+    await waitFor(() => expect(countOf('Any price')).toBe('4'))
+    expect(countOf('Free')).toBe('1')
+    expect(countOf('Under $5')).toBe('1')
+    expect(countOf('Under $20')).toBe('4')
+  })
+
+  it('counts each band under the other filters', async () => {
+    mockListing()
+    await renderListing({ system: 'osr' })
+
+    // osr: Ashes of the Hollow King ($14.99) and the free quickstart
+    await waitFor(() => expect(countOf('Any price')).toBe('2'))
+    expect(countOf('Under $10')).toBe('1')
+    expect(countOf('Under $20')).toBe('2')
+  })
+
+  it('counts languages, a picked one without its own pick', async () => {
+    const { params } = mockListing()
+    await renderListing({ language: 'pl' })
+
+    await waitFor(() => expect(countOf('English')).toBe('3'))
+    expect(countOf('Polish')).toBe('1')
+    expect(
+      params('GET /titles/facets').some((sent) => !sent.has('language')),
+    ).toBe(true)
+  })
+})
+
+describe('icon buttons', () => {
+  it('say what they do in a tooltip, on hover and on focus', async () => {
+    mockListing()
+    const { user: u } = await renderListing()
+
+    await u.hover(screen.getByRole('button', { name: 'Wishlist: Gloamwood' }))
+    expect(
+      await screen.findByRole('tooltip', { name: 'Add to wishlist' }),
+    ).toBeInTheDocument()
+    await u.keyboard('{Escape}')
+
+    act(() =>
+      screen.getByRole('button', { name: 'Add to Cart: Gloamwood' }).focus(),
+    )
+    expect(
+      await screen.findByRole('tooltip', { name: 'Add to Cart' }),
+    ).toBeInTheDocument()
+
+    act(() => screen.getByRole('radio', { name: 'List' }).focus())
+    expect(
+      await screen.findByRole('tooltip', { name: 'List' }),
+    ).toBeInTheDocument()
+  })
+})
+
+describe('following the genre', () => {
+  const genres: Handler = {
+    body: {
+      items: [
+        { id: 'horror', name: 'Horror', following: true, titleCount: 12 },
+        { id: 'fantasy', name: 'Fantasy', following: false, titleCount: 14 },
+      ],
+    },
+  }
+
+  it('offers the one genre picked, pressed when followed', async () => {
+    mockListing({ 'GET /genres': genres })
+    await renderListing({ genre: 'horror' })
+
+    const follow = await screen.findByRole('button', { name: 'Follow Horror' })
+    await waitFor(() => expect(follow).toBeEnabled())
+    expect(follow).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it.each([
+    ['no genre', ''],
+    ['several genres', 'horror,fantasy'],
+  ])('is not there with %s', async (_, genre) => {
+    const { params } = mockListing({ 'GET /genres': genres })
+    await renderListing({ genre })
+
+    expect(screen.queryByRole('button', { name: /^Follow / })).toBeNull()
+    expect(params('GET /genres')).toHaveLength(0)
+  })
+
+  it('follows it at once', async () => {
+    const { bodies } = mockListing({
+      'GET /genres': genres,
+      'POST /genres/fantasy/follow': never,
+    })
+    const { user: u } = await renderListing({ genre: 'fantasy' })
+
+    const follow = await screen.findByRole('button', { name: 'Follow Fantasy' })
+    await waitFor(() => expect(follow).toBeEnabled())
+    expect(follow).toHaveAttribute('aria-pressed', 'false')
+    await u.click(follow)
+
+    expect(follow).toHaveAttribute('aria-pressed', 'true')
+    await waitFor(() =>
+      expect(bodies('POST /genres/fantasy/follow')).toHaveLength(1),
+    )
+  })
+
+  it('asks a guest to log in first', async () => {
+    const { bodies } = mockListing(
+      { 'GET /genres': genres },
+      apiError(401, 'unauthorized'),
+    )
+    const { user: u } = await renderListing({ genre: 'horror' })
+
+    const follow = await screen.findByRole('button', { name: 'Follow Horror' })
+    await waitFor(() => expect(follow).toBeEnabled())
+    // a guest follows nothing, whatever the data says
+    expect(follow).toHaveAttribute('aria-pressed', 'false')
+    await u.click(follow)
+
+    expect(useAuthDialogStore.getState()).toMatchObject({
+      open: true,
+      view: 'login',
+    })
+    expect(bodies('DELETE /genres/horror/follow')).toHaveLength(0)
+    expect(bodies('POST /genres/horror/follow')).toHaveLength(0)
+    useAuthDialogStore.setState({ open: false })
+  })
+})
+
+describe('a title in another language', () => {
+  it('names the language for screen readers, never its code', async () => {
+    mockListing({
+      'GET /titles': titlesHandler([
+        title('ttl_cronicas', {
+          title: 'Crónicas de Nueva Babylon',
+          textLanguage: 'es',
+        }),
+      ]),
+    })
+    await renderListing()
+
+    const card = screen
+      .getByRole('link', { name: 'Crónicas de Nueva Babylon' })
+      .closest('li') as HTMLElement
+    expect(within(card).getByText('Spanish')).toHaveClass('sr-only')
+    expect(within(card).queryByText('es')).toBeNull()
   })
 })

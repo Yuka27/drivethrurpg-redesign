@@ -6,7 +6,7 @@ import { FacetRow } from './facet-row'
 import { SearchField } from '@/components/site/search-field'
 import { Checkbox } from '@/components/ui/checkbox'
 
-/** Figma: five values, then "+ 36 more". */
+/** Five values, then "+ N more". */
 const SHOWN = 5
 
 /**
@@ -89,7 +89,7 @@ export function CheckboxFacet({
           type="button"
           aria-expanded={expanded}
           onClick={() => setExpanded(!expanded)}
-          className="self-start px-6 text-xs text-primary hover:underline"
+          className="self-start px-6 text-xs text-primary-text hover:underline"
         >
           {expanded
             ? t('filters.showLess')

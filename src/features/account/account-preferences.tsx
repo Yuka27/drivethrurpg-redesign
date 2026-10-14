@@ -33,7 +33,6 @@ const MARKETING = [
 export function AccountPreferencesPage({
   breadcrumb = false,
 }: {
-  /** mobile only: "My account › Preferences" back to the hub */
   breadcrumb?: boolean
 }) {
   const { t } = useTranslation('account')
@@ -167,7 +166,7 @@ function DownloadsCard({
       title={t('preferencesPage.downloads.title')}
       description={t('preferencesPage.downloads.subtitle')}
     >
-      {/* Figma: the select sits right on desktop and goes full width under the text on mobile */}
+      {/* the select sits right on desktop and goes full width under the text on mobile */}
       <div className="flex gap-4 border-t border-muted py-4 max-lg:flex-col lg:items-center">
         <div className="flex min-w-0 flex-1 flex-col gap-1 text-sm">
           <span>{t('preferencesPage.downloads.saveTo')}</span>
@@ -265,7 +264,7 @@ function ContentCard({
                 label: `${c.code} · ${c.label} (${c.symbol})`,
               }))}
               onValueChange={setCurrency}
-              // Figma: "$ USD" when closed; the list shows the full names
+              // "$ USD" when closed; the list shows the full names
               display={current && `${current.symbol} ${current.code}`}
             />
           )

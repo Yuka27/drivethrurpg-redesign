@@ -4,7 +4,7 @@ import { LoadingStatus } from '@/components/site/loading-status'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
-/** Figma: secondary 32px button on desktop; 28px, 12px text and 6px radius in mobile rows. */
+/** Secondary 32px button on desktop; 28px, 12px text and 6px radius in mobile rows. */
 export const rowButtonClass =
   'max-lg:h-7 max-lg:rounded-md max-lg:px-2.5 max-lg:text-xs'
 
@@ -13,7 +13,7 @@ export const badgeClass = 'h-[22px] rounded-md px-2'
 
 /**
  * A settings section: title, description, an optional header action ("Add New
- * Address" on desktop) and its rows. Figma: card background, 14px radius, 24px
+ * Address" on desktop) and its rows: card background, 14px radius, 24px
  * padding, 12px between header and rows.
  */
 export function SettingsCard({
@@ -61,7 +61,7 @@ export function SettingsCard({
 
 /**
  * One row under a divider: label and hint on the left, value and actions on the
- * right. Below lg (Figma mobile) the value moves under the hint and the icon
+ * right. Below lg the value moves under the hint and the icon
  * sits inline with the label.
  */
 export function SettingsRow({

@@ -29,16 +29,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { brandName } from '@/features/account/card-brand'
+import { brandName } from '@/lib/card-brand'
 import { useFormatMoney, useRegionName } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
-/** Mockup: inputs 46px tall, 10px corners. */
+/** Inputs 46px tall, 10px corners. */
 const inputClass = 'h-[46px] rounded-[10px] text-[15px] md:text-[15px]'
 const linkButton =
   'ml-auto shrink-0 text-[13px] text-muted-foreground underline hover:text-foreground'
 
-/** Mockup "sec2": a numbered card. */
+/** A numbered section card. */
 export function Section({
   number,
   title,
@@ -71,7 +71,7 @@ export function Section({
   )
 }
 
-/** Mockup "saved": a one-line summary of saved details, with a change link. */
+/** A one-line summary of saved details, with a change link. */
 function SavedRow({
   children,
   action,
@@ -168,7 +168,7 @@ export function ContactSection({
             <button
               type="button"
               aria-haspopup="dialog"
-              className="font-semibold text-primary hover:underline"
+              className="font-semibold text-primary-text hover:underline"
               onClick={(event) => onLogin(event.currentTarget)}
             >
               {t('contact.login')}
@@ -572,7 +572,7 @@ export function PaymentSection({
   )
 }
 
-/** Mockup "giftrow": whether it is a gift; that is decided in the cart. */
+/** Whether it is a gift; that is decided in the cart. */
 export function GiftRow({ gift }: { gift: Cart['gift'] }) {
   const { t } = useTranslation('checkout')
   const on = gift.enabled && gift.recipientEmail

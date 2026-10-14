@@ -14,7 +14,6 @@ export type NewsletterRequest = z.infer<typeof NewsletterRequestSchema>
 
 const SubscribeResponseSchema = z.object({ subscribed: z.literal(true) })
 
-/** POST /newsletter/subscribe */
 export function useSubscribeNewsletter() {
   return useMutation({
     mutationFn: ({ email }: NewsletterRequest) =>

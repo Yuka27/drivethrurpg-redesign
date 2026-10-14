@@ -28,6 +28,7 @@ const LibraryItemSchema = z.object({
   /** product type, rule system and formats: the filter facets' values */
   type: z.string().nullable().catch(null),
   ruleSystem: z.string().nullable().catch(null),
+  genre: z.string().nullable().catch(null),
   formats: z.array(z.string()).catch([]),
   purchasedAt: z.string().catch(''),
   lastUpdatedAt: z.string().nullable().catch(null),
@@ -49,6 +50,7 @@ const WHOLE_LIBRARY = 100
  */
 function useLibraryQuery<T>(
   select: (data: z.infer<typeof LibrarySchema>) => T,
+  enabled = true,
 ) {
   const prefs = useRequestPrefs()
   return useQuery({
@@ -61,6 +63,7 @@ function useLibraryQuery<T>(
         signal,
       }),
     select,
+    enabled,
   })
 }
 
@@ -68,7 +71,7 @@ const items = (data: z.infer<typeof LibrarySchema>) => data.items
 const byTitle = (data: z.infer<typeof LibrarySchema>) =>
   new Map(data.items.map((item) => [item.title.id, item] as const))
 
-export const useLibrary = () => useLibraryQuery(items)
+export const useLibrary = (enabled = true) => useLibraryQuery(items, enabled)
 
 /** What the user owns, keyed by title id (the order page's Download / In library). */
 export const useLibraryByTitle = () => useLibraryQuery(byTitle)

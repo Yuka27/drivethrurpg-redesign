@@ -1,7 +1,7 @@
-import { LayoutGridIcon, ListIcon } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { GenreFollowButton } from './genre-follow-button'
 import { ListingEmpty } from './listing-empty'
 import { ListingFilterPanel } from './listing-filter-panel'
 import { SearchHeader, SearchNoResults } from './search-results'
@@ -16,6 +16,7 @@ import type { ListingFacet, ListingSearch, ListingSort } from './listing-search'
 import { PromoBanner } from '@/components/site/promo-banner'
 import { useAppliedFilters } from './use-applied-filters'
 import { useListingFacets } from './use-listing-facets'
+import { ViewToggle } from './view-toggle'
 import { useSearchResults } from '@/api/search'
 import { useTitles } from '@/api/titles'
 import { AppliedFilters } from '@/components/filters/applied-filters'
@@ -30,16 +31,15 @@ import { TitleCard } from '@/components/title/title-card'
 import { TitleRow } from '@/components/title/title-row'
 import { TitleResultsSkeleton } from '@/components/title/title-skeletons'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useFormatNumber } from '@/i18n/format'
 import { splitList } from '@/lib/search-params'
 import { useIsDesktop } from '@/lib/use-media-query'
 import { cn } from '@/lib/utils'
 
-/** Figma: 4 × 5 cards (2 × 10 on phones). */
+/** 4 × 5 cards (2 × 10 on phones). */
 const PAGE_SIZE = 20
 
-/** Figma "Quick filters": common picks, one tap on or off. */
+/** Quick filters: common picks, one tap on or off. */
 const QUICK = [
   { key: 'd20_5e', facet: 'system', value: 'd20_5e' },
   { key: 'year_zero', facet: 'system', value: 'year_zero' },
@@ -133,7 +133,14 @@ export function ListingPage({
   ]
 
   const clearAll = () => onSearchChange(CLEARED_FILTERS)
-  const panelProps = { search, onSearchChange, facetOptions: facets.options }
+  const pickedGenres = splitList(search.genre)
+  const panelProps = {
+    search,
+    onSearchChange,
+    facetOptions: facets.options,
+    languageOptions: facets.languageOptions,
+    priceCount: facets.priceCount,
+  }
   const sortLabel = (sort: ListingSort) => t(`sorts.${sort}`)
 
   return (
@@ -166,7 +173,7 @@ export function ListingPage({
         <AppliedFilters
           filters={applied}
           onClearAll={clearAll}
-          // Figma: about two lines of chips on desktop, one chip on phones
+          // about two lines of chips on desktop, one chip on phones
           shown={isDesktop ? 9 : 1}
           className="[grid-area:applied] empty:hidden"
         />
@@ -187,17 +194,23 @@ export function ListingPage({
           className="[grid-area:quick] max-lg:hidden"
         />
 
-        {results ? (
-          <p className="self-center text-xs text-muted-foreground [grid-area:showing]">
-            {t('showing', {
-              from: formatNumber(from),
-              to: formatNumber(to),
-              total: formatNumber(total),
-            })}
-          </p>
-        ) : (
-          <Skeleton className="h-3 w-40 self-center [grid-area:showing]" />
-        )}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 self-center [grid-area:showing]">
+          {results ? (
+            <p className="text-xs text-muted-foreground">
+              {t('showing', {
+                from: formatNumber(from),
+                to: formatNumber(to),
+                total: formatNumber(total),
+              })}
+            </p>
+          ) : (
+            <Skeleton className="h-3 w-40" />
+          )}
+          {/* one genre picked: follow it (several: which one?) */}
+          {pickedGenres.length === 1 && (
+            <GenreFollowButton genre={pickedGenres[0]} />
+          )}
+        </div>
 
         <div className="flex items-center gap-2 [grid-area:controls]">
           <div className="lg:hidden">
@@ -228,31 +241,10 @@ export function ListingPage({
             display={t('sortDisplay', { option: sortLabel(search.sort) })}
             className="h-7 text-xs data-[size=default]:h-7 max-lg:ml-auto"
           />
-          <ToggleGroup
-            type="single"
-            value={search.view}
-            onValueChange={(view) =>
-              view && onSearchChange({ view: view as 'grid' | 'list' })
-            }
-            aria-label={t('view.label')}
-            className="gap-0"
-          >
-            {(
-              [
-                ['grid', LayoutGridIcon],
-                ['list', ListIcon],
-              ] as const
-            ).map(([view, Icon]) => (
-              <ToggleGroupItem
-                key={view}
-                value={view}
-                aria-label={t(`view.${view}`)}
-                className="size-7 min-w-7 rounded-md data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-              >
-                <Icon aria-hidden />
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+          <ViewToggle
+            view={search.view}
+            onChange={(view) => onSearchChange({ view })}
+          />
         </div>
 
         <div

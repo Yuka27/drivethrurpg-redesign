@@ -25,7 +25,6 @@ export function ThemeToggle() {
         variant="outline"
         size="icon-sm"
         aria-label={label}
-        className="cursor-pointer"
         onClick={() => setTheme(next)}
       >
         {next === 'light' ? <SunIcon /> : <MoonIcon />}
@@ -37,7 +36,7 @@ export function ThemeToggle() {
 const segmentClass =
   'h-8 min-w-0 border-border bg-background px-2.5 text-xs font-medium hover:bg-accent hover:text-accent-foreground data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-white'
 
-/** Light/Dark segmented control for the mobile menu; the active segment is red, as in Figma. */
+/** Light/Dark segmented control for the mobile menu; the active segment is red. */
 export function ThemeSegmented() {
   const { t } = useTranslation()
   const resolvedTheme = useThemeStore((state) => state.resolvedTheme)

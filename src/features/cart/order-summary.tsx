@@ -27,7 +27,7 @@ import { cn } from '@/lib/utils'
 const PERKS = ['instant', 'library', 'updates'] as const
 
 /**
- * Figma "Order summary": subtotal, sale savings, the promo code, tax and
+ * Subtotal, sale savings, the promo code, tax and
  * shipping (worked out at checkout), the total and "Proceed to checkout",
  * then what the buyer gets. A gift needs its recipient's email first.
  * Phones: the sticky bar below carries the checkout button instead.

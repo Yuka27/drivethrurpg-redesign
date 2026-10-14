@@ -9,12 +9,14 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 
 const sectionHeading = 'font-sans text-base leading-6 font-bold'
 
-/** The description, then the sample pages (Figma "Sample pages"), each opening larger. */
+/** The description, then the sample pages, each opening larger. */
 export function OverviewSection({ title }: { title: TitleDetail }) {
   const { t } = useTranslation('title')
   const samples = useTitleSamples(title.id).data
   const [open, setOpen] = useState<number | null>(null)
   const pages = samples?.previewPages ?? []
+  // the newer sampleFile first, the older sampleFileUrl else
+  const sampleUrl = samples?.sampleFile?.url ?? samples?.sampleFileUrl
   const paragraphs = title.description.split(/\n\s*\n/).filter(Boolean)
 
   return (
@@ -35,15 +37,19 @@ export function OverviewSection({ title }: { title: TitleDetail }) {
       )}
 
       {pages.length > 0 && (
-        <div className="flex flex-col gap-2">
+        // the home preview's "See all N pages" lands here
+        <div
+          id="samples"
+          className="flex scroll-mt-[calc(var(--header-h,0px)+var(--stick-h,0px)+12px)] flex-col gap-2"
+        >
           <div className="flex items-center justify-between gap-4">
             <h3 className={sectionHeading}>{t('samples.heading')}</h3>
-            {samples?.sampleFileUrl && (
+            {sampleUrl && (
               <a
-                href={assetUrl(samples.sampleFileUrl)}
+                href={assetUrl(sampleUrl)}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-1 text-sm text-primary hover:underline"
+                className="flex items-center gap-1 text-sm text-primary-text hover:underline"
               >
                 <DownloadIcon aria-hidden className="size-4" />
                 {t('samples.download')}

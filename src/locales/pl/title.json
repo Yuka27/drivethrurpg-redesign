@@ -52,11 +52,24 @@
     "titles_other": "{{formatted}} tytułu"
   },
   "follow": {
-    "label": "Obserwuj",
-    "hint": "Obserwuj ulubionego wydawcę, a co tydzień dostaniesz e-mail z nowościami.",
-    "publisher": "Obserwuj",
+    "hint": "Obserwuj ulubionych wydawców i kategorie, a co tydzień dostaniesz e-mail z nowościami",
     "followed": "Obserwujesz: {{name}}.",
-    "unfollowed": "Już nie obserwujesz: {{name}}."
+    "unfollowed": "Już nie obserwujesz: {{name}}.",
+    "follow": "Obserwuj",
+    "kind": {
+      "publisher": "Wydawca",
+      "product_line": "Seria",
+      "imprint": "Imprint",
+      "rule_system": "System gry",
+      "genre": "Gatunek"
+    },
+    "target": {
+      "publisher": "Obserwuj wydawcę {{name}}",
+      "product_line": "Obserwuj serię {{name}}",
+      "imprint": "Obserwuj imprint {{name}}",
+      "rule_system": "Obserwuj system gry {{name}}",
+      "genre": "Obserwuj gatunek {{name}}"
+    }
   },
   "alsoBought": "Klienci kupili też",
   "moreRecommendations": "Więcej poleceń",
@@ -123,7 +136,23 @@
     "replies_many": "{{count}} odpowiedzi",
     "replies_other": "{{count}} odpowiedzi",
     "reply": "Odpowiedz",
-    "flag": "Zgłoś"
+    "flag": "Zgłoś",
+    "sort": "Sortuj opinie",
+    "sortDisplay": "Sortuj: {{option}}",
+    "sorts": {
+      "newest": "Najnowsze",
+      "helpful": "Najbardziej pomocne"
+    },
+    "show": "Pokaż",
+    "shows": {
+      "all": "Wszystko",
+      "reviews": "Opinie",
+      "questions": "Pytania"
+    },
+    "helpful_one": "{{formatted}} osoba uznała to za pomocne",
+    "helpful_few": "{{formatted}} osoby uznały to za pomocne",
+    "helpful_many": "{{formatted}} osób uznało to za pomocne",
+    "helpful_other": "{{formatted}} osoby uznały to za pomocne"
   },
   "unavailable": {
     "title": "Ten tytuł nie jest już dostępny",
@@ -133,5 +162,13 @@
     "library": "Przejdź do Biblioteki",
     "similar": "Podobne tytuły"
   },
-  "loadErrorTitle": "Nie udało się wczytać tego tytułu"
+  "loadErrorTitle": "Nie udało się wczytać tego tytułu",
+  "previewPdf": {
+    "action": "Podgląd PDF",
+    "label": "Podgląd PDF, otwiera się w nowej karcie",
+    "meta_one": "Pierwsza strona · PDF · {{size}} MB",
+    "meta_few": "Pierwsze {{pages}} strony · PDF · {{size}} MB",
+    "meta_many": "Pierwszych {{pages}} stron · PDF · {{size}} MB",
+    "meta_other": "Pierwsze {{pages}} strony · PDF · {{size}} MB"
+  }
 }

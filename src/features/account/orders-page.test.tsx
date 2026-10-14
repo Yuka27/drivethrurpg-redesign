@@ -8,11 +8,9 @@ import { ORDERS_SEARCH_DEFAULTS, OrdersSearchSchema } from './orders-search'
 import type { OrdersSearch } from './orders-search'
 import { assetUrl } from '@/api/client'
 import { Pagination } from '@/components/site/pagination'
-import { apiError, mockApi } from '@/test/api'
+import { apiError, mockApi, usd } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
-
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 
 const order = (
   number: string,

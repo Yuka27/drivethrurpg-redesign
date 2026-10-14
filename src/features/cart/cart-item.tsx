@@ -3,7 +3,13 @@ import { MinusIcon, PlusIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { useRemoveLine, useSetLineQty, useUndoRemove } from '@/api/cart'
+import {
+  useMoveSavedToCart,
+  useRemoveLine,
+  useSaveForLater,
+  useSetLineQty,
+  useUndoRemove,
+} from '@/api/cart'
 import type { CartLine } from '@/api/cart'
 import { assetUrl } from '@/api/client'
 
@@ -13,16 +19,18 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatMoney, useFormatNumber } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
+import { tagClass } from '@/components/title/tag-class'
 
 /** A sensible ceiling for one line; the API sets none. */
 const MAX_QTY = 99
 
 /**
- * Figma "cart item": one cart line: cover, title, publisher, the format and how it arrives,
+ * One cart line: cover, title, publisher, the format and how it arrives,
  * the quantity and Remove; the price on the right (desktop) or under the
  * title (phones), with the discount when on sale. A download needs no
  * quantity, so its stepper shows only once there is more than one (to take
- * extras off again). Removing offers Undo (POST /cart/undo).
+ * extras off again). Removing offers Undo (POST /cart/undo); so does saving
+ * for later (the saved line moves back).
  */
 export function CartItem({ line }: { line: CartLine }) {
   const { t } = useTranslation('cart')
@@ -38,7 +46,9 @@ export function CartItem({ line }: { line: CartLine }) {
   const setQty = useSetLineQty()
   const remove = useRemoveLine()
   const undo = useUndoRemove()
-  const busy = setQty.isPending || remove.isPending
+  const save = useSaveForLater()
+  const moveBack = useMoveSavedToCart()
+  const busy = setQty.isPending || remove.isPending || save.isPending
   const name = line.title.name
 
   const list =
@@ -66,6 +76,28 @@ export function CartItem({ line }: { line: CartLine }) {
                 label: t('line.undo'),
                 onClick: () =>
                   undo.mutate(token, {
+                    onError: (error) => toast.error(apiError(error)),
+                  }),
+              }
+            : undefined,
+        })
+      },
+      onError: (error) => toast.error(apiError(error)),
+    })
+
+  const onSave = () =>
+    save.mutate(line.lineId, {
+      onSuccess: (cart) => {
+        // the saved copy: same line id, or the same edition
+        const saved =
+          cart.savedForLater.find((item) => item.lineId === line.lineId) ??
+          cart.savedForLater.find((item) => item.sku === line.sku)
+        toast.success(t('line.saved', { title: name }), {
+          action: saved
+            ? {
+                label: t('line.undo'),
+                onClick: () =>
+                  moveBack.mutate(saved.lineId, {
                     onError: (error) => toast.error(apiError(error)),
                   }),
               }
@@ -129,9 +161,7 @@ export function CartItem({ line }: { line: CartLine }) {
               )}
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex h-[22px] items-center rounded-md border border-border px-2 text-xs font-medium">
-                {line.formatLabel}
-              </span>
+              <span className={tagClass}>{line.formatLabel}</span>
               {line.requiresShipping ? (
                 <span className="text-xs text-muted-foreground">
                   {t('line.ships')}
@@ -160,6 +190,7 @@ export function CartItem({ line }: { line: CartLine }) {
             busy={busy}
             onQty={changeQty}
             onRemove={onRemove}
+            onSave={onSave}
           />
         </div>
       </div>
@@ -172,19 +203,20 @@ export function CartItem({ line }: { line: CartLine }) {
         </p>
       </div>
       <LineControls
-        className="pl-24 sm:hidden"
+        className="px-3 sm:hidden"
         name={name}
         qty={line.qty}
         showStepper={showStepper}
         busy={busy}
         onQty={changeQty}
         onRemove={onRemove}
+        onSave={onSave}
       />
     </li>
   )
 }
 
-/** − qty + and Remove. Phones: the stepper left, Remove right. */
+/** − qty +, Save for later and Remove. Phones: the stepper left, the rest right. */
 function LineControls({
   name,
   qty,
@@ -192,6 +224,7 @@ function LineControls({
   busy,
   onQty,
   onRemove,
+  onSave,
   className,
 }: {
   name: string
@@ -200,6 +233,7 @@ function LineControls({
   busy: boolean
   onQty: (qty: number) => void
   onRemove: () => void
+  onSave: () => void
   className?: string
 }) {
   const { t } = useTranslation('cart')
@@ -208,8 +242,9 @@ function LineControls({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 max-sm:justify-between',
-        !showStepper && 'max-sm:justify-start',
+        // phones: the whole card's width, the stepper left and the actions right
+        'flex flex-wrap items-center gap-x-2 gap-y-1 max-sm:justify-between',
+        !showStepper && 'max-sm:justify-end',
         className,
       )}
     >
@@ -244,15 +279,26 @@ function LineControls({
           </Button>
         </div>
       )}
-      <Button
-        variant="ghost"
-        aria-label={t('line.removeLabel', { title: name })}
-        disabled={busy}
-        onClick={onRemove}
-        className="h-8 px-0 font-medium hover:bg-transparent hover:underline"
-      >
-        {t('line.remove')}
-      </Button>
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          aria-label={t('line.saveLabel', { title: name })}
+          disabled={busy}
+          onClick={onSave}
+          className="h-8 px-0 font-medium hover:bg-transparent hover:underline"
+        >
+          {t('line.saveForLater')}
+        </Button>
+        <Button
+          variant="ghost"
+          aria-label={t('line.removeLabel', { title: name })}
+          disabled={busy}
+          onClick={onRemove}
+          className="h-8 px-0 font-medium hover:bg-transparent hover:underline"
+        >
+          {t('line.remove')}
+        </Button>
+      </div>
     </div>
   )
 }

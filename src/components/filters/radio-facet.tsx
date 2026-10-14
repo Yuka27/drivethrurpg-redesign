@@ -4,7 +4,7 @@ import type { FacetOption } from './facet-option'
 import { FacetRow } from './facet-row'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
-/** A single-choice facet (Status). Figma: the picked radio is filled red with a light dot. */
+/** A single-choice facet (Status). The picked radio is filled red with a light dot. */
 export function RadioFacet({
   label,
   options,

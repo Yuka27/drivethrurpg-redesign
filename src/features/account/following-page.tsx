@@ -10,6 +10,8 @@ import { ErrorState } from '@/components/site/empty-state'
 import { OptionSelect } from '@/components/site/option-select'
 import { LoadingStatus } from '@/components/site/loading-status'
 import { SearchField } from '@/components/site/search-field'
+import { FOLLOW_KINDS } from '@/api/follow-kind'
+import type { FollowKind } from '@/api/follow-kind'
 import {
   useFollow,
   useFollowing,
@@ -17,7 +19,7 @@ import {
   useSetFollowEmail,
   useUnfollow,
 } from '@/api/following'
-import type { FollowedPublisher } from '@/api/following'
+import type { Followed } from '@/api/following'
 import { PublisherLogo } from '@/components/site/publisher-logo'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -36,16 +38,33 @@ import { cn } from '@/lib/utils'
 
 type Sort = 'recent' | 'name' | 'titles'
 
-const SORTS: Record<
-  Sort,
-  (a: FollowedPublisher, b: FollowedPublisher) => number
-> = {
+const SORTS: Record<Sort, (a: Followed, b: Followed) => number> = {
   recent: (a, b) => b.followedAt.localeCompare(a.followedAt),
-  name: (a, b) => a.publisher.name.localeCompare(b.publisher.name),
-  titles: (a, b) => b.publisher.titleCount - a.publisher.titleCount,
+  name: (a, b) => a.name.localeCompare(b.name),
+  // only publishers have a count; the rest keep their names' order
+  titles: (a, b) =>
+    (b.titleCount ?? 0) - (a.titleCount ?? 0) || a.name.localeCompare(b.name),
 }
 
-/** Followed publishers: new-release emails per publisher, view, unfollow (with Undo). */
+/** The listing filtered by what a row follows; series and imprints have no filter. */
+const VIEW_SEARCH: Partial<
+  Record<
+    FollowKind,
+    (
+      id: string,
+    ) => { publisher: string } | { system: string } | { genre: string }
+  >
+> = {
+  publisher: (id) => ({ publisher: id }),
+  rule_system: (id) => ({ system: id }),
+  genre: (id) => ({ genre: id }),
+}
+
+/**
+ * Everything the user follows, a group per kind (publishers, series,
+ * imprints, game systems, genres): new-release emails per row, view,
+ * unfollow (with Undo).
+ */
 export function FollowingPage() {
   const { t } = useTranslation('account')
   const apiError = useApiError()
@@ -63,24 +82,26 @@ export function FollowingPage() {
     titles: t('following.sortTitles'),
   }
 
-  const visible = useMemo(() => {
+  const groups = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase()
-    return (following.data ?? [])
-      .filter((item) =>
-        item.publisher.name.toLocaleLowerCase().includes(needle),
-      )
+    const visible = (following.data ?? [])
+      .filter((item) => item.name.toLocaleLowerCase().includes(needle))
       .sort(SORTS[sort])
+    return FOLLOW_KINDS.map((kind) => ({
+      kind,
+      items: visible.filter((item) => item.kind === kind),
+    })).filter((group) => group.items.length > 0)
   }, [following.data, query, sort])
 
   const empty = following.data?.length === 0
 
-  const unfollowWithUndo = ({ publisher }: FollowedPublisher) =>
-    unfollow.mutate(publisher.id, {
+  const unfollowWithUndo = (item: Followed) =>
+    unfollow.mutate(item, {
       onSuccess: () =>
-        toast.success(t('following.unfollowed', { name: publisher.name }), {
+        toast.success(t('following.unfollowed', { name: item.name }), {
           action: {
             label: t('following.undo'),
-            onClick: () => follow.mutate(publisher.id),
+            onClick: () => follow.mutate(item),
           },
         }),
       onError: (error) => toast.error(apiError(error)),
@@ -147,25 +168,35 @@ export function FollowingPage() {
           </div>
         ) : empty ? (
           <FollowingEmpty />
+        ) : groups.length === 0 ? (
+          <p className="rounded-xl bg-card p-6 text-sm text-muted-foreground">
+            {t('following.noMatches', { query: query.trim() })}
+          </p>
         ) : (
-          <ul
-            aria-label={t('following.title')}
-            className="flex flex-col gap-3 rounded-xl bg-card p-6"
-          >
-            {visible.length === 0 && (
-              <li className="py-2 text-sm text-muted-foreground">
-                {t('following.noMatches', { query: query.trim() })}
-              </li>
-            )}
-            {visible.map((item, index) => (
-              <FollowedRow
-                key={item.publisher.id}
-                item={item}
-                first={index === 0}
-                onUnfollow={() => unfollowWithUndo(item)}
-              />
-            ))}
-          </ul>
+          groups.map(({ kind, items }) => (
+            <section
+              key={kind}
+              aria-labelledby={`following-${kind}`}
+              className="flex flex-col gap-3 rounded-xl bg-card p-6"
+            >
+              <h2
+                id={`following-${kind}`}
+                className="font-sans text-base leading-6 font-bold"
+              >
+                {t(`following.groups.${kind}`)}
+              </h2>
+              <ul className="flex flex-col">
+                {items.map((item, index) => (
+                  <FollowedRow
+                    key={item.id}
+                    item={item}
+                    first={index === 0}
+                    onUnfollow={() => unfollowWithUndo(item)}
+                  />
+                ))}
+              </ul>
+            </section>
+          ))
         )}
       </div>
     </AccountPage>
@@ -174,7 +205,7 @@ export function FollowingPage() {
 
 /**
  * Desktop: logo, name and counts, then the email switch and the menu in one row.
- * Mobile (Figma): the switch moves under the counts and the menu goes full width
+ * Mobile: the switch moves under the counts and the menu goes full width
  * under the row, inset to the text.
  */
 function FollowedRow({
@@ -182,7 +213,7 @@ function FollowedRow({
   first,
   onUnfollow,
 }: {
-  item: FollowedPublisher
+  item: Followed
   first: boolean
   onUnfollow: () => void
 }) {
@@ -191,18 +222,20 @@ function FollowedRow({
   const formatDate = useFormatDate({ month: 'short', year: 'numeric' })
   const { data: newCounts } = useNewTitleCounts()
   const setEmail = useSetFollowEmail()
-  const { publisher } = item
-  const newCount = newCounts?.get(publisher.id) ?? 0
+  // the feed counts publishers' titles only
+  const newCount =
+    item.kind === 'publisher' ? (newCounts?.get(item.id) ?? 0) : 0
+  const viewSearch = VIEW_SEARCH[item.kind]
 
   const emailSwitch = (
     <label className="flex items-center gap-3 text-xs text-muted-foreground">
       {t('following.email')}
       <Switch
         checked={item.emailNewReleases}
-        aria-label={t('following.emailLabel', { name: publisher.name })}
+        aria-label={t('following.emailLabel', { name: item.name })}
         onCheckedChange={(email) =>
           setEmail.mutate(
-            { id: publisher.id, email },
+            { kind: item.kind, id: item.id, email },
             { onError: (error) => toast.error(apiError(error)) },
           )
         }
@@ -222,17 +255,17 @@ function FollowedRow({
       )}
     >
       <PublisherLogo
-        name={publisher.name}
-        url={publisher.logo?.url}
+        name={item.name}
+        url={item.logo?.url}
         className="row-span-2 lg:row-span-1"
       />
       <div className="flex min-w-0 flex-col gap-1">
         <div className="flex items-center gap-2.5 text-sm">
-          <span className="truncate">{publisher.name}</span>
+          <span className="truncate">{item.name}</span>
           {newCount > 0 && (
             <Badge
               variant="outline"
-              className="h-[22px] rounded-md border-primary px-2 text-primary"
+              className="h-[22px] rounded-md border-primary px-2 text-primary-text"
               aria-label={t('following.newLabel', { count: newCount })}
             >
               {t('following.new', { count: newCount })}
@@ -240,10 +273,12 @@ function FollowedRow({
           )}
         </div>
         <p className="text-xs text-muted-foreground">
-          {t('following.meta', {
-            count: publisher.titleCount,
-            date: formatDate(item.followedAt),
-          })}
+          {item.titleCount === null
+            ? t('following.since', { date: formatDate(item.followedAt) })
+            : t('following.meta', {
+                count: item.titleCount,
+                date: formatDate(item.followedAt),
+              })}
         </p>
       </div>
       <div className="col-start-2 lg:col-start-3 lg:row-start-1">
@@ -255,7 +290,7 @@ function FollowedRow({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              aria-label={t('following.menuLabel', { name: publisher.name })}
+              aria-label={t('following.menuLabel', { name: item.name })}
               className="h-9 justify-between gap-1 rounded-lg border-border bg-background px-2.5 shadow-none max-lg:w-full dark:bg-background"
             >
               {t('following.menu')}
@@ -263,12 +298,20 @@ function FollowedRow({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link to="/titles" search={{ publisher: publisher.id }}>
-                {t('following.viewPublisher')}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            {viewSearch && (
+              <>
+                <DropdownMenuItem asChild>
+                  <Link to="/titles" search={viewSearch(item.id)}>
+                    {t(
+                      item.kind === 'publisher'
+                        ? 'following.viewPublisher'
+                        : 'following.viewTitles',
+                    )}
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
             <DropdownMenuItem variant="destructive" onSelect={onUnfollow}>
               {t('following.unfollow')}
             </DropdownMenuItem>

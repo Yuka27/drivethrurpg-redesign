@@ -8,7 +8,7 @@ import { usePreferencesStore } from '@/stores/preferences'
 export function usePriceLabel() {
   const { t } = useTranslation('listing')
   const currency = usePreferencesStore((state) => state.currency)
-  // Figma: "Under $5", not "$5.00"; cents only when there are some
+  // "Under $5", not "$5.00"; cents only when there are some
   const whole = useFormatNumber({
     style: 'currency',
     currency,

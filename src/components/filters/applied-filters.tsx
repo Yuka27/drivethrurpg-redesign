@@ -14,7 +14,7 @@ export type AppliedFilter = {
 
 /**
  * The filters that are on, as removable chips, then "+ N more" and "Clear all".
- * Figma: the desktop row shows about two lines' worth, the mobile row one chip;
+ * The desktop row shows about two lines' worth, the mobile row one chip;
  * `shown` sets how many before "+ N more".
  */
 export function AppliedFilters({
@@ -58,7 +58,7 @@ export function AppliedFilters({
           type="button"
           aria-expanded={expanded}
           onClick={() => setExpanded(!expanded)}
-          className="px-1 text-xs text-primary hover:underline"
+          className="px-1 text-xs text-primary-text hover:underline"
         >
           {expanded
             ? t('filters.showLess')
@@ -68,7 +68,7 @@ export function AppliedFilters({
       <button
         type="button"
         onClick={onClearAll}
-        className="px-1 text-xs text-primary hover:underline"
+        className="px-1 text-xs text-primary-text hover:underline"
       >
         {t('filters.clearAll')}
       </button>

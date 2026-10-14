@@ -75,8 +75,6 @@ export function RegisterForm({
   const [retryAfter, setRetryAfter] = useState(0)
   const secondsLeft = useCountdown(retryUntil)
 
-  // validate on submit, then re-validate each field as it changes;
-  // the first invalid field gets focus (shouldFocusError)
   const form = useForm<RegisterRequest>({
     resolver: zodResolver(RegisterRequestSchema),
     defaultValues: { email: '', password: '', newsletter: false },
@@ -124,7 +122,7 @@ export function RegisterForm({
   }
 
   const submit = form.handleSubmit((values) => {
-    if (pending || secondsLeft > 0) return // no double submit
+    if (pending || secondsLeft > 0) return
     setServerDown(false)
     form.clearErrors('root')
     register.mutate(values, {
@@ -331,7 +329,7 @@ export function RegisterForm({
           <button
             type="button"
             onClick={() => onSwitchToLogin()}
-            className="font-bold text-primary hover:underline"
+            className="font-bold text-primary-text hover:underline"
           >
             {t('register.login')}
           </button>

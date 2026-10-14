@@ -1,21 +1,20 @@
 import { Link } from '@tanstack/react-router'
-import { ArrowLeftIcon, CheckIcon } from 'lucide-react'
+import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { pageTitleClass } from './account-page'
-import { brandName } from './card-brand'
-import { openInNewTab } from '@/lib/open-in-new-tab'
+import { brandName } from '@/lib/card-brand'
 import { useStatusLabel } from './order-status'
 import { useLastOrdersSearch } from './orders-search'
 import { useOpenInvoice } from './use-open-invoice'
 import { ApiError, assetUrl } from '@/api/client'
-import { useFileDownload, useLibraryByTitle } from '@/api/library'
-import type { LibraryItem } from '@/api/library'
+import { useLibraryByTitle } from '@/api/library'
 import { useMe } from '@/api/me'
 import { useOrder, useResendReceipt } from '@/api/orders'
 import { useTitleName } from '@/api/titles'
 import type { OrderDetail, OrderLine } from '@/api/orders'
+import { LibraryButton } from '@/components/title/library-button'
 import { Badge } from '@/components/ui/badge'
 import { LoadingStatus } from '@/components/site/loading-status'
 import { Button } from '@/components/ui/button'
@@ -217,7 +216,7 @@ function OrderProgress({ order }: { order: OrderDetail }) {
 
 /**
  * Desktop: cover, title, price and the library button in one row.
- * Mobile (mockup): the button moves under the title.
+ * Mobile: the button moves under the title.
  */
 function OrderItem({ line, first }: { line: OrderLine; first: boolean }) {
   const formatMoney = useFormatMoney()
@@ -273,63 +272,6 @@ function OrderItem({ line, first }: { line: OrderLine; first: boolean }) {
         </div>
       )}
     </li>
-  )
-}
-
-/**
- * New or updated files waiting: "Download" (one file: straight away; several:
- * on the library page, where each can be picked). Nothing new: "In library ✓".
- */
-export function LibraryButton({
-  item,
-  title,
-}: {
-  item: LibraryItem
-  title: string
-}) {
-  const { t } = useTranslation('account')
-  const download = useFileDownload()
-  const waiting = item.hasUpdate || item.files.some((file) => file.isNew)
-  const buttonClass = 'border border-border'
-
-  if (waiting && item.files.length === 1) {
-    return (
-      <Button
-        variant="secondary"
-        size="sm"
-        className={buttonClass}
-        aria-label={t('orderDetail.downloadLabel', { title })}
-        disabled={download.isPending}
-        onClick={() =>
-          void openInNewTab(() => download.mutateAsync(item.files[0].id)).catch(
-            () => toast.error(t('orderDetail.downloadFailed')),
-          )
-        }
-      >
-        {t('orderDetail.download')}
-      </Button>
-    )
-  }
-
-  return (
-    <Button asChild variant="secondary" size="sm" className={buttonClass}>
-      <Link
-        to="/library"
-        aria-label={t(
-          waiting ? 'orderDetail.downloadLabel' : 'orderDetail.inLibraryLabel',
-          { title },
-        )}
-      >
-        {waiting ? (
-          t('orderDetail.download')
-        ) : (
-          <>
-            {t('orderDetail.inLibrary')}
-            <CheckIcon aria-hidden />
-          </>
-        )}
-      </Link>
-    </Button>
   )
 }
 

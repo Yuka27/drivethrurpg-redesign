@@ -20,7 +20,7 @@ const items = [
   libraryItem('b', {
     name: 'Brine',
     ruleSystem: 'd20_5e',
-    publisher: { id: 'pub_north', name: 'Northwind Press' },
+    publisher: { id: 'pub_chaosium', name: 'Chaosium Inc.' },
     giftFrom: { displayName: 'Jon' },
     purchasedAt: '2026-08-01T00:00:00Z',
   }),
@@ -46,7 +46,7 @@ describe('filterLibrary', () => {
           search({
             system: 'osr,d20_5e',
             type: 'adventure',
-            publisher: 'pub_north',
+            publisher: 'pub_chaosium',
           }),
         ),
       ),
@@ -69,7 +69,7 @@ describe('filterLibrary', () => {
   })
 
   it('searches titles, publishers and file names, ignoring case', () => {
-    expect(names(filterLibrary(items, search({ q: 'NORTHWIND' })))).toEqual([
+    expect(names(filterLibrary(items, search({ q: 'CHAOSIUM' })))).toEqual([
       'Brine',
     ])
     expect(names(filterLibrary(items, search({ q: 'c.pdf' })))).toEqual([

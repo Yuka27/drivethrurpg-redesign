@@ -4,7 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { safeLocalStorage } from '@/lib/safe-storage'
 
-/** Mockup "Recent searches": the last few, newest first. */
+/** The last few, newest first. */
 const KEEP = 5
 
 /**

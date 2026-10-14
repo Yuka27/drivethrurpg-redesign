@@ -166,8 +166,8 @@
   },
   "following": {
     "title": "Following",
-    "subtitle": "Manage the publishers and game lines you follow, and how you hear about them.",
-    "search": "Search publishers you follow",
+    "subtitle": "Manage the publishers, series, game systems and genres you follow, and how you hear about them.",
+    "search": "Search what you follow",
     "searchPlaceholder": "Search",
     "sort": "Sort",
     "sortDisplay": "Sort: {{option}}",
@@ -188,7 +188,7 @@
     "unfollow": "Unfollow",
     "unfollowed": "You unfollowed {{name}}.",
     "undo": "Undo",
-    "noMatches": "No publishers match “{{query}}”.",
+    "noMatches": "Nothing you follow matches “{{query}}”.",
     "emptyTitle": "You’re not following any publishers",
     "emptyText": "Follow a publisher to hear about new releases and updates in Notifications.",
     "fromLibrary": "Publishers with titles in your library",
@@ -196,7 +196,16 @@
     "inLibrary_other": "{{count}} titles in your library",
     "follow": "Follow",
     "followLabel": "Follow {{name}}",
-    "loadErrorTitle": "We couldn’t load who you follow"
+    "loadErrorTitle": "We couldn’t load who you follow",
+    "since": "Followed {{date}}",
+    "viewTitles": "View titles",
+    "groups": {
+      "publisher": "Publishers",
+      "product_line": "Series",
+      "imprint": "Imprints",
+      "rule_system": "Game systems",
+      "genre": "Genres"
+    }
   },
   "orders": {
     "title": "Orders",

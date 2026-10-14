@@ -21,7 +21,7 @@ function pageSlots(page: number, pageCount: number): Array<number | 'gap'> {
 const buttonClass =
   'h-8 rounded-lg border-border bg-background shadow-none dark:bg-background'
 
-/** Figma: "← Prev · 1 2 3 4 · Next →", 32px buttons, the current page filled with the primary colour. */
+/** "← Prev · 1 2 3 4 · Next →", 32px buttons, the current page filled with the primary colour. */
 export function Pagination({
   page,
   pageCount,

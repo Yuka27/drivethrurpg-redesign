@@ -17,8 +17,8 @@ const PROVIDERS: Record<SocialProvider, { name: string; icon: string }> = {
 
 type SocialButtonsProps = {
   /**
-   * stacked (login, Figma): Roll20 full width, then Google · Facebook.
-   * row (register, mockup): Google · Facebook · Roll20 in three columns,
+   * stacked (login): Roll20 full width, then Google · Facebook.
+   * row (register): Google · Facebook · Roll20 in three columns,
    * which still fit on one row at 360px.
    */
   layout: 'stacked' | 'row'
@@ -62,7 +62,7 @@ export function SocialButtons({
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Figma: "Continue with Roll20" on mobile, just "Roll20" on desktop */}
+      {/* "Continue with Roll20" on mobile, just "Roll20" on desktop */}
       {button('roll20', true)}
       <div className="flex gap-2">
         {button('google')}
@@ -94,7 +94,7 @@ function SocialButton({
   return (
     <Button
       type="button"
-      // login follows Figma (outline, 36px); register follows the mockup (filled, 44px)
+      // login: outline, 36px; register: filled, 44px
       variant={layout === 'row' ? 'secondary' : 'outline'}
       disabled={disabled}
       aria-busy={pending || undefined}

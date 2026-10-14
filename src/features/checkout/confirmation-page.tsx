@@ -25,8 +25,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { brandName } from '@/features/account/card-brand'
-import { LibraryButton } from '@/features/account/order-detail-page'
+import { brandName } from '@/lib/card-brand'
+import { LibraryButton } from '@/components/title/library-button'
 import { useFormatMoney } from '@/i18n/format'
 import { message, useApplyApiError } from '@/lib/forms'
 import { openInNewTab } from '@/lib/open-in-new-tab'
@@ -34,7 +34,7 @@ import { useAuthDialogStore } from '@/stores/auth-dialog'
 import { useCheckoutResult } from '@/stores/checkout-result'
 
 /**
- * /order-confirmation/$orderId (mockup: "Confirmation"): the result first,
+ * /order-confirmation/$orderId: the result first,
  * then the downloads. Printed items get a shipping line. A guest gets one
  * optional step, a password to keep the titles in a library; skipping it never
  * stands between them and their files.

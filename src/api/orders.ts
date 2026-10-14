@@ -41,7 +41,7 @@ const OrderLineSchema = z.object({
   lineId: z.string(),
   title: z.object({
     id: z.string(),
-    /** the order carries it; older code reads the title's own name instead */
+    /** not always sent: the pages fall back to the title's own (useTitleName) */
     name: z.string().nullish(),
     cover: z.object({ url: z.string(), alt: z.string() }).nullish(),
   }),

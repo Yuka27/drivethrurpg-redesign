@@ -33,7 +33,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { openInNewTab } from '@/lib/open-in-new-tab'
 
-/** Figma: twelve cards a page. */
+/** Twelve cards a page. */
 const PAGE_SIZE = 12
 
 /** Everything but the filters themselves: sort and search stay as they are. */

@@ -40,8 +40,14 @@ export const queryKeys = {
     all: ['titles'] as const,
     list: (filters: Record<string, unknown>, prefs: Preferences) =>
       ['titles', 'list', filters, prefs] as const,
+    /** how many titles match (only `total`): never mixed with the lists, which hold pages */
+    count: (filters: Record<string, unknown>, prefs: Preferences) =>
+      ['titles', 'count', filters, prefs] as const,
     detail: (id: string, prefs: Preferences) =>
       ['titles', 'detail', id, prefs] as const,
+    /** the home panel's GET /titles/{id}/preview: its own shape, apart from the detail */
+    preview: (id: string, pages: number, prefs: Preferences) =>
+      ['titles', 'preview', id, pages, prefs] as const,
     /** name and publisher only (order and cart lines); its own key so it never replaces a full detail */
     name: (id: string, prefs: Preferences) =>
       ['titles', 'name', id, prefs] as const,
@@ -53,6 +59,9 @@ export const queryKeys = {
       kind: 'reviews' | 'discussions' | 'similar' | 'samples',
       prefs: Preferences,
     ) => ['titles', 'related', id, kind, prefs] as const,
+    /** a title's reviews in one order ("helpful" is the API's default) */
+    reviews: (id: string, sort: 'helpful' | 'newest', prefs: Preferences) =>
+      ['titles', 'related', id, 'reviews', sort, prefs] as const,
   },
   search: {
     results: (params: Record<string, unknown>, prefs: Preferences) =>
@@ -62,6 +71,7 @@ export const queryKeys = {
       ['search', 'suggest', q, prefs] as const,
   },
   publishers: {
+    all: ['publishers'] as const,
     detail: (id: string, prefs: Preferences) =>
       ['publishers', 'detail', id, prefs] as const,
   },
@@ -73,8 +83,13 @@ export const queryKeys = {
   },
   following: {
     all: ['following'] as const,
+    /** everything followed (GET /following?type=all): publishers, series, imprints, systems, genres */
     list: (prefs: Preferences) => ['following', 'list', prefs] as const,
     feed: (prefs: Preferences) => ['following', 'feed', prefs] as const,
+  },
+  genres: {
+    all: ['genres'] as const,
+    list: (prefs: Preferences) => ['genres', 'list', prefs] as const,
   },
   cart: (prefs: Preferences) => ['cart', prefs] as const,
   /** "Customers also bought" for the cart; under 'cart' so cart changes refetch it */

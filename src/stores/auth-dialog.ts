@@ -28,7 +28,7 @@ type AuthDialogState = {
   setOpen: (open: boolean) => void
 }
 
-/** The login/register modal is opened from several places (header, mobile menu, later: any "log in to continue"). */
+/** The login/register modal, opened from anywhere: header, mobile menu, the login-required pages. */
 export const useAuthDialogStore = create<AuthDialogState>()((set) => ({
   open: false,
   view: 'login',

@@ -13,7 +13,7 @@ export function discountOf(title: TitleSummary) {
 }
 
 /**
- * Figma: "-40%" and "$5.99" (dark) chips over a cover's bottom corner. The
+ * "-40%" and "$5.99" (dark) chips over a cover's bottom corner. The
  * discount is lime on promos, red (`tone="primary"`) on the home's featured
  * covers. No discount chip when the title is not on sale.
  */

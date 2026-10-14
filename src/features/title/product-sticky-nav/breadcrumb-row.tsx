@@ -7,10 +7,10 @@ import type { TitleDetail } from '@/api/titles'
 import { useFacetLabel } from '@/components/title/use-facet-label'
 
 const crumbLink =
-  'block truncate rounded-sm text-muted-foreground outline-none hover:text-primary focus-visible:ring-2 focus-visible:ring-primary'
+  'block truncate rounded-sm text-muted-foreground outline-none hover:text-primary-text focus-visible:ring-2 focus-visible:ring-primary'
 
 /**
- * Prototype row 1: "← publisher / product line / title" on the left, the
+ * Row 1: "← publisher / product line / title" on the left, the
  * utility menus on the right. The API has no product line, so the middle step
  * is the rule system (the listing filtered by it). The publisher link opens the
  * listing filtered by the publisher, as every publisher link does. Phones keep

@@ -7,7 +7,7 @@ import { useReducedMotion } from '@/lib/use-reduced-motion'
 export const SECTIONS = ['overview', 'details', 'reviews'] as const
 export type Section = (typeof SECTIONS)[number]
 
-/** Prototype: a section counts once its top is this far under the sticky block. */
+/** A section counts once its top is this far under the sticky block. */
 const SLACK = 24
 
 /**

@@ -54,8 +54,6 @@ export function LoginForm({
   const social = useSocialLogin()
   const { data: cart } = useCart()
   const merge = useMergeGuestData()
-  // validates on submit, then re-validates each field as the user fixes it;
-  // the first invalid field gets focus (shouldFocusError, on by default)
   const form = useForm<LoginRequest>({
     resolver: zodResolver(LoginRequestSchema),
     defaultValues: { email: defaultEmail, password: '', remember: true },
@@ -145,7 +143,7 @@ export function LoginForm({
                       onClick={() =>
                         onForgotPassword(form.getValues('email').trim())
                       }
-                      className="text-sm text-primary hover:underline"
+                      className="text-sm text-primary-text hover:underline"
                     >
                       {t('login.forgotPassword')}
                     </button>
@@ -211,7 +209,7 @@ export function LoginForm({
               <button
                 type="button"
                 onClick={onSwitchToRegister}
-                className="text-primary hover:underline"
+                className="text-primary-text hover:underline"
               >
                 {t('login.register')}
               </button>

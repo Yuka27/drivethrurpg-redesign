@@ -12,7 +12,7 @@ export type LibrarySort = (typeof LIBRARY_SORTS)[number]
 export const LIBRARY_FACETS = ['system', 'type', 'format', 'publisher'] as const
 export type LibraryFacet = (typeof LIBRARY_FACETS)[number]
 
-/** What the library opens on. Figma: "Sort: Recently added". Defaults stay out of the URL. */
+/** What the library opens on ("Sort: Recently added"). Defaults stay out of the URL. */
 export const LIBRARY_SEARCH_DEFAULTS = {
   status: 'all' as LibraryStatus,
   system: '',

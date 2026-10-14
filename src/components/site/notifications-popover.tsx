@@ -32,7 +32,7 @@ import { useLocale } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
 
-/** Figma: a bag for orders, a gift for gifts and publisher news. */
+/** A bag for orders, a gift for gifts and publisher news. */
 const ICONS: Record<string, LucideIcon> = {
   order: ShoppingBagIcon,
   gift: GiftIcon,
@@ -72,7 +72,7 @@ function useDayLabel() {
 }
 
 /**
- * Figma "Notifications": the bell in the header (with the unread count) opens
+ * The bell in the header (with the unread count) opens
  * the latest notifications. Opening one marks it read and goes to its page;
  * "Mark all as read" and the settings sit at the top and the bottom. Phones:
  * the panel spans the screen under the header.
@@ -150,7 +150,7 @@ function NotificationsPanel({ onClose }: { onClose: () => void }) {
                 onError: (error) => toast.error(apiError(error)),
               })
             }
-            className="text-base font-medium text-primary hover:underline disabled:opacity-60"
+            className="text-base font-medium text-primary-text hover:underline disabled:opacity-60"
           >
             {t('notifications.markAll')}
           </button>

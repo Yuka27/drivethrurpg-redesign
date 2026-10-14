@@ -8,10 +8,10 @@ import { STATUS_URL, SUPPORT_URL } from '@/config/links'
 import { cn } from '@/lib/utils'
 
 /**
- * Mockup docs/Empty and No-Result States: when there is nothing to show, say
- * what happened (plain words, the user's query when there is one), offer one
- * primary action, and help recover. An icon in a circle, a heading, a line,
- * then whatever helps (`children`: actions, suggestions, links).
+ * When there is nothing to show, say what happened (plain words, the user's
+ * query when there is one), offer one primary action, and help recover. An
+ * icon in a circle, a heading, a line, then whatever helps (`children`:
+ * actions, suggestions, links).
  */
 export function EmptyState({
   icon,
@@ -87,13 +87,13 @@ export function EmptyLink(props: ComponentProps<typeof Link>) {
   return (
     <Link
       {...props}
-      className="mt-3.5 block text-sm font-semibold text-primary hover:underline"
+      className="mt-3.5 block text-sm font-semibold text-primary-text hover:underline"
     />
   )
 }
 
 /**
- * Mockup "Error: couldn't load": what failed, that it is not the user's fault
+ * "Couldn't load": what failed, that it is not the user's fault
  * and their things are safe, a retry and a way to support.
  */
 export function ErrorState({
@@ -128,7 +128,7 @@ export function ErrorState({
       </EmptyActions>
       <a
         href={STATUS_URL}
-        className="mt-3.5 block text-sm font-semibold text-primary hover:underline"
+        className="mt-3.5 block text-sm font-semibold text-primary-text hover:underline"
       >
         {t('emptyStates.error.status')}
       </a>
