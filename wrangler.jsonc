@@ -1,0 +1,12 @@
+// Cloudflare Workers static assets: the built app, no worker script.
+// `npm run build`, then `npx wrangler deploy`. See README "Deployment".
+{
+  "name": "drivethrurpg-redesign",
+  "compatibility_date": "2026-10-14",
+  "assets": {
+    // Vite's build output (no outDir override in vite.config.ts)
+    "directory": "./dist",
+    // an unknown path gets index.html with 200: the router handles deep links
+    "not_found_handling": "single-page-application",
+  },
+}

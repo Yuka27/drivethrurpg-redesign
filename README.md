@@ -3,8 +3,6 @@
 > **A UX/UI case study and working front-end prototype.**
 > This is a portfolio project, **not a real store**. Nothing is for sale, no payments are processed and all data is made up. Not affiliated with or endorsed by DriveThruRPG, OneBookShelf or any publisher.
 
-[![CI](https://github.com/Yuka27/drivethrurpg-redesign/actions/workflows/ci.yml/badge.svg)](https://github.com/Yuka27/drivethrurpg-redesign/actions/workflows/ci.yml)
-
 | Dark theme                                               | Light theme                                                |
 | -------------------------------------------------------- | ---------------------------------------------------------- |
 | ![Home page, dark theme](docs/screenshots/home-dark.png) | ![Home page, light theme](docs/screenshots/home-light.png) |
@@ -13,12 +11,12 @@ _Home page mockups from the Figma case study._
 
 ## Links
 
-|                      |                                                                                        |
-| -------------------- | -------------------------------------------------------------------------------------- |
-| **Live prototype**   | <CLOUDFLARE_PAGES_URL>                                                                 |
-| **Figma case study** | <FIGMA_URL> (research, audit, wireframes, mockups, design system)                      |
-| **Mock API docs**    | <RENDER_URL>/docs (OpenAPI / Swagger UI)                                               |
-| **Test coverage**    | https://yuka27.github.io/drivethrurpg-redesign/ (Vitest report, rebuilt on every push) |
+|                      |                                                                                                                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Live prototype**   | <CLOUDFLARE_PAGES_URL>                                                                                                                                                      |
+| **Figma case study** | https://www.figma.com/design/pckNOLhUrC8jyhUZDyIrVT/DriveThruRPG--UX-UI-Redesign?node-id=0-1&p=f&t=BJ7keTKOfF5q00QW-0 (research, audit, wireframes, mockups, design system) |
+| **Mock API docs**    | https://drivethrurpg-mock-api.onrender.com/docs#/ (OpenAPI / Swagger UI)                                                                                                    |
+| **Test coverage**    | https://yuka27.github.io/drivethrurpg-redesign/ (Vitest report, rebuilt on every push)                                                                                      |
 
 > The mock API runs on a free hosting plan and sleeps when idle. The first request can take 30-60 seconds to wake it up.
 
@@ -107,18 +105,22 @@ By default the app talks to the hosted mock API. To use a local one, run it (see
 
 ## Deployment
 
-The app is static files, hosted on **Cloudflare Pages**. In the Pages project settings:
+The app is static files, served by **Cloudflare Workers static assets** (not Pages) from `wrangler.jsonc`: no worker script, just the `dist/` folder.
 
-| Setting                | Value                                                                         |
-| ---------------------- | ----------------------------------------------------------------------------- |
-| Framework preset       | None                                                                          |
-| Build command          | `npm run build`                                                               |
-| Build output directory | `dist`                                                                        |
-| Node version           | 24 (from `.node-version`; or set `NODE_VERSION=24`)                           |
-| Environment variable   | `VITE_API_URL` = the hosted mock API origin (no trailing slash, no `/api/v1`) |
+```bash
+VITE_API_URL=https://drivethrurpg-mock-api.onrender.com npm run build   # → dist/
+npx wrangler deploy                                                       # uploads dist/
+```
 
-- **Variables are baked in at build time.** Vite writes them into the files it builds, so changing `VITE_API_URL` (or any `VITE_` variable) only takes effect after a new deployment. A missing or invalid `VITE_API_URL` still builds, but the site then shows a "This build is not configured" screen naming the variable, instead of a blank page.
-- **Deep links work without a `_redirects` file:** with no `404.html` in the output, Pages serves `index.html` for unknown paths and the router takes over. `public/_headers` caches the hashed files in `/assets/` for good and makes browsers check `index.html` on every visit.
+| Setting        | Value                                                                            |
+| -------------- | -------------------------------------------------------------------------------- |
+| Build command  | `npm run build` (Node 24, from `.node-version`)                                  |
+| Deploy command | `npx wrangler deploy` (`npx wrangler deploy --dry-run` checks without uploading) |
+| Assets         | `./dist`, with `"not_found_handling": "single-page-application"`                 |
+| Build variable | `VITE_API_URL` = the hosted mock API origin (no trailing slash, no `/api/v1`)    |
+
+- **`VITE_API_URL` is read at build time.** Vite writes it into the files it builds, so set it where the build runs (your shell, or the build settings of Workers Builds), not as a Worker runtime variable, and build and deploy again after changing it. A missing or invalid value still builds, but the site then shows a "This build is not configured" screen naming the variable, instead of a blank page.
+- **Deep links:** `not_found_handling: "single-page-application"` answers any path that is not a file with `index.html` (status 200), so a refresh on `/titles/…` works and the router takes over; there is no `_redirects` or `404.html`. `public/_headers` caches the hashed files in `/assets/` for good and makes browsers check the page on every visit.
 - **The hosted mock API sleeps on the free plan.** After a while without visits, the first request can take 30–60 seconds while it wakes up; the app shows its loading outlines meanwhile.
 
 ## Mock API
