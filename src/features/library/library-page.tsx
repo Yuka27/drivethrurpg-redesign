@@ -4,7 +4,8 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { LibraryCard } from './library-card'
+import { LibraryCard, LibraryCardSkeleton } from './library-card'
+import { LibraryEmpty, LibraryNoMatch } from './library-empty'
 import { LibraryFilterPanel } from './library-filter-panel'
 import {
   activeFilterCount,
@@ -21,7 +22,10 @@ import {
 } from '@/api/library'
 import type { LibraryFile, LibraryItem } from '@/api/library'
 import { pageTitleClass } from '@/features/account/account-page'
+import { FilterPanelSkeleton } from '@/components/filters/filter-panel-skeleton'
 import { FilterSheet } from '@/components/filters/filter-sheet'
+import { ErrorState } from '@/components/site/empty-state'
+import { LoadingStatus } from '@/components/site/loading-status'
 import { OptionSelect } from '@/components/site/option-select'
 import { Pagination } from '@/components/site/pagination'
 import { SearchField } from '@/components/site/search-field'
@@ -121,7 +125,11 @@ export function LibraryPage({
         aria-label={t('common:filters.title')}
         className="w-[276px] shrink-0 max-lg:hidden"
       >
-        <LibraryFilterPanel {...panelProps} variant="sidebar" />
+        {library.isPending ? (
+          <FilterPanelSkeleton variant="sidebar" />
+        ) : (
+          <LibraryFilterPanel {...panelProps} variant="sidebar" />
+        )}
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col gap-2.5">
@@ -135,12 +143,14 @@ export function LibraryPage({
           </Button>
         </div>
 
-        {library.isError && (
-          <p className="text-sm text-destructive">{t('loadError')}</p>
-        )}
-
-        {all?.length === 0 ? (
-          <p className="rounded-md bg-card p-6 text-sm">{t('empty')}</p>
+        {library.isError ? (
+          <ErrorState
+            title={t('emptyState.loadError')}
+            onRetry={() => void library.refetch()}
+            className="rounded-md bg-card"
+          />
+        ) : all?.length === 0 ? (
+          <LibraryEmpty />
         ) : (
           <div className="flex flex-col gap-4">
             <SearchField
@@ -237,23 +247,25 @@ export function LibraryPage({
             </div>
 
             {library.isPending ? (
-              <ul aria-busy className="flex flex-col gap-2">
-                {Array.from({ length: 4 }, (_, index) => (
-                  <li
-                    key={index}
-                    className="h-32 animate-pulse rounded-md bg-card"
-                  />
-                ))}
-              </ul>
-            ) : results.length === 0 ? (
-              <div className="flex flex-col items-start gap-3 rounded-md bg-card p-6">
-                <p className="text-sm">{t('noResults')}</p>
-                {activeCount > 0 && (
-                  <Button variant="outline" size="sm" onClick={clearFilters}>
-                    {t('clearFilters')}
-                  </Button>
-                )}
+              <div>
+                <LoadingStatus />
+                <ul aria-busy className="flex flex-col gap-2">
+                  {Array.from({ length: 4 }, (_, index) => (
+                    <LibraryCardSkeleton key={index} />
+                  ))}
+                </ul>
               </div>
+            ) : results.length === 0 ? (
+              <LibraryNoMatch
+                query={search.q}
+                owned={all?.length ?? 0}
+                // a search clears first; then the filters
+                onClear={() =>
+                  search.q.trim()
+                    ? onSearchChange({ q: '', page: 1 })
+                    : clearFilters()
+                }
+              />
             ) : (
               <ul aria-label={t('title')} className="flex flex-col gap-2">
                 {pageItems.map((item) => (

@@ -10,6 +10,9 @@ import type { FacetOption } from '@/components/filters/facet-option'
 import { splitList } from '@/lib/search-params'
 
 /** The facet values an item has (formats can be several). */
+/** The library always knows its counts. */
+type CountedOption = FacetOption & { count: number }
+
 const valuesOf = (item: LibraryItem, facet: LibraryFacet): Array<string> => {
   switch (facet) {
     case 'system':
@@ -92,8 +95,8 @@ export function facetOptions(
   search: LibrarySearch,
   facet: LibraryFacet,
   label: (value: string, item: LibraryItem) => string,
-): Array<FacetOption> {
-  const options = new Map<string, FacetOption>()
+): Array<CountedOption> {
+  const options = new Map<string, CountedOption>()
   for (const item of items)
     for (const value of valuesOf(item, facet))
       if (!options.has(value))

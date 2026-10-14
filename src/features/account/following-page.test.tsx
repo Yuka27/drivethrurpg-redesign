@@ -242,7 +242,7 @@ describe('FollowingPage', () => {
     )
     expect(
       await screen.findByRole('menuitem', { name: 'View publisher' }),
-    ).toHaveAttribute('href', '/publishers/pub_cubicle7')
+    ).toHaveAttribute('href', '/titles?publisher=pub_cubicle7')
   })
 
   it('shows initials when a logo is missing or fails to load', async () => {
@@ -257,16 +257,62 @@ describe('FollowingPage', () => {
     expect(await screen.findByText('CE')).toBeInTheDocument()
   })
 
-  it('says so when nothing is followed', async () => {
-    mockApi({
+  it('suggests publishers from the library when nothing is followed', async () => {
+    const libraryItem = (id: string, publisherId: string, name: string) => ({
+      id,
+      title: { id: `ttl_${id}`, name: `Title ${id}` },
+      publisher: { id: publisherId, name },
+      cover: null,
+      type: null,
+      ruleSystem: null,
+      formats: ['pdf'],
+      files: [],
+      purchasedAt: '2026-01-01T00:00:00Z',
+      lastUpdatedAt: null,
+      hasUpdate: false,
+      giftFrom: null,
+    })
+    const { bodies } = mockApi({
       'GET /following': { body: { items: [] } },
       'GET /following/feed': { body: { items: [] } },
+      'GET /library': {
+        body: {
+          items: [
+            libraryItem('a', 'pub_free_league', 'Free League Publishing'),
+            libraryItem('b', 'pub_free_league', 'Free League Publishing'),
+            libraryItem('c', 'pub_cubicle7', 'Cubicle 7 Entertainment'),
+          ],
+        },
+      },
+      'POST /following': { status: 201, body: {} },
     })
-    await renderWithProviders(<FollowingPage />)
+    const { user } = await renderWithProviders(<FollowingPage />)
 
     expect(
-      await screen.findByText('You don’t follow any publishers yet.'),
+      await screen.findByRole('heading', {
+        name: 'You’re not following any publishers',
+      }),
     ).toBeVisible()
     expect(screen.queryByRole('searchbox', { name: /publishers/ })).toBeNull()
+    const suggested = await screen.findByRole('list', {
+      name: 'Publishers with titles in your library',
+    })
+    expect(
+      within(suggested)
+        .getAllByRole('listitem')
+        .map((row) => row.textContent),
+    ).toEqual([
+      expect.stringContaining('2 titles in your library'),
+      expect.stringContaining('1 title in your library'),
+    ])
+
+    await user.click(
+      within(suggested).getByRole('button', {
+        name: 'Follow Free League Publishing',
+      }),
+    )
+    expect(bodies('POST /following')).toEqual([
+      { publisherId: 'pub_free_league' },
+    ])
   })
 })

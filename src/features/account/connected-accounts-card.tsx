@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { useComingSoon } from './coming-soon'
 import {
   SettingsCard,
   SettingsRow,
@@ -15,8 +14,10 @@ import googleIcon from '@/assets/social/google.png'
 import roll20Icon from '@/assets/social/roll20.png'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
+import { useComingSoon } from '@/lib/use-coming-soon'
 
 // Figma order; brand names are never translated
 const PROVIDERS: Array<{ id: SocialProvider; name: string; icon: string }> = [
@@ -66,41 +67,47 @@ export function ConnectedAccountsCard() {
             label={name}
             hint={t(`connected.${id}`)}
             actions={
-              connected.data && (
-                <div className="flex items-center gap-3 max-lg:flex-col max-lg:items-stretch max-lg:gap-1">
-                  <Badge variant="outline" className={badgeClass}>
-                    {isConnected
-                      ? t('connected.connected')
-                      : t('connected.notConnected')}
-                  </Badge>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className={rowButtonClass}
-                    disabled={busy}
-                    aria-label={t(
-                      isConnected
-                        ? 'connected.disconnectLabel'
-                        : 'connected.connectLabel',
-                      { provider: name },
-                    )}
-                    onClick={() =>
-                      isConnected
-                        ? disconnect.mutate(id, {
-                            onSuccess: () =>
-                              toast.success(
-                                t('connected.disconnected', { provider: name }),
-                              ),
-                            onError: (error) => toast.error(apiError(error)),
-                          })
-                        : comingSoon()
-                    }
-                  >
-                    {isConnected
-                      ? t('connected.disconnect')
-                      : t('connected.connect')}
-                  </Button>
-                </div>
+              connected.isPending ? (
+                <Skeleton className="h-8 w-40 max-lg:h-12 max-lg:w-24" />
+              ) : (
+                connected.data && (
+                  <div className="flex items-center gap-3 max-lg:flex-col max-lg:items-stretch max-lg:gap-1">
+                    <Badge variant="outline" className={badgeClass}>
+                      {isConnected
+                        ? t('connected.connected')
+                        : t('connected.notConnected')}
+                    </Badge>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className={rowButtonClass}
+                      disabled={busy}
+                      aria-label={t(
+                        isConnected
+                          ? 'connected.disconnectLabel'
+                          : 'connected.connectLabel',
+                        { provider: name },
+                      )}
+                      onClick={() =>
+                        isConnected
+                          ? disconnect.mutate(id, {
+                              onSuccess: () =>
+                                toast.success(
+                                  t('connected.disconnected', {
+                                    provider: name,
+                                  }),
+                                ),
+                              onError: (error) => toast.error(apiError(error)),
+                            })
+                          : comingSoon()
+                      }
+                    >
+                      {isConnected
+                        ? t('connected.disconnect')
+                        : t('connected.connect')}
+                    </Button>
+                  </div>
+                )
               )
             }
           />

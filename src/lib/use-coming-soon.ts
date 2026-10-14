@@ -4,10 +4,10 @@ import { toast } from 'sonner'
 
 /**
  * For buttons in the design whose flow is not built yet (add address, add card,
- * connect a provider, merge accounts, manage keys, redeem a gift card): say so
- * instead of doing nothing. Replace each use when its flow exists.
+ * connect a provider, manage keys, reply to a discussion…): say so instead of
+ * doing nothing. Replace each use when its flow exists.
  */
 export function useComingSoon() {
-  const { t } = useTranslation('account')
+  const { t } = useTranslation()
   return useCallback(() => toast.info(t('comingSoon')), [t])
 }

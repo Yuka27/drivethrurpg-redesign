@@ -1,0 +1,24 @@
+{
+  "heading": "DriveThruRPG: podręczniki, przygody i narzędzia do gier fabularnych",
+  "promos": "Promocje i zniżki",
+  "viewMore": "Zobacz więcej",
+  "lists": "Listy tytułów",
+  "tabs": {
+    "new": "Nowości",
+    "bestselling": "Bestsellery",
+    "sale": "Okazje",
+    "free": "Za darmo i co łaska"
+  },
+  "preview": "Podgląd: {{title}}",
+  "byline": "Autorstwa {{names}}",
+  "released": "Dodano do katalogu",
+  "featured": "Polecane dla ciebie",
+  "featuredSystem": "Polecany system",
+  "catalog": {
+    "stats": "Tytułów: {{titles}} · systemów: {{systems}} · aktualizacja codziennie",
+    "heading": "Wszystko znajdziesz w pełnym katalogu",
+    "browse": "Przeglądaj wszystkie tytuły"
+  },
+  "publishers": "Przeglądaj według wydawcy",
+  "seeMore": "Zobacz też:"
+}

@@ -1,24 +1,35 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 
-import { languageFilter } from '@/lib/search-params'
-
-// filters, sort and page join this schema as the listing page is built
-const TitlesSearchSchema = z.object({
-  language: languageFilter,
-})
+import { ListingPage } from '@/features/listing/listing-page'
+import {
+  LISTING_SEARCH_DEFAULTS,
+  ListingSearchSchema,
+} from '@/features/listing/listing-search'
+import type { ListingSearch } from '@/features/listing/listing-search'
+import { replacesHistory } from '@/lib/search-params'
 
 export const Route = createFileRoute('/_site/titles/')({
-  validateSearch: TitlesSearchSchema,
-  component: RouteComponent,
+  validateSearch: ListingSearchSchema,
+  // a plain /titles for the defaults: only changed filters show in the URL
+  search: { middlewares: [stripSearchParams(LISTING_SEARCH_DEFAULTS)] },
+  component: TitlesRoute,
 })
 
-function RouteComponent() {
-  const { t } = useTranslation('listing')
+function TitlesRoute() {
+  const search = Route.useSearch()
+  const navigate = Route.useNavigate()
+
   return (
-    <div className="container py-8">
-      <h1 className="text-2xl">{t('heading')}</h1>
-    </div>
+    <ListingPage
+      search={search}
+      // replace, not push: each filter click would otherwise be a history
+      // entry for Back to step through. A new page is a push: Back returns.
+      onSearchChange={(patch: Partial<ListingSearch>) =>
+        void navigate({
+          search: (previous) => ({ ...previous, ...patch }),
+          replace: replacesHistory(patch),
+        })
+      }
+    />
   )
 }

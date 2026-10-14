@@ -1,9 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { ConfirmationPage } from '@/features/checkout/confirmation-page'
+
 export const Route = createFileRoute('/_focus/order-confirmation/$orderId')({
-  component: RouteComponent,
+  component: ConfirmationRoute,
 })
 
-function RouteComponent() {
-  return <div>Hello "/order-confirmation/:orderId"!</div>
+function ConfirmationRoute() {
+  const { orderId } = Route.useParams()
+  return <ConfirmationPage key={orderId} orderId={orderId} />
 }

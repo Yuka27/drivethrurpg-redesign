@@ -15,24 +15,20 @@ import { Route as SiteRouteImport } from './routes/_site'
 import { Route as AuthAccountRouteRouteImport } from './routes/_auth/account/route'
 import { Route as AuthFollowingRouteImport } from './routes/_auth/following'
 import { Route as AuthLibraryRouteImport } from './routes/_auth/library'
-import { Route as AuthNotificationsRouteImport } from './routes/_auth/notifications'
 import { Route as AuthWishlistRouteImport } from './routes/_auth/wishlist'
 import { Route as FocusCheckoutRouteImport } from './routes/_focus/checkout'
 import { Route as SiteIndexRouteImport } from './routes/_site/index'
 import { Route as SiteCartRouteImport } from './routes/_site/cart'
 import { Route as SiteSearchRouteImport } from './routes/_site/search'
 import { Route as AuthAccountIndexRouteImport } from './routes/_auth/account/index'
-import { Route as AuthAccountBalanceRouteImport } from './routes/_auth/account/balance'
 import { Route as AuthAccountPreferencesRouteImport } from './routes/_auth/account/preferences'
 import { Route as AuthAccountSettingsRouteImport } from './routes/_auth/account/settings'
 import { Route as AuthOrdersIndexRouteImport } from './routes/_auth/orders/index'
 import { Route as AuthOrdersOrderIdRouteImport } from './routes/_auth/orders/$orderId'
 import { Route as FocusOrderConfirmationOrderIdRouteImport } from './routes/_focus/order-confirmation.$orderId'
 import { Route as SiteGiftTokenRouteImport } from './routes/_site/gift.$token'
-import { Route as SitePublishersPublisherIdRouteImport } from './routes/_site/publishers/$publisherId'
 import { Route as SiteTitlesIndexRouteImport } from './routes/_site/titles/index'
 import { Route as SiteTitlesTitleIdRouteImport } from './routes/_site/titles/$titleId'
-import { Route as SiteWishlistsShareIdRouteImport } from './routes/_site/wishlists.$shareId'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -59,11 +55,6 @@ const AuthFollowingRoute = AuthFollowingRouteImport.update({
 const AuthLibraryRoute = AuthLibraryRouteImport.update({
   id: '/library',
   path: '/library',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthNotificationsRoute = AuthNotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthWishlistRoute = AuthWishlistRouteImport.update({
@@ -94,11 +85,6 @@ const SiteSearchRoute = SiteSearchRouteImport.update({
 const AuthAccountIndexRoute = AuthAccountIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthAccountRouteRoute,
-} as any)
-const AuthAccountBalanceRoute = AuthAccountBalanceRouteImport.update({
-  id: '/balance',
-  path: '/balance',
   getParentRoute: () => AuthAccountRouteRoute,
 } as any)
 const AuthAccountPreferencesRoute = AuthAccountPreferencesRouteImport.update({
@@ -132,12 +118,6 @@ const SiteGiftTokenRoute = SiteGiftTokenRouteImport.update({
   path: '/gift/$token',
   getParentRoute: () => SiteRoute,
 } as any)
-const SitePublishersPublisherIdRoute =
-  SitePublishersPublisherIdRouteImport.update({
-    id: '/publishers/$publisherId',
-    path: '/publishers/$publisherId',
-    getParentRoute: () => SiteRoute,
-  } as any)
 const SiteTitlesIndexRoute = SiteTitlesIndexRouteImport.update({
   id: '/titles/',
   path: '/titles/',
@@ -148,31 +128,22 @@ const SiteTitlesTitleIdRoute = SiteTitlesTitleIdRouteImport.update({
   path: '/titles/$titleId',
   getParentRoute: () => SiteRoute,
 } as any)
-const SiteWishlistsShareIdRoute = SiteWishlistsShareIdRouteImport.update({
-  id: '/wishlists/$shareId',
-  path: '/wishlists/$shareId',
-  getParentRoute: () => SiteRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/account': typeof AuthAccountRouteRouteWithChildren
   '/following': typeof AuthFollowingRoute
   '/library': typeof AuthLibraryRoute
-  '/notifications': typeof AuthNotificationsRoute
   '/wishlist': typeof AuthWishlistRoute
   '/checkout': typeof FocusCheckoutRoute
   '/cart': typeof SiteCartRoute
   '/search': typeof SiteSearchRoute
-  '/account/balance': typeof AuthAccountBalanceRoute
   '/account/preferences': typeof AuthAccountPreferencesRoute
   '/account/settings': typeof AuthAccountSettingsRoute
   '/orders/$orderId': typeof AuthOrdersOrderIdRoute
   '/order-confirmation/$orderId': typeof FocusOrderConfirmationOrderIdRoute
   '/gift/$token': typeof SiteGiftTokenRoute
-  '/publishers/$publisherId': typeof SitePublishersPublisherIdRoute
   '/titles/$titleId': typeof SiteTitlesTitleIdRoute
-  '/wishlists/$shareId': typeof SiteWishlistsShareIdRoute
   '/account/': typeof AuthAccountIndexRoute
   '/orders/': typeof AuthOrdersIndexRoute
   '/titles/': typeof SiteTitlesIndexRoute
@@ -181,20 +152,16 @@ export interface FileRoutesByTo {
   '/': typeof SiteIndexRoute
   '/following': typeof AuthFollowingRoute
   '/library': typeof AuthLibraryRoute
-  '/notifications': typeof AuthNotificationsRoute
   '/wishlist': typeof AuthWishlistRoute
   '/checkout': typeof FocusCheckoutRoute
   '/cart': typeof SiteCartRoute
   '/search': typeof SiteSearchRoute
-  '/account/balance': typeof AuthAccountBalanceRoute
   '/account/preferences': typeof AuthAccountPreferencesRoute
   '/account/settings': typeof AuthAccountSettingsRoute
   '/orders/$orderId': typeof AuthOrdersOrderIdRoute
   '/order-confirmation/$orderId': typeof FocusOrderConfirmationOrderIdRoute
   '/gift/$token': typeof SiteGiftTokenRoute
-  '/publishers/$publisherId': typeof SitePublishersPublisherIdRoute
   '/titles/$titleId': typeof SiteTitlesTitleIdRoute
-  '/wishlists/$shareId': typeof SiteWishlistsShareIdRoute
   '/account': typeof AuthAccountIndexRoute
   '/orders': typeof AuthOrdersIndexRoute
   '/titles': typeof SiteTitlesIndexRoute
@@ -207,21 +174,17 @@ export interface FileRoutesById {
   '/_auth/account': typeof AuthAccountRouteRouteWithChildren
   '/_auth/following': typeof AuthFollowingRoute
   '/_auth/library': typeof AuthLibraryRoute
-  '/_auth/notifications': typeof AuthNotificationsRoute
   '/_auth/wishlist': typeof AuthWishlistRoute
   '/_focus/checkout': typeof FocusCheckoutRoute
   '/_site/cart': typeof SiteCartRoute
   '/_site/search': typeof SiteSearchRoute
   '/_site/': typeof SiteIndexRoute
-  '/_auth/account/balance': typeof AuthAccountBalanceRoute
   '/_auth/account/preferences': typeof AuthAccountPreferencesRoute
   '/_auth/account/settings': typeof AuthAccountSettingsRoute
   '/_auth/orders/$orderId': typeof AuthOrdersOrderIdRoute
   '/_focus/order-confirmation/$orderId': typeof FocusOrderConfirmationOrderIdRoute
   '/_site/gift/$token': typeof SiteGiftTokenRoute
-  '/_site/publishers/$publisherId': typeof SitePublishersPublisherIdRoute
   '/_site/titles/$titleId': typeof SiteTitlesTitleIdRoute
-  '/_site/wishlists/$shareId': typeof SiteWishlistsShareIdRoute
   '/_auth/account/': typeof AuthAccountIndexRoute
   '/_auth/orders/': typeof AuthOrdersIndexRoute
   '/_site/titles/': typeof SiteTitlesIndexRoute
@@ -233,20 +196,16 @@ export interface FileRouteTypes {
     | '/account'
     | '/following'
     | '/library'
-    | '/notifications'
     | '/wishlist'
     | '/checkout'
     | '/cart'
     | '/search'
-    | '/account/balance'
     | '/account/preferences'
     | '/account/settings'
     | '/orders/$orderId'
     | '/order-confirmation/$orderId'
     | '/gift/$token'
-    | '/publishers/$publisherId'
     | '/titles/$titleId'
-    | '/wishlists/$shareId'
     | '/account/'
     | '/orders/'
     | '/titles/'
@@ -255,20 +214,16 @@ export interface FileRouteTypes {
     | '/'
     | '/following'
     | '/library'
-    | '/notifications'
     | '/wishlist'
     | '/checkout'
     | '/cart'
     | '/search'
-    | '/account/balance'
     | '/account/preferences'
     | '/account/settings'
     | '/orders/$orderId'
     | '/order-confirmation/$orderId'
     | '/gift/$token'
-    | '/publishers/$publisherId'
     | '/titles/$titleId'
-    | '/wishlists/$shareId'
     | '/account'
     | '/orders'
     | '/titles'
@@ -280,21 +235,17 @@ export interface FileRouteTypes {
     | '/_auth/account'
     | '/_auth/following'
     | '/_auth/library'
-    | '/_auth/notifications'
     | '/_auth/wishlist'
     | '/_focus/checkout'
     | '/_site/cart'
     | '/_site/search'
     | '/_site/'
-    | '/_auth/account/balance'
     | '/_auth/account/preferences'
     | '/_auth/account/settings'
     | '/_auth/orders/$orderId'
     | '/_focus/order-confirmation/$orderId'
     | '/_site/gift/$token'
-    | '/_site/publishers/$publisherId'
     | '/_site/titles/$titleId'
-    | '/_site/wishlists/$shareId'
     | '/_auth/account/'
     | '/_auth/orders/'
     | '/_site/titles/'
@@ -350,13 +301,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLibraryRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/notifications': {
-      id: '/_auth/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof AuthNotificationsRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_auth/wishlist': {
       id: '/_auth/wishlist'
       path: '/wishlist'
@@ -397,13 +341,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/account/'
       preLoaderRoute: typeof AuthAccountIndexRouteImport
-      parentRoute: typeof AuthAccountRouteRoute
-    }
-    '/_auth/account/balance': {
-      id: '/_auth/account/balance'
-      path: '/balance'
-      fullPath: '/account/balance'
-      preLoaderRoute: typeof AuthAccountBalanceRouteImport
       parentRoute: typeof AuthAccountRouteRoute
     }
     '/_auth/account/preferences': {
@@ -448,13 +385,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteGiftTokenRouteImport
       parentRoute: typeof SiteRoute
     }
-    '/_site/publishers/$publisherId': {
-      id: '/_site/publishers/$publisherId'
-      path: '/publishers/$publisherId'
-      fullPath: '/publishers/$publisherId'
-      preLoaderRoute: typeof SitePublishersPublisherIdRouteImport
-      parentRoute: typeof SiteRoute
-    }
     '/_site/titles/': {
       id: '/_site/titles/'
       path: '/titles'
@@ -469,25 +399,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteTitlesTitleIdRouteImport
       parentRoute: typeof SiteRoute
     }
-    '/_site/wishlists/$shareId': {
-      id: '/_site/wishlists/$shareId'
-      path: '/wishlists/$shareId'
-      fullPath: '/wishlists/$shareId'
-      preLoaderRoute: typeof SiteWishlistsShareIdRouteImport
-      parentRoute: typeof SiteRoute
-    }
   }
 }
 
 interface AuthAccountRouteRouteChildren {
-  AuthAccountBalanceRoute: typeof AuthAccountBalanceRoute
   AuthAccountPreferencesRoute: typeof AuthAccountPreferencesRoute
   AuthAccountSettingsRoute: typeof AuthAccountSettingsRoute
   AuthAccountIndexRoute: typeof AuthAccountIndexRoute
 }
 
 const AuthAccountRouteRouteChildren: AuthAccountRouteRouteChildren = {
-  AuthAccountBalanceRoute: AuthAccountBalanceRoute,
   AuthAccountPreferencesRoute: AuthAccountPreferencesRoute,
   AuthAccountSettingsRoute: AuthAccountSettingsRoute,
   AuthAccountIndexRoute: AuthAccountIndexRoute,
@@ -500,7 +421,6 @@ interface AuthRouteChildren {
   AuthAccountRouteRoute: typeof AuthAccountRouteRouteWithChildren
   AuthFollowingRoute: typeof AuthFollowingRoute
   AuthLibraryRoute: typeof AuthLibraryRoute
-  AuthNotificationsRoute: typeof AuthNotificationsRoute
   AuthWishlistRoute: typeof AuthWishlistRoute
   AuthOrdersOrderIdRoute: typeof AuthOrdersOrderIdRoute
   AuthOrdersIndexRoute: typeof AuthOrdersIndexRoute
@@ -510,7 +430,6 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthAccountRouteRoute: AuthAccountRouteRouteWithChildren,
   AuthFollowingRoute: AuthFollowingRoute,
   AuthLibraryRoute: AuthLibraryRoute,
-  AuthNotificationsRoute: AuthNotificationsRoute,
   AuthWishlistRoute: AuthWishlistRoute,
   AuthOrdersOrderIdRoute: AuthOrdersOrderIdRoute,
   AuthOrdersIndexRoute: AuthOrdersIndexRoute,
@@ -535,9 +454,7 @@ interface SiteRouteChildren {
   SiteSearchRoute: typeof SiteSearchRoute
   SiteIndexRoute: typeof SiteIndexRoute
   SiteGiftTokenRoute: typeof SiteGiftTokenRoute
-  SitePublishersPublisherIdRoute: typeof SitePublishersPublisherIdRoute
   SiteTitlesTitleIdRoute: typeof SiteTitlesTitleIdRoute
-  SiteWishlistsShareIdRoute: typeof SiteWishlistsShareIdRoute
   SiteTitlesIndexRoute: typeof SiteTitlesIndexRoute
 }
 
@@ -546,9 +463,7 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteSearchRoute: SiteSearchRoute,
   SiteIndexRoute: SiteIndexRoute,
   SiteGiftTokenRoute: SiteGiftTokenRoute,
-  SitePublishersPublisherIdRoute: SitePublishersPublisherIdRoute,
   SiteTitlesTitleIdRoute: SiteTitlesTitleIdRoute,
-  SiteWishlistsShareIdRoute: SiteWishlistsShareIdRoute,
   SiteTitlesIndexRoute: SiteTitlesIndexRoute,
 }
 

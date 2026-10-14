@@ -1,0 +1,76 @@
+{
+  "heading": "Your gift",
+  "from": "A gift from {{name}}",
+  "waiting_one": "{{count}} title is waiting for you",
+  "waiting_other": "{{count}} titles are waiting for you",
+  "sentTo": "Sent {{date}} to {{email}}",
+  "sent": "Sent {{date}}",
+  "claim": {
+    "title": "Claim your gift",
+    "createText": "Create a free account to keep these in your Library. No payment details needed.",
+    "loginText": "Log in to add these to your Library.",
+    "tabs": "How to claim",
+    "create": "Create account",
+    "login": "Log in",
+    "email": "Email",
+    "emailHint": "The gift was sent to this address. You can use another.",
+    "choosePassword": "Choose a password",
+    "password": "Password",
+    "passwordPlaceholder": "At least 10 characters",
+    "createSubmit": "Create account and claim",
+    "loginSubmit": "Log in and claim",
+    "terms": "By continuing you agree to the <terms>Terms</terms>.",
+    "forgot": "Forgot password?",
+    "orContinueWith": "or continue with",
+    "creating": "Creating your account…",
+    "loggingIn": "Logging in…",
+    "claiming": "Claiming your gift…"
+  },
+  "ready": {
+    "title": "Add to your Library",
+    "text_one": "This title will be added to your account, ready to download.",
+    "text_other": "These {{count}} titles will be added to your account, ready to download.",
+    "notYou": "Not you?",
+    "submit": "Claim gift",
+    "fine": "The sender is not charged again and will not see your Library.",
+    "claiming": "Claiming your gift…"
+  },
+  "done": {
+    "title": "It’s yours. Added to your Library.",
+    "text_one": "{{name}} sent you a title. You can download it now or any time from your Library.",
+    "text_other": "{{name}} sent you {{count}} titles. You can download them now or any time from your Library.",
+    "library": "Go to my Library",
+    "thanksTitle": "Say thanks to {{name}}",
+    "thanksHint": "We’ll email your message. Optional.",
+    "thanksLabel": "Your message",
+    "thanksPlaceholder": "Thanks! Can’t wait to run it.",
+    "thanksSubmit": "Send thanks",
+    "thanksSent": "Thanks sent to {{name}}.",
+    "thanksSending": "Sending…"
+  },
+  "claimed": {
+    "title": "This gift was already claimed",
+    "text": "It was added to a Library on {{date}}. If that was you, your titles are waiting.",
+    "library": "Go to my Library",
+    "support": "Contact support",
+    "fine": "Not you? Tell us and we’ll look into it."
+  },
+  "expired": {
+    "title": "This gift link has expired",
+    "text": "We can send a fresh one to the email address the gift was sent to.",
+    "resend": "Email me a new link",
+    "sent": "New link sent. Check your inbox.",
+    "fine": "Sent to {{email}}. Wrong address? Ask {{name}} to resend the gift.",
+    "resending": "Sending a new link…"
+  },
+  "invalid": {
+    "title": "We can’t open this gift link",
+    "text": "It may have been copied incompletely. Open the link from the original email, or enter the gift code from it.",
+    "code": "Gift code",
+    "find": "Find my gift",
+    "stuck": "Still stuck? <support>Contact support</support>",
+    "finding": "Looking for your gift…"
+  },
+  "loadError": "We couldn’t load this gift",
+  "loadErrorText": "Check your connection and try again. The gift is safe."
+}

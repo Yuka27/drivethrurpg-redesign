@@ -1,12 +1,74 @@
 {
   "heading": "Koszyk",
+  "backHome": "Wróć na stronę główną",
+  "loadError": "Nie udało się wczytać koszyka. Spróbuj ponownie później.",
   "empty": {
-    "title": "Twój koszyk jest pusty"
+    "title": "Twój koszyk jest pusty",
+    "text": "Dodane tytuły poczekają tutaj.",
+    "browse": "Kontynuuj zakupy",
+    "saved": "Zapisane na później · {{count}}",
+    "moveToCart": "Przenieś do koszyka",
+    "moveLabel": "Przenieś {{title}} do koszyka",
+    "moved": "{{title}} wróciło do koszyka."
   },
   "summary": {
     "itemCount_one": "{{count}} produkt",
     "itemCount_few": "{{count}} produkty",
     "itemCount_many": "{{count}} produktów",
-    "itemCount_other": "{{count}} produktu"
-  }
+    "itemCount_other": "{{count}} produktu",
+    "title": "Podsumowanie zamówienia",
+    "subtotal_one": "Suma częściowa ({{count}} produkt)",
+    "subtotal_few": "Suma częściowa ({{count}} produkty)",
+    "subtotal_many": "Suma częściowa ({{count}} produktów)",
+    "subtotal_other": "Suma częściowa ({{count}} produktu)",
+    "saleSavings": "Oszczędności z promocji",
+    "promo": "Kod rabatowy {{code}}",
+    "removePromo": "Usuń kod {{code}}",
+    "taxShipping": "Podatek i wysyłka",
+    "taxShippingNote": "Obliczane przy kasie",
+    "promoLabel": "Kod rabatowy",
+    "promoPlaceholder": "Kod rabatowy",
+    "apply": "Zastosuj",
+    "applied": "Kod {{code}} został zastosowany.",
+    "total": "Razem",
+    "checkout": "Przejdź do kasy",
+    "checkoutShort": "Do kasy",
+    "secure": "Bezpieczna płatność",
+    "giftNeedsEmail": "Podaj e-mail odbiorcy, aby wysłać prezent.",
+    "perks": {
+      "instant": "Pobieranie od razu po płatności",
+      "library": "Każdy PDF pobierzesz ponownie z Biblioteki",
+      "updates": "Darmowe aktualizacje plików, gdy wydawcy poprawią erratę"
+    },
+    "payments": "VISA · MASTERCARD · AMEX · PAYPAL · APPLE PAY"
+  },
+  "line": {
+    "instant": "Pobierasz od razu",
+    "ships": "Wysyłka do Ciebie",
+    "owned": "Masz już ten tytuł",
+    "discount": "Rabat",
+    "was": "Wcześniej",
+    "quantity": "Liczba sztuk: {{title}}",
+    "decrease": "Jedna sztuka mniej: {{title}}",
+    "increase": "Jedna sztuka więcej: {{title}}",
+    "remove": "Usuń",
+    "removeLabel": "Usuń {{title}}",
+    "removed": "Usunięto {{title}} z koszyka.",
+    "undo": "Cofnij"
+  },
+  "gift": {
+    "title": "To zamówienie jest prezentem",
+    "text": "Tytuły cyfrowe trafią do biblioteki odbiorcy. Produkty drukowane nadal wyślemy do Ciebie.",
+    "name": "Imię i nazwisko odbiorcy",
+    "email": "E-mail odbiorcy",
+    "message": "Wiadomość",
+    "optional": "(opcjonalnie)",
+    "namePlaceholder": "Jan Kowalski",
+    "emailPlaceholder": "jan@przyklad.pl",
+    "messagePlaceholder": "Wszystkiego najlepszego! Czas zacząć kampanię.",
+    "note": "Wyślemy odbiorcy link do odebrania prezentu. Nic nie trafi do Twojej biblioteki."
+  },
+  "alsoBought": "Klienci kupili również",
+  "add": "Dodaj",
+  "loadErrorTitle": "Nie udało się wczytać koszyka"
 }

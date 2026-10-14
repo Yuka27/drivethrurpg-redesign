@@ -14,6 +14,7 @@ import {
 import type { AccountPreferences } from '@/api/preferences'
 import { ThemeSegmented } from '@/components/site/theme-toggle'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { usePreferencesStore } from '@/stores/preferences'
 
 /** Daily deals, review reminders and price drops stop while marketing is paused. */
@@ -235,7 +236,9 @@ function ContentCard({
       <SettingsRow
         label={t('preferencesPage.content.language')}
         actions={
-          locales && (
+          !locales ? (
+            <Skeleton className="h-9 w-32" />
+          ) : (
             <OptionSelect
               label={t('preferencesPage.content.language')}
               value={language}
@@ -251,7 +254,9 @@ function ContentCard({
       <SettingsRow
         label={t('preferencesPage.content.currency')}
         actions={
-          locales && (
+          !locales ? (
+            <Skeleton className="h-9 w-32" />
+          ) : (
             <OptionSelect
               label={t('preferencesPage.content.currency')}
               value={currency}

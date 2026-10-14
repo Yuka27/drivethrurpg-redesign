@@ -1,5 +1,5 @@
-import { LIBRARY_SEARCH_DEFAULTS } from './library-search'
-import type { LibrarySearch } from './library-search'
+import { LIBRARY_SEARCH_DEFAULTS } from '@/features/library/library-search'
+import type { LibrarySearch } from '@/features/library/library-search'
 import type { LibraryItem } from '@/api/library'
 
 /** A library item as GET /library returns it, with test-friendly defaults. */

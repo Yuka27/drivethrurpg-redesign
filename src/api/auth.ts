@@ -50,7 +50,7 @@ export type SocialProvider = (typeof SOCIAL_PROVIDERS)[number]
  * Store the session and show the user everywhere at once. The response already
  * carries the current user, so /me is only marked stale, not fetched again.
  */
-function signIn(
+export function signIn(
   queryClient: QueryClient,
   { user, token }: { user: Me; token: string },
   remember: boolean,

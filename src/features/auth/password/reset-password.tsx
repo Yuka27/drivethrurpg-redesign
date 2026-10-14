@@ -19,7 +19,7 @@ import type { ResetPasswordRequest } from '@/api/auth'
 import { ApiError } from '@/api/client'
 import { Button } from '@/components/ui/button'
 import { Form, FormField, FormRootError } from '@/components/ui/form'
-import { TODO_URL } from '@/config/footer'
+import { SUPPORT_URL } from '@/config/links'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
 
@@ -140,10 +140,9 @@ export function ResetPassword({
               t={t}
               i18nKey="reset.done.notYou"
               components={{
-                // TODO_URL: there is no support page yet
                 support: (
                   <a
-                    href={TODO_URL}
+                    href={SUPPORT_URL}
                     className="text-foreground underline underline-offset-2"
                   />
                 ),

@@ -273,8 +273,11 @@ describe('OrdersPage', () => {
     await renderWithProviders(<Page />)
 
     expect(
-      await screen.findByText('You have not ordered anything yet.'),
+      await screen.findByRole('heading', { name: 'No orders yet' }),
     ).toBeVisible()
+    expect(
+      screen.getByRole('link', { name: 'Browse the store' }),
+    ).toHaveAttribute('href', '/titles')
   })
 })
 

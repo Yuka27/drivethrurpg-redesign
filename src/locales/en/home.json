@@ -1,0 +1,24 @@
+{
+  "heading": "DriveThruRPG: tabletop RPG books, adventures and tools",
+  "promos": "Discounts & Promos",
+  "viewMore": "View more",
+  "lists": "Title lists",
+  "tabs": {
+    "new": "New Releases",
+    "bestselling": "Bestselling",
+    "sale": "Specials",
+    "free": "Free & PWYW"
+  },
+  "preview": "Preview: {{title}}",
+  "byline": "By {{names}}",
+  "released": "Added to Catalog",
+  "featured": "Featured for you",
+  "featuredSystem": "Featured system",
+  "catalog": {
+    "stats": "{{titles}} titles · {{systems}} systems · updated daily",
+    "heading": "Everything lives in the full catalog",
+    "browse": "Browse all titles"
+  },
+  "publishers": "Browse by Publisher",
+  "seeMore": "See more:"
+}

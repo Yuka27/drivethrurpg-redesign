@@ -3,7 +3,9 @@ import { DownloadIcon } from 'lucide-react'
 import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { OrdersEmpty } from './account-empty'
 import { AccountPage } from './account-page'
+import { ErrorState } from '@/components/site/empty-state'
 import { OptionSelect } from '@/components/site/option-select'
 import { SearchField } from '@/components/site/search-field'
 import { brandName } from './card-brand'
@@ -11,10 +13,13 @@ import { useStatusLabel } from './order-status'
 import type { OrdersSearch, Period } from './orders-search'
 import { useOpenInvoice } from './use-open-invoice'
 import { assetUrl } from '@/api/client'
-import { useOrder, useOrders, useTitleSummary } from '@/api/orders'
+import { useOrder, useOrders } from '@/api/orders'
+import { useTitleName } from '@/api/titles'
 import type { OrderLine, OrderSummary } from '@/api/orders'
 import { Pagination } from '@/components/site/pagination'
+import { LoadingStatus } from '@/components/site/loading-status'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatDate, useFormatMoney } from '@/i18n/format'
 
 const PAGE_SIZE = 5
@@ -79,8 +84,14 @@ export function OrdersPage({
 
   return (
     <AccountPage title={t('orders.title')} subtitle={t('orders.subtitle')}>
-      {orders.data?.length === 0 ? (
-        <p className="rounded-xl bg-card p-6 text-sm">{t('orders.empty')}</p>
+      {orders.isError ? (
+        <ErrorState
+          title={t('orders.loadErrorTitle')}
+          onRetry={() => void orders.refetch()}
+          className="rounded-xl bg-card"
+        />
+      ) : orders.data?.length === 0 ? (
+        <OrdersEmpty />
       ) : (
         <div className="flex flex-col gap-4">
           {/* Figma: one row on desktop; on mobile the search, then both filters side by side */}
@@ -117,10 +128,6 @@ export function OrdersPage({
             </div>
           </div>
 
-          {orders.isError && (
-            <p className="text-sm text-destructive">{t('loadError')}</p>
-          )}
-
           {orders.data && filtered.length === 0 && (
             <div className="flex flex-col items-start gap-3 rounded-xl bg-card p-6 text-sm">
               <p>{t('orders.noMatches')}</p>
@@ -129,6 +136,8 @@ export function OrdersPage({
               </Button>
             </div>
           )}
+
+          {orders.isPending && <OrderCardsSkeleton />}
 
           {visible.length > 0 && (
             <ul
@@ -184,7 +193,7 @@ function OrderCard({ order }: { order: OrderSummary }) {
             brand: brandName(detail.payment.brand),
             last4: detail.payment.last4,
           })
-        : '…',
+        : !detail && <Skeleton className="mt-0.5 h-4 w-24" />,
     ],
   ] as const
 
@@ -206,7 +215,7 @@ function OrderCard({ order }: { order: OrderSummary }) {
             ))
           : Array.from({ length: Math.max(1, order.itemCount) }, (_, i) => (
               <li key={i} className="flex items-center gap-2.5">
-                <span className="h-16 w-[50px] shrink-0 animate-pulse rounded-md bg-muted" />
+                <Skeleton className="h-16 w-[50px] shrink-0" />
                 <span className="sr-only">{t('orders.loadingLine')}</span>
               </li>
             ))}
@@ -247,7 +256,7 @@ function OrderCard({ order }: { order: OrderSummary }) {
 function OrderLineRow({ line }: { line: OrderLine }) {
   const { t } = useTranslation('account')
   const formatMoney = useFormatMoney()
-  const { data: title } = useTitleSummary(line.title.id)
+  const { data: title } = useTitleName(line.title.id)
   const price = {
     amount: line.unitPrice.amount * line.qty,
     currency: line.unitPrice.currency,
@@ -281,13 +290,50 @@ function OrderLineRow({ line }: { line: OrderLine }) {
           </>
         ) : (
           <>
-            <span className="h-4 w-40 max-w-full animate-pulse rounded bg-muted" />
-            <span className="h-3 w-28 max-w-full animate-pulse rounded bg-muted" />
+            <Skeleton className="h-4 w-40 max-w-full" />
+            <Skeleton className="h-3 w-28 max-w-full" />
             <span className="sr-only">{t('orders.loadingLine')}</span>
           </>
         )}
       </div>
       <p className="shrink-0 text-sm font-semibold">{formatMoney(price)}</p>
     </li>
+  )
+}
+
+/** Order cards' outline while the order history loads. */
+function OrderCardsSkeleton() {
+  return (
+    <div>
+      <LoadingStatus />
+      <ul aria-hidden className="flex flex-col gap-2">
+        {Array.from({ length: 3 }, (_, index) => (
+          <li
+            key={index}
+            className="grid gap-3 rounded-xl bg-card p-4 lg:grid-cols-[minmax(0,1fr)_auto]"
+          >
+            <div className="flex gap-6">
+              {Array.from({ length: 4 }, (_field, field) => (
+                <div key={field} className="flex flex-col gap-1.5">
+                  <Skeleton className="h-3 w-12" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-2.5 lg:col-span-2 lg:row-start-2">
+              <Skeleton className="h-16 w-[50px] shrink-0" />
+              <div className="flex flex-1 flex-col gap-2">
+                <Skeleton className="h-4 w-40 max-w-full" />
+                <Skeleton className="h-3 w-28 max-w-full" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 lg:col-start-2 lg:row-start-1 lg:flex">
+              <Skeleton className="h-8 w-24 rounded-md" />
+              <Skeleton className="h-8 w-24 rounded-md" />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

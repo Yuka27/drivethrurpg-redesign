@@ -1,8 +1,10 @@
 // All footer content in one typed file. Every item is a link.
-// TODO_URL marks hrefs I could not verify: search the repo for it and fill them in.
+// TODO_URL (config/links.ts) marks hrefs not known yet.
 // UI text is a translation key (labelKey, in common.json); brand and product names
 // (Roll20, Demiplane, DriveThruComics, "Cyberpunk RED Nexus"…) stay literal (label).
 import type { ParseKeys } from 'i18next'
+
+import { TODO_URL } from './links'
 
 import drivethrucomics from '@/assets/logos/drivethrucomics.webp'
 import drivethrufiction from '@/assets/logos/drivethrufiction.webp'
@@ -11,8 +13,6 @@ import dungeonMastersGuild from '@/assets/logos/dungeon-masters-guild.webp'
 import storytellersVault from '@/assets/logos/storytellers-vault.webp'
 import wargameVault from '@/assets/logos/wargame-vault.webp'
 import pathfinderInfinite from '@/assets/logos/pathfinder-infinite.webp'
-
-export const TODO_URL = '#'
 
 export type FooterTextKey = ParseKeys<'common'>
 

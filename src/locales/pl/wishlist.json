@@ -1,0 +1,46 @@
+{
+  "heading": "Lista życzeń",
+  "loadError": "Nie udało się wczytać listy życzeń. Spróbuj ponownie później.",
+  "share": "Udostępnij",
+  "addAll": "Dodaj wszystko do koszyka",
+  "sale": {
+    "count_one": "{{count}} tytuł z Twojej listy życzeń jest w promocji.",
+    "count_few": "{{count}} tytuły z Twojej listy życzeń są w promocji.",
+    "count_many": "{{count}} tytułów z Twojej listy życzeń jest w promocji.",
+    "count_other": "{{count}} tytułu z Twojej listy życzeń jest w promocji.",
+    "hint": "Ceny mogą się zmienić, więc nie zwlekaj.",
+    "add": "Dodaj tytuły z promocji do koszyka"
+  },
+  "added_one": "Dodano {{count}} tytuł do koszyka.",
+  "added_few": "Dodano {{count}} tytuły do koszyka.",
+  "added_many": "Dodano {{count}} tytułów do koszyka.",
+  "added_other": "Dodano {{count}} tytułu do koszyka.",
+  "skippedOwned_one": "Pominięto {{count}}, który już masz.",
+  "skippedOwned_few": "Pominięto {{count}}, które już masz.",
+  "skippedOwned_many": "Pominięto {{count}}, które już masz.",
+  "skippedOwned_other": "Pominięto {{count}}, które już masz.",
+  "allInCart": "Wszystko stąd jest już w koszyku albo w Twojej bibliotece.",
+  "sorts": {
+    "added": "Data dodania",
+    "price_asc": "Cena: od najniższej",
+    "price_desc": "Cena: od najwyższej",
+    "title": "Tytuł A–Z"
+  },
+  "empty": {
+    "title": "Twoja lista życzeń jest pusta",
+    "text": "Kliknij serce przy dowolnym tytule, aby go zapisać. Damy Ci znać, gdy będzie w promocji.",
+    "browse": "Przeglądaj sklep",
+    "picks": "Popularne tytuły"
+  },
+  "shareDialog": {
+    "title": "Udostępnij listę życzeń",
+    "description": "Włącz link, aby pokazać listę znajomym. Mogą ją oglądać, ale nie zmieniać.",
+    "public": "Udostępnij przez link",
+    "private": "Tylko Ty widzisz swoją listę życzeń.",
+    "link": "Link do listy życzeń",
+    "copy": "Kopiuj link",
+    "copied": "Skopiowano link.",
+    "copyFailed": "Nie udało się skopiować linku. Zaznacz go i skopiuj ręcznie."
+  },
+  "loadErrorTitle": "Nie udało się wczytać listy życzeń"
+}

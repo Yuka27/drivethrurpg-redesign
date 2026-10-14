@@ -5,6 +5,7 @@ import facebookIcon from '@/assets/social/facebook.png'
 import googleIcon from '@/assets/social/google.png'
 import roll20Icon from '@/assets/social/roll20.png'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
 // brand names are never translated
@@ -22,6 +23,8 @@ type SocialButtonsProps = {
    */
   layout: 'stacked' | 'row'
   disabled?: boolean
+  /** the provider signing in: its button spins */
+  pending?: SocialProvider
   onSelect: (provider: SocialProvider, name: string) => void
 }
 
@@ -29,6 +32,7 @@ type SocialButtonsProps = {
 export function SocialButtons({
   layout,
   disabled,
+  pending,
   onSelect,
 }: SocialButtonsProps) {
   const { t } = useTranslation('auth')
@@ -39,6 +43,7 @@ export function SocialButtons({
       layout={layout}
       longLabelOnMobile={longLabelOnMobile}
       disabled={disabled}
+      pending={pending === provider}
       onSelect={onSelect}
     />
   )
@@ -72,12 +77,14 @@ function SocialButton({
   layout,
   longLabelOnMobile,
   disabled,
+  pending,
   onSelect,
 }: {
   provider: SocialProvider
   layout: SocialButtonsProps['layout']
   longLabelOnMobile: boolean
   disabled?: boolean
+  pending: boolean
   onSelect: SocialButtonsProps['onSelect']
 }) {
   const { t } = useTranslation('auth')
@@ -90,6 +97,7 @@ function SocialButton({
       // login follows Figma (outline, 36px); register follows the mockup (filled, 44px)
       variant={layout === 'row' ? 'secondary' : 'outline'}
       disabled={disabled}
+      aria-busy={pending || undefined}
       onClick={() => onSelect(provider, name)}
       // the visible text ("Google") is part of the name, as WCAG 2.5.3 requires
       aria-label={label}
@@ -99,15 +107,19 @@ function SocialButton({
           : 'h-11 flex-1 gap-1',
       )}
     >
-      <img
-        src={icon}
-        alt=""
-        width={layout === 'row' ? 20 : 16}
-        height={layout === 'row' ? 20 : 16}
-        className={
-          layout === 'row' ? 'size-5 rounded-full' : 'size-4 rounded-xs'
-        }
-      />
+      {pending ? (
+        <Spinner className={layout === 'row' ? 'size-5' : 'size-4'} />
+      ) : (
+        <img
+          src={icon}
+          alt=""
+          width={layout === 'row' ? 20 : 16}
+          height={layout === 'row' ? 20 : 16}
+          className={
+            layout === 'row' ? 'size-5 rounded-full' : 'size-4 rounded-xs'
+          }
+        />
+      )}
       {longLabelOnMobile ? (
         <>
           <span className="sm:hidden h-7 text-sm/7">{label}</span>

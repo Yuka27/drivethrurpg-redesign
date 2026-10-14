@@ -50,7 +50,23 @@
   "downloadSelected_other": "Download {{count}} titles",
   "downloadFailed": "We could not prepare the download. Try again.",
   "empty": "Your library is empty. Titles you buy or receive as gifts appear here.",
-  "noResults": "No titles match these filters.",
   "clearFilters": "Clear filters",
-  "loadError": "We could not load your library. Try again later."
+  "loadError": "We could not load your library. Try again later.",
+  "emptyState": {
+    "title": "Your library is empty",
+    "text": "Titles you buy or claim show up here, ready to download.",
+    "gift": "Got a gift?",
+    "giftHint": "Claim it with the code from the email we sent",
+    "merge": "Bought on another account?",
+    "mergeHint": "Merge it into this one",
+    "free": "Looking for free titles?",
+    "freeHint": "Start with these",
+    "noMatchQuery": "Nothing in your library matches “{{query}}”",
+    "noMatchFilters": "Nothing in your library matches these filters",
+    "owned_one": "You own {{count}} title. It doesn’t match.",
+    "owned_other": "You own {{count}} titles. None of them match.",
+    "clearSearch": "Clear search",
+    "orders": "Bought it recently? Check Orders →",
+    "loadError": "We couldn’t load your library"
+  }
 }

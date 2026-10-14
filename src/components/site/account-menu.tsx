@@ -24,6 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { APP_DOWNLOAD_URL } from '@/config/links'
 
 // Figma: 6px gap and padding, 6px radius
 const itemClass = 'gap-1.5 rounded-md px-1.5 py-1 cursor-pointer'
@@ -96,8 +97,7 @@ export function AccountMenu({ user }: { user: Me }) {
         </DropdownMenuGroup>
         <DropdownMenuGroup className="p-1">
           <DropdownMenuItem asChild className={itemClass}>
-            {/* TODO_URL: app download page not decided yet */}
-            <a href="#">
+            <a href={APP_DOWNLOAD_URL}>
               <DownloadIcon aria-hidden />
               {t('account.getTheApp')}
             </a>

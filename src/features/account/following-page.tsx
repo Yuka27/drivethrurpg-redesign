@@ -4,10 +4,12 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
+import { FollowingEmpty } from './account-empty'
 import { AccountPage } from './account-page'
+import { ErrorState } from '@/components/site/empty-state'
 import { OptionSelect } from '@/components/site/option-select'
+import { LoadingStatus } from '@/components/site/loading-status'
 import { SearchField } from '@/components/site/search-field'
-import { assetUrl } from '@/api/client'
 import {
   useFollow,
   useFollowing,
@@ -16,6 +18,7 @@ import {
   useUnfollow,
 } from '@/api/following'
 import type { FollowedPublisher } from '@/api/following'
+import { PublisherLogo } from '@/components/site/publisher-logo'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,6 +28,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { useFormatDate } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
@@ -113,38 +117,55 @@ export function FollowingPage() {
           </div>
         )}
 
-        {following.isError && (
-          <p className="text-sm text-destructive">{t('loadError')}</p>
-        )}
-
-        {empty ? (
-          <div className="rounded-xl bg-card p-6 text-sm">
-            <p>{t('following.empty')}</p>
-            <p className="mt-1 text-muted-foreground">
-              {t('following.emptyHint')}
-            </p>
-          </div>
-        ) : (
-          following.data && (
+        {following.isError ? (
+          <ErrorState
+            title={t('following.loadErrorTitle')}
+            onRetry={() => void following.refetch()}
+            className="rounded-xl bg-card"
+          />
+        ) : following.isPending ? (
+          <div>
+            <LoadingStatus />
             <ul
-              aria-label={t('following.title')}
+              aria-hidden
               className="flex flex-col gap-3 rounded-xl bg-card p-6"
             >
-              {visible.length === 0 && (
-                <li className="py-2 text-sm text-muted-foreground">
-                  {t('following.noMatches', { query: query.trim() })}
+              {Array.from({ length: 4 }, (_, index) => (
+                <li
+                  key={index}
+                  className="flex items-center gap-4 border-muted not-first:border-t not-first:pt-3"
+                >
+                  <Skeleton className="size-10 shrink-0 rounded-lg" />
+                  <div className="flex flex-1 flex-col gap-2">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                  <Skeleton className="h-9 w-32 rounded-lg max-lg:hidden" />
                 </li>
-              )}
-              {visible.map((item, index) => (
-                <FollowedRow
-                  key={item.publisher.id}
-                  item={item}
-                  first={index === 0}
-                  onUnfollow={() => unfollowWithUndo(item)}
-                />
               ))}
             </ul>
-          )
+          </div>
+        ) : empty ? (
+          <FollowingEmpty />
+        ) : (
+          <ul
+            aria-label={t('following.title')}
+            className="flex flex-col gap-3 rounded-xl bg-card p-6"
+          >
+            {visible.length === 0 && (
+              <li className="py-2 text-sm text-muted-foreground">
+                {t('following.noMatches', { query: query.trim() })}
+              </li>
+            )}
+            {visible.map((item, index) => (
+              <FollowedRow
+                key={item.publisher.id}
+                item={item}
+                first={index === 0}
+                onUnfollow={() => unfollowWithUndo(item)}
+              />
+            ))}
+          </ul>
         )}
       </div>
     </AccountPage>
@@ -243,10 +264,7 @@ function FollowedRow({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Link
-                to="/publishers/$publisherId"
-                params={{ publisherId: publisher.id }}
-              >
+              <Link to="/titles" search={{ publisher: publisher.id }}>
                 {t('following.viewPublisher')}
               </Link>
             </DropdownMenuItem>
@@ -258,53 +276,5 @@ function FollowedRow({
         </DropdownMenu>
       </div>
     </li>
-  )
-}
-
-/** 40px logo tile; the publisher's initials when there is no logo or it fails to load. */
-function PublisherLogo({
-  name,
-  url,
-  className,
-}: {
-  name: string
-  url: string | undefined
-  className?: string
-}) {
-  const [failed, setFailed] = useState(false)
-  const tile = cn(
-    'size-10 shrink-0 rounded-xl border border-muted bg-card',
-    className,
-  )
-
-  if (!url || failed) {
-    const initials = name
-      .split(/\s+/)
-      // words only: "Lantern & Ash Games" -> "LA"
-      .filter((word) => /^\p{L}/u.test(word))
-      .slice(0, 2)
-      .map((word) => word[0])
-      .join('')
-      .toUpperCase()
-    return (
-      <span
-        aria-hidden
-        className={cn(tile, 'grid place-items-center text-xs font-semibold')}
-      >
-        {initials}
-      </span>
-    )
-  }
-
-  return (
-    <img
-      src={assetUrl(url)}
-      alt=""
-      width={40}
-      height={40}
-      loading="lazy"
-      onError={() => setFailed(true)}
-      className={cn(tile, 'object-cover')}
-    />
   )
 }

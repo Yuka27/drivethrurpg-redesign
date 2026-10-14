@@ -115,7 +115,6 @@
     "cancel": "Anuluj",
     "removing": "Usuwanie…"
   },
-  "comingSoon": "Ta funkcja nie jest jeszcze dostępna.",
   "loadError": "Nie udało się wczytać tej sekcji. Spróbuj ponownie później.",
   "preferencesPage": {
     "title": "Preferencje",
@@ -197,9 +196,17 @@
     "unfollow": "Przestań obserwować",
     "unfollowed": "Nie obserwujesz już {{name}}.",
     "undo": "Cofnij",
-    "empty": "Nie obserwujesz jeszcze żadnych wydawców.",
-    "emptyHint": "Obserwuj wydawcę na jego stronie, aby dowiadywać się o nowościach.",
-    "noMatches": "Brak wydawców pasujących do „{{query}}”."
+    "noMatches": "Brak wydawców pasujących do „{{query}}”.",
+    "emptyTitle": "Nie obserwujesz żadnych wydawców",
+    "emptyText": "Obserwuj wydawcę, aby dostawać powiadomienia o nowościach i aktualizacjach.",
+    "fromLibrary": "Wydawcy z tytułami w Twojej bibliotece",
+    "inLibrary_one": "{{count}} tytuł w Twojej bibliotece",
+    "inLibrary_few": "{{count}} tytuły w Twojej bibliotece",
+    "inLibrary_many": "{{count}} tytułów w Twojej bibliotece",
+    "inLibrary_other": "{{count}} tytułu w Twojej bibliotece",
+    "follow": "Obserwuj",
+    "followLabel": "Obserwuj: {{name}}",
+    "loadErrorTitle": "Nie udało się wczytać obserwowanych"
   },
   "orders": {
     "title": "Zamówienia",
@@ -230,9 +237,12 @@
     "viewDetails": "Szczegóły",
     "viewDetailsLabel": "Szczegóły zamówienia {{number}}",
     "loadingLine": "Wczytywanie pozycji…",
-    "empty": "Nie masz jeszcze żadnych zamówień.",
     "noMatches": "Żadne zamówienie nie pasuje do filtrów.",
-    "clearFilters": "Wyczyść filtry"
+    "clearFilters": "Wyczyść filtry",
+    "emptyTitle": "Nie masz jeszcze zamówień",
+    "emptyText": "Gdy coś kupisz, pojawią się tu paragon i pliki do pobrania.",
+    "guestOrder": "Zamawiałeś jako gość? Znajdź zamówienie po e-mailu →",
+    "loadErrorTitle": "Nie udało się wczytać zamówień"
   },
   "orderDetail": {
     "back": "Zamówienia",

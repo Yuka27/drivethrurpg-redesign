@@ -1,0 +1,40 @@
+{
+  "heading": "Wishlist",
+  "loadError": "We could not load your wishlist. Try again later.",
+  "share": "Share",
+  "addAll": "Add all to cart",
+  "sale": {
+    "count_one": "{{count}} title on your wishlist is on sale.",
+    "count_other": "{{count}} titles on your wishlist are on sale.",
+    "hint": "Prices can change, so grab them while they last.",
+    "add": "Add sale titles to cart"
+  },
+  "added_one": "{{count}} title added to your cart.",
+  "added_other": "{{count}} titles added to your cart.",
+  "skippedOwned_one": "{{count}} you already own was left out.",
+  "skippedOwned_other": "{{count}} you already own were left out.",
+  "allInCart": "Everything here is already in your cart or your library.",
+  "sorts": {
+    "added": "Date added",
+    "price_asc": "Price: low to high",
+    "price_desc": "Price: high to low",
+    "title": "Title A–Z"
+  },
+  "empty": {
+    "title": "Your wishlist is empty",
+    "text": "Tap the heart on any title to save it. We’ll tell you when it goes on sale.",
+    "browse": "Browse the store",
+    "picks": "Popular picks"
+  },
+  "shareDialog": {
+    "title": "Share your wishlist",
+    "description": "Turn on a link to show your wishlist to friends. They can see it, not change it.",
+    "public": "Share with a link",
+    "private": "Only you can see your wishlist.",
+    "link": "Wishlist link",
+    "copy": "Copy link",
+    "copied": "Link copied.",
+    "copyFailed": "We could not copy the link. Select it and copy it yourself."
+  },
+  "loadErrorTitle": "We couldn’t load your wishlist"
+}

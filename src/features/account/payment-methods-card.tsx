@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { brandName } from './card-brand'
-import { useComingSoon } from './coming-soon'
 import { ConfirmDialog } from './confirm-dialog'
 import {
   SettingsCard,
   SettingsRow,
+  SettingsRowsSkeleton,
   badgeClass,
   rowButtonClass,
 } from './settings-card'
@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useFormatDate } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
+import { useComingSoon } from '@/lib/use-coming-soon'
 
 /** Saved cards: last 4 digits only. Cards are saved at checkout. */
 export function PaymentMethodsCard() {
@@ -56,6 +57,7 @@ export function PaymentMethodsCard() {
           {t('loadError')}
         </p>
       )}
+      {methods.isPending && <SettingsRowsSkeleton />}
       {empty && (
         // Figma: the text and the button share a row on desktop; the button
         // goes full width under the text on mobile
