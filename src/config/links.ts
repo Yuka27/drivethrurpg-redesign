@@ -6,11 +6,8 @@ export const TODO_URL = '#'
 
 /** Help center / contact form */
 export const SUPPORT_URL = TODO_URL
-/** Terms of service */
 export const TERMS_URL = TODO_URL
-/** Privacy policy */
 export const PRIVACY_URL = TODO_URL
-/** Service status page */
 export const STATUS_URL = TODO_URL
 /** Where to get the library apps */
 export const APP_DOWNLOAD_URL = TODO_URL

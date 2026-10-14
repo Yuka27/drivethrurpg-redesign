@@ -7,7 +7,7 @@ import {
   ShoppingCartIcon,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -26,7 +26,9 @@ import { ThemeToggle } from './theme-toggle'
 import { useMe } from '@/api/me'
 import type { Me } from '@/api/me'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useLastLibrarySearch } from '@/features/library/library-search'
+import { safeLocalStorage } from '@/lib/safe-storage'
 import { useHeightVar } from '@/lib/use-height-var'
 import { cn } from '@/lib/utils'
 
@@ -37,6 +39,7 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
   const { data: me, isPending } = useMe()
+  const sessionHint = useSessionHint(me)
   const headerRef = useRef<HTMLElement>(null)
   // on /search?q=: the words, shown in the field
   const searchQuery = useRouterState({
@@ -71,10 +74,12 @@ export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
               className="order-last w-full lg:order-none lg:w-auto lg:flex-1"
             />
 
-            {me ? (
+            {isPending ? (
+              <ActionsSkeleton signedIn={sessionHint === 'user'} />
+            ) : me ? (
               <UserActions user={me} />
             ) : (
-              <GuestActions loading={isPending} />
+              <GuestActions />
             )}
           </div>
         )}
@@ -85,7 +90,7 @@ export function SiteHeader({ variant = 'full' }: SiteHeaderProps) {
 }
 
 /**
- * The minimal header's right side (checkout mockup): "Secure checkout" and
+ * The minimal header's right side: "Secure checkout" and
  * "Back to cart" while paying, "Continue shopping" once the order is placed.
  */
 function FocusActions() {
@@ -116,7 +121,7 @@ function FocusActions() {
   )
 }
 
-function GuestActions({ loading }: { loading: boolean }) {
+function GuestActions() {
   const { t } = useTranslation()
   return (
     <div className="ml-auto flex items-center gap-1">
@@ -131,16 +136,61 @@ function GuestActions({ loading }: { loading: boolean }) {
         icon={ShoppingCartIcon}
         label={t('header.cart.label')}
       />
-      {/* keeps its space while /me loads, so a logged-in user never sees "Log In" flash;
-          `invisible` also takes it out of the tab order and the accessibility tree */}
-      <LoginButton className={cn(loading && 'invisible')}>
-        {t('header.login')}
-      </LoginButton>
+      <LoginButton>{t('header.login')}</LoginButton>
     </div>
   )
 }
 
-/** Figma "logged in": My Library + wishlist | notifications + cart | avatar menu (desktop). */
+const SESSION_HINT = 'dtrpg-session-hint'
+
+/**
+ * Whether this device last saw an account or a guest ("user" | "guest"), so
+ * the header's outline while /me loads has the shape that will most likely
+ * come (an avatar, or "Log In") instead of jumping when it arrives.
+ */
+function useSessionHint(me: Me | null | undefined) {
+  const [hint] = useState(() => safeLocalStorage.getItem(SESSION_HINT))
+  useEffect(() => {
+    if (me !== undefined)
+      safeLocalStorage.setItem(SESSION_HINT, me ? 'user' : 'guest')
+  }, [me])
+  return hint
+}
+
+/** The right side while /me loads, in the shape of an account's or a guest's. */
+function ActionsSkeleton({ signedIn }: { signedIn: boolean }) {
+  return signedIn ? (
+    <div aria-hidden className="ml-auto flex items-center gap-1 lg:gap-3">
+      <div className="flex items-center gap-1">
+        {/* My Library: an icon on phones, the words on desktop */}
+        <Skeleton className="size-8 rounded-lg lg:w-[112px]" />
+        <Skeleton className="size-8 rounded-lg max-lg:hidden" />
+      </div>
+      <div className="flex items-center gap-1">
+        <Skeleton className="size-8 rounded-lg max-lg:hidden" />
+        <Skeleton className="size-8 rounded-lg" />
+        <Skeleton className="size-8 rounded-lg" />
+      </div>
+      <Skeleton
+        data-testid="avatar-skeleton"
+        className="size-8 rounded-full max-lg:hidden"
+      />
+    </div>
+  ) : (
+    <div aria-hidden className="ml-auto flex items-center gap-1">
+      <div className="flex items-center gap-1 max-lg:hidden">
+        <Skeleton className="h-8 w-16 rounded-lg" />
+        <Skeleton className="h-8 w-14 rounded-lg" />
+        <Skeleton className="h-8 w-10 rounded-lg" />
+        <Skeleton className="size-8 rounded-lg" />
+      </div>
+      <Skeleton className="size-8 rounded-lg" />
+      <Skeleton className="h-8 w-[72px] rounded-lg" />
+    </div>
+  )
+}
+
+/** Logged in: My Library + wishlist | theme (desktop) + notifications + cart | avatar menu (desktop). */
 function UserActions({ user }: { user: Me }) {
   const { t } = useTranslation()
   const librarySearch = useLastLibrarySearch((state) => state.search)
@@ -175,6 +225,10 @@ function UserActions({ user }: { user: Me }) {
         />
       </div>
       <div className="flex items-center gap-1">
+        {/* as for guests; phones switch it in the menu */}
+        <div className="max-lg:hidden">
+          <ThemeToggle />
+        </div>
         <NotificationsPopover
           unread={counts.unreadNotifications}
           label={t('header.notifications.label')}

@@ -22,8 +22,6 @@ function TitlesRoute() {
   return (
     <ListingPage
       search={search}
-      // replace, not push: each filter click would otherwise be a history
-      // entry for Back to step through. A new page is a push: Back returns.
       onSearchChange={(patch: Partial<ListingSearch>) =>
         void navigate({
           search: (previous) => ({ ...previous, ...patch }),

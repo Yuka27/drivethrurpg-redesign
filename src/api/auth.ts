@@ -153,7 +153,6 @@ export function useMergeGuestData() {
   })
 }
 
-/** "Forgot your password?" form. */
 export const ForgotPasswordRequestSchema = z.object({
   email: z
     .email({ error: message('validation.emailInvalidExample') })

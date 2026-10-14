@@ -19,12 +19,13 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatMoney, useFormatNumber } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
+import { tagClass } from '@/components/title/tag-class'
 
 /** A sensible ceiling for one line; the API sets none. */
 const MAX_QTY = 99
 
 /**
- * Figma "cart item": one cart line: cover, title, publisher, the format and how it arrives,
+ * One cart line: cover, title, publisher, the format and how it arrives,
  * the quantity and Remove; the price on the right (desktop) or under the
  * title (phones), with the discount when on sale. A download needs no
  * quantity, so its stepper shows only once there is more than one (to take
@@ -160,9 +161,7 @@ export function CartItem({ line }: { line: CartLine }) {
               )}
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex h-[22px] items-center rounded-md border border-border px-2 text-xs font-medium">
-                {line.formatLabel}
-              </span>
+              <span className={tagClass}>{line.formatLabel}</span>
               {line.requiresShipping ? (
                 <span className="text-xs text-muted-foreground">
                   {t('line.ships')}

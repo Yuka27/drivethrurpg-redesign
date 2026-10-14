@@ -11,7 +11,7 @@ import { useFormatMoney, useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
 /**
- * Mockup "Order summary": the lines, subtotal, sale savings, the promo code,
+ * The lines, subtotal, sale savings, the promo code,
  * shipping, the total with the VAT inside it, then "Pay $99.96". Desktop: it
  * stays in view beside the form. Phones: one line with the total, opening to
  * the rest; the Pay button stays below.
@@ -165,7 +165,7 @@ export function CheckoutSummary({
                 href={TERMS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:underline"
+                className="text-primary-text hover:underline"
               />
             ),
           }}

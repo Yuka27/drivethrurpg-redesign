@@ -10,7 +10,7 @@ import {
 import { cn } from '@/lib/utils'
 
 /**
- * A collapsible filter section. Figma: the sidebar shows how many values are
+ * A collapsible filter section. The sidebar shows how many values are
  * picked as a muted "(2)" after the title and starts open; the mobile sheet shows
  * a red "2 selected" and starts closed.
  */

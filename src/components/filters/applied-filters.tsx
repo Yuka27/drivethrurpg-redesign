@@ -14,7 +14,7 @@ export type AppliedFilter = {
 
 /**
  * The filters that are on, as removable chips, then "+ N more" and "Clear all".
- * Figma: the desktop row shows about two lines' worth, the mobile row one chip;
+ * The desktop row shows about two lines' worth, the mobile row one chip;
  * `shown` sets how many before "+ N more".
  */
 export function AppliedFilters({

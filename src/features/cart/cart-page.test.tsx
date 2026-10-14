@@ -4,11 +4,9 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { CartPage } from './cart-page'
 import type { Cart, CartLine } from '@/api/cart'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, mockApi, never, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
-
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 
 const pdf: CartLine = {
   lineId: 'ln_1',
@@ -302,8 +300,6 @@ describe('CartPage', () => {
 })
 
 describe('CartPage while loading', () => {
-  const never = () => new Promise<never>(() => {})
-
   it('shows the cart’s outline, not an empty page', async () => {
     mockCart(cartOf([pdf]), { 'GET /cart': never })
     await renderWithProviders(<CartPage />)

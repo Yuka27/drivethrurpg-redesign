@@ -2,34 +2,37 @@ import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
 import { SectionHeading } from './section-heading'
-import { usePublisher } from '@/api/publishers'
-import { useTitleFacets } from '@/api/titles'
+import type { Publisher } from '@/api/publishers'
+import { useHomePublishers } from '@/api/titles'
 import { PublisherLogo } from '@/components/site/publisher-logo'
 import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
 
-/** Figma: eight logos in a row on desktop. */
+/** Eight logos in a row on desktop; phones scroll through them all. */
 const SHOWN = 8
 
 const STRIP_CLASS =
   '-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-1 lg:grid lg:grid-cols-8 lg:overflow-visible'
 
-/** Figma "Browse by Publisher": logo tiles of the publishers with the most titles. */
+/**
+ * "Browse by Publisher": logo tiles of the publishers GET /home lists, which
+ * are only those with their own logo, in its order.
+ */
 export function PublisherStrip() {
   const { t } = useTranslation('home')
-  const facets = useTitleFacets({})
-  const publishers = facets.data?.publishers.slice(0, SHOWN) ?? []
-  if (facets.isPending) return <PublisherStripSkeleton />
-  if (publishers.length === 0) return null
+  const publishers = useHomePublishers()
+  if (publishers.isPending) return <PublisherStripSkeleton />
+  if (!publishers.data?.length) return null
 
   return (
     <section aria-labelledby="publishers" className="flex flex-col gap-4">
       <SectionHeading id="publishers">{t('publishers')}</SectionHeading>
       <ul className={STRIP_CLASS}>
-        {publishers.map((publisher) => (
+        {publishers.data.map((publisher, index) => (
           <PublisherTile
-            key={publisher.value}
-            id={publisher.value}
-            name={publisher.label}
+            key={publisher.id}
+            publisher={publisher}
+            className={cn(index >= SHOWN && 'lg:hidden')}
           />
         ))}
       </ul>
@@ -37,21 +40,26 @@ export function PublisherStrip() {
   )
 }
 
-function PublisherTile({ id, name }: { id: string; name: string }) {
-  const logo = usePublisher(id).data?.logo
+function PublisherTile({
+  publisher,
+  className,
+}: {
+  publisher: Publisher
+  className?: string
+}) {
   return (
-    <li className="shrink-0 snap-start lg:min-w-0">
+    <li className={cn('shrink-0 snap-start lg:min-w-0', className)}>
       <Link
         to="/titles"
-        search={{ publisher: id }}
-        aria-label={name}
-        title={name}
+        search={{ publisher: publisher.id }}
+        aria-label={publisher.name}
+        title={publisher.name}
         className="flex size-[140px] overflow-hidden rounded-xl border border-muted bg-card outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 lg:aspect-square lg:size-auto"
       >
         {/* the tile is the frame: the logo fills it, contained, without its own */}
         <PublisherLogo
-          name={name}
-          url={logo?.url}
+          name={publisher.name}
+          url={publisher.logo?.url}
           className="size-full rounded-none border-0 bg-transparent object-contain p-3 text-2xl"
         />
       </Link>

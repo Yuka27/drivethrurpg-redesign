@@ -24,7 +24,7 @@ import { linkTarget, utilityMenus } from '@/config/utility-menus'
 import type { FooterLink } from '@/config/footer'
 
 /**
- * Prototype row 1, right: Community, Information, Support. Desktop: a
+ * Row 1, right: Community, Information, Support. Desktop: a
  * navigation menu each (opens on hover, a click or Enter; arrow keys move
  * between the links; Escape closes). Phones (< 700px): one "⋯" button with
  * the three as labelled groups.

@@ -22,7 +22,7 @@ export function AiContentToggle() {
         pressed={aiContent}
         onPressedChange={setAiContent}
         aria-label={t('header.aiContent.toggle')}
-        className="h-8 rounded-lg border-border bg-background px-2.5 text-muted-foreground shadow-none hover:bg-accent hover:text-foreground data-[state=on]:border-primary data-[state=on]:bg-background data-[state=on]:text-primary-text cursor-pointer"
+        className="h-8 rounded-lg border-border bg-background px-2.5 text-muted-foreground shadow-none hover:bg-accent hover:text-foreground data-[state=on]:border-primary data-[state=on]:bg-background data-[state=on]:text-primary-text"
       >
         {t('header.aiContent.label')}
       </Toggle>

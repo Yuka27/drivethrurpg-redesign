@@ -4,8 +4,11 @@ import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
+import type { FollowTarget } from '@/api/follow-kind'
+import { useToggleFollow } from '@/api/following'
 import { useMe } from '@/api/me'
-import { usePublisher, useTogglePublisherFollow } from '@/api/publishers'
+import { usePublisher } from '@/api/publishers'
+import type { TitleDetail } from '@/api/titles'
 import { PublisherLogo } from '@/components/site/publisher-logo'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
@@ -13,7 +16,7 @@ import { useFormatNumber } from '@/i18n/format'
 import { useApiError } from '@/i18n/use-api-error'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
 
-/** Figma "publisher card": logo, name, how many titles, to the publisher's page. */
+/** Logo, name, how many titles, to the listing of their titles. */
 export function PublisherCard({
   publisherId,
   name,
@@ -43,7 +46,7 @@ export function PublisherCard({
         </span>
         {query.isPending && <Skeleton className="h-[22px] w-20" />}
         {publisher && publisher.titleCount > 0 && (
-          <span className="inline-flex h-[22px] items-center rounded-sm border border-primary px-2 text-xs font-medium text-primary">
+          <span className="inline-flex h-[22px] items-center rounded-sm border border-primary px-2 text-xs font-medium text-primary-text">
             {t('publisher.titles', {
               count: publisher.titleCount,
               formatted: formatNumber(publisher.titleCount),
@@ -57,61 +60,90 @@ export function PublisherCard({
 }
 
 /**
- * Figma "Follow card": follow the publisher for a weekly email of new releases.
- * (The design also lists the imprint and the rule system; the API follows
- * publishers only.) Guests are asked to log in.
+ * "Follow your favorite publishers and categories…": one switch per thing the
+ * title belongs to (publisher, series, imprint, game system, genres), in the
+ * API's order, each for a weekly email of its new releases. Guests are asked
+ * to log in instead.
  */
-export function FollowCard({
-  publisherId,
-  name,
-}: {
-  publisherId: string
-  name: string
-}) {
+export function FollowCard({ title }: { title: TitleDetail }) {
+  const { t } = useTranslation('title')
+  const headingId = useId()
+  // older data without follow targets: the publisher alone, its state unknown
+  const targets: Array<FollowTarget> =
+    title.followTargets.length > 0
+      ? title.followTargets
+      : title.publisher
+        ? [{ type: 'publisher', ...title.publisher, following: false }]
+        : []
+  if (targets.length === 0) return null
+
+  return (
+    <section
+      aria-labelledby={headingId}
+      className="flex flex-col gap-3 rounded-xl bg-card p-4"
+    >
+      <h2
+        id={headingId}
+        className="flex gap-2 font-sans text-xs leading-4 font-normal text-muted-foreground"
+      >
+        <MailIcon aria-hidden className="size-4 shrink-0" />
+        {t('follow.hint')}
+      </h2>
+      <ul className="flex flex-col gap-2 pl-6">
+        {targets.map((target) => (
+          <FollowRow key={`${target.type}:${target.id}`} target={target} />
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function FollowRow({ target }: { target: FollowTarget }) {
   const { t } = useTranslation('title')
   const apiError = useApiError()
   const switchId = useId()
   const { data: me } = useMe()
   const openAuth = useAuthDialogStore((state) => state.openAuth)
-  const publisher = usePublisher(publisherId).data
-  const toggle = useTogglePublisherFollow()
-  const following = Boolean(me) && Boolean(publisher?.following)
+  const toggle = useToggleFollow()
+  // a guest follows nothing, whatever the data says
+  const following = Boolean(me) && target.following
 
   return (
-    <section
-      aria-label={t('follow.label')}
-      className="flex flex-col gap-2 rounded-xl bg-card p-4"
-    >
-      <p className="flex gap-2 text-xs text-muted-foreground">
-        <MailIcon aria-hidden className="size-4 shrink-0" />
-        {t('follow.hint')}
-      </p>
-      <div className="flex items-center justify-between gap-2 pr-4 pl-6">
-        <label htmlFor={switchId} className="min-w-0 truncate text-sm">
-          {t('follow.publisher')} <b>{name}</b>
-        </label>
-        <Switch
-          id={switchId}
-          checked={following}
-          disabled={me !== null && !publisher}
-          onCheckedChange={(on) => {
-            if (!me) {
-              openAuth('login')
-              return
-            }
-            toggle.mutate(
-              { publisherId, on },
-              {
-                onSuccess: () =>
-                  toast.success(
-                    t(on ? 'follow.followed' : 'follow.unfollowed', { name }),
-                  ),
-                onError: (error) => toast.error(apiError(error)),
-              },
-            )
-          }}
-        />
-      </div>
-    </section>
+    <li className="flex items-center justify-between gap-3">
+      <label htmlFor={switchId} className="flex min-w-0 flex-col text-sm">
+        <span className="truncate">
+          {t('follow.follow')} <b>{target.name}</b>
+        </span>
+        <span className="text-xs text-muted-foreground">
+          {t(`follow.kind.${target.type}`)}
+        </span>
+      </label>
+      <Switch
+        id={switchId}
+        checked={following}
+        // until GET /me answers, a user is neither guest nor signed in
+        disabled={me === undefined}
+        // the kind in words: "Follow game system Year Zero Engine"
+        aria-label={t(`follow.target.${target.type}`, { name: target.name })}
+        onCheckedChange={(on) => {
+          if (!me) {
+            openAuth('login')
+            return
+          }
+          toggle.mutate(
+            { kind: target.type, id: target.id, on },
+            {
+              onSuccess: () =>
+                toast.success(
+                  t(on ? 'follow.followed' : 'follow.unfollowed', {
+                    name: target.name,
+                  }),
+                ),
+              onError: (error) => toast.error(apiError(error)),
+            },
+          )
+        }}
+      />
+    </li>
   )
 }

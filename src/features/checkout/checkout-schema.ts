@@ -4,7 +4,7 @@ import type { CheckoutAddress } from '@/api/checkout'
 import type { Address } from '@/api/account'
 import { message } from '@/lib/forms'
 
-/** Figma: the countries offered first; the API takes ISO codes. */
+/** The countries offered first; the API takes ISO codes. */
 export const COUNTRIES = ['PL', 'DE', 'FR', 'GB', 'US', 'CA'] as const
 
 export const PAYMENT_METHODS = ['card', 'paypal', 'apple_pay'] as const

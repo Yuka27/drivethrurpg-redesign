@@ -4,11 +4,9 @@ import { describe, expect, it } from 'vite-plus/test'
 import { CheckoutPage } from './checkout-page'
 import type { CartLine } from '@/api/cart'
 import { useCheckoutResult } from '@/stores/checkout-result'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, mockApi, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
-
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 
 const pdf: CartLine = {
   lineId: 'ln_1',

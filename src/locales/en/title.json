@@ -48,11 +48,24 @@
     "titles_other": "{{formatted}} titles"
   },
   "follow": {
-    "label": "Follow",
-    "hint": "Follow your favorite publisher to get a weekly email of new releases.",
-    "publisher": "Follow",
+    "hint": "Follow your favorite publishers and categories to receive a weekly email of new releases",
     "followed": "You follow {{name}}.",
-    "unfollowed": "You no longer follow {{name}}."
+    "unfollowed": "You no longer follow {{name}}.",
+    "follow": "Follow",
+    "kind": {
+      "publisher": "Publisher",
+      "product_line": "Series",
+      "imprint": "Imprint",
+      "rule_system": "Game system",
+      "genre": "Genre"
+    },
+    "target": {
+      "publisher": "Follow publisher {{name}}",
+      "product_line": "Follow series {{name}}",
+      "imprint": "Follow imprint {{name}}",
+      "rule_system": "Follow game system {{name}}",
+      "genre": "Follow genre {{name}}"
+    }
   },
   "alsoBought": "Customers also bought",
   "moreRecommendations": "See more recommendations",
@@ -131,5 +144,11 @@
     "library": "Go to my Library",
     "similar": "Similar titles"
   },
-  "loadErrorTitle": "We couldn’t load this title"
+  "loadErrorTitle": "We couldn’t load this title",
+  "previewPdf": {
+    "action": "Preview PDF",
+    "label": "Preview PDF, opens in a new tab",
+    "meta_one": "First page · PDF · {{size}} MB",
+    "meta_other": "First {{pages}} pages · PDF · {{size}} MB"
+  }
 }

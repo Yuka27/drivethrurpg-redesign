@@ -8,8 +8,7 @@ import type { Section } from './use-scroll-spy'
 import type { Edition, TitleDetail } from '@/api/titles'
 
 /**
- * The product page's sticky secondary menu (prototype:
- * docs/drivethrurpg-product-sticky-menu-dark.html), stuck right under the
+ * The product page's sticky secondary menu, stuck right under the
  * site header (`--header-h`). Row 1, the breadcrumb and utility menus, is
  * always there; row 2, the product bar, slides open below it once the page's
  * <h1> has scrolled away. Sets `--stick-h` to the block's full height, which

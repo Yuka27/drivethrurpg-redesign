@@ -1,20 +1,18 @@
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vite-plus/test'
 
 import { MobileMenu } from './mobile-menu'
 import { SiteNav } from './site-nav'
-import { mockApi, user } from '@/test/api'
+import { apiError, facet, mockApi, user } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
-const facet = (value: string, label: string, count: number) => ({
-  value,
-  label,
-  count,
-})
-
-function mockFacets(genres: Array<ReturnType<typeof facet>> = []) {
+function mockFacets(
+  genres: Array<ReturnType<typeof facet>> = [],
+  extra: Parameters<typeof mockApi>[0] = {},
+) {
   return mockApi({
     'GET /me': { body: user },
+    ...extra,
     'GET /titles/facets': {
       body: {
         genres,
@@ -94,5 +92,75 @@ describe('MobileMenu', () => {
 
     await u.click(link)
     expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('gives a signed-in user the library, the account pages and a quiet "Log out"', async () => {
+    const { bodies } = mockFacets([], { 'POST /auth/logout': { status: 204 } })
+    const { user: u } = await renderWithProviders(<MobileMenu />)
+
+    await u.click(screen.getByRole('button', { name: 'Open menu' }))
+    const menu = await screen.findByRole('dialog', { name: 'Menu' })
+
+    // the library as the user left it, its filters remembered
+    expect(
+      await within(menu).findByRole('link', { name: 'My library' }),
+    ).toHaveAttribute('href', expect.stringMatching(/^\/library(\?|$)/))
+    // the library apps, for someone with a library
+    expect(
+      within(menu).getByRole('link', { name: 'Get the app' }),
+    ).toBeVisible()
+    const settings = within(menu).getByRole('navigation', { name: 'Settings' })
+    expect(
+      within(settings)
+        .getAllByRole('link')
+        // the path: Orders keeps the list's remembered filters
+        .map((link) => [
+          link.textContent,
+          link.getAttribute('href')?.split('?')[0],
+        ]),
+    ).toEqual([
+      ['Account', '/account/settings'],
+      ['Preferences', '/account/preferences'],
+      ['Orders', '/orders'],
+      ['Following', '/following'],
+    ])
+    expect(
+      within(menu).getByRole('heading', { name: 'Quick preferences' }),
+    ).toBeVisible()
+    // no avatar card: neither the name nor the email
+    expect(within(menu).queryByText(user.displayName)).toBeNull()
+    expect(within(menu).queryByText(user.email)).toBeNull()
+
+    await u.click(within(menu).getByRole('button', { name: 'Log out' }))
+    await waitFor(() => expect(bodies('POST /auth/logout')).toHaveLength(1))
+  })
+
+  it('keeps the account pages from a guest', async () => {
+    mockApi({
+      'GET /me': apiError(401, 'unauthorized'),
+      'GET /titles/facets': {
+        body: {
+          genres: [],
+          formats: [],
+          types: [],
+          ruleSystems: [],
+          publishers: [],
+        },
+      },
+    })
+    const { user: u } = await renderWithProviders(<MobileMenu />)
+
+    await u.click(screen.getByRole('button', { name: 'Open menu' }))
+    const menu = await screen.findByRole('dialog', { name: 'Menu' })
+
+    expect(
+      await within(menu).findByRole('button', { name: 'Log in' }),
+    ).toBeVisible()
+    expect(within(menu).queryByRole('link', { name: 'My library' })).toBeNull()
+    expect(within(menu).queryByRole('link', { name: 'Get the app' })).toBeNull()
+    expect(
+      within(menu).queryByRole('navigation', { name: 'Settings' }),
+    ).toBeNull()
+    expect(within(menu).getByRole('link', { name: 'Wishlist' })).toBeVisible()
   })
 })

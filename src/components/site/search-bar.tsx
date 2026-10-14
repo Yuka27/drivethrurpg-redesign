@@ -28,7 +28,7 @@ import { useDebouncedValue } from '@/lib/use-debounced-value'
 import { cn } from '@/lib/utils'
 import { useRecentSearches } from '@/stores/recent-searches'
 
-/** Mockup: four titles, two publishers, four suggested searches. */
+/** Four titles, two publishers, four suggested searches. */
 const LIMITS = { queries: 4, titles: 4, publishers: 2 }
 
 type SuggestedTitle = Suggestions['titles'][number]
@@ -65,7 +65,7 @@ export function highlight(text: string, query: string): ReactNode {
 }
 
 /**
- * The header's search (mockup docs/drivethrurpg-search-dark.html). Focused:
+ * The header's search. Focused:
  * recent and popular searches. Typing: suggested searches, titles and
  * publishers (GET /search/suggest), and "See all results". ↑ ↓ move, Enter
  * picks (or searches), Esc closes. Desktop: a panel under the field over a
@@ -526,7 +526,7 @@ export function SearchBar({
                 />
               </span>
               <span className="flex shrink-0 items-center gap-1.5 font-bold text-primary-text">
-                Enter
+                {t('header.search.keyEnter')}
                 <ArrowRightIcon aria-hidden className="size-3.5" />
               </span>
             </div>
@@ -536,10 +536,12 @@ export function SearchBar({
               <Kbd>↑</Kbd> <Kbd>↓</Kbd> {t('header.search.hintMove')}
             </span>
             <span>
-              <Kbd>Enter</Kbd> {t('header.search.hintSearch')}
+              <Kbd>{t('header.search.keyEnter')}</Kbd>{' '}
+              {t('header.search.hintSearch')}
             </span>
             <span>
-              <Kbd>Esc</Kbd> {t('header.search.hintClose')}
+              <Kbd>{t('header.search.keyEsc')}</Kbd>{' '}
+              {t('header.search.hintClose')}
             </span>
           </p>
         </div>

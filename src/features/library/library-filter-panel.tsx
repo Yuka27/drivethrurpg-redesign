@@ -13,7 +13,7 @@ import { FilterGroup } from '@/components/filters/filter-group'
 import { RadioFacet } from '@/components/filters/radio-facet'
 import { joinList, splitList } from '@/lib/search-params'
 
-/** The long facets get a search box (Figma: rule systems and publishers). */
+/** The long facets get a search box: rule systems and publishers. */
 const SEARCH_BOX = {
   system: {
     label: 'searchFacet.system',
@@ -56,7 +56,7 @@ export function LibraryFilterPanel({
       <FilterGroup
         title={t('status.title')}
         variant={variant}
-        // the sheet opens on Status (Figma); the rest start closed there
+        // the sheet opens on Status; the rest start closed there
         defaultOpen
       >
         <RadioFacet

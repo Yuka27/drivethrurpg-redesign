@@ -22,7 +22,6 @@ function WishlistRoute() {
   return (
     <WishlistPage
       search={search}
-      // as on the listing: filter changes replace the entry, a new page pushes
       onSearchChange={(patch: Partial<WishlistSearch>) =>
         void navigate({
           search: (previous) => ({ ...previous, ...patch }),

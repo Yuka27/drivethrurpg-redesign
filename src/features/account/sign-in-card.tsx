@@ -39,7 +39,7 @@ export function SignInCard({ email }: { email: string }) {
         hint={t('signIn.passwordHint')}
         actions={
           <>
-            {/* Figma desktop: a masked placeholder, never the real password */}
+            {/* desktop: a masked placeholder, never the real password */}
             <span
               role="img"
               aria-label={t('signIn.passwordSet')}

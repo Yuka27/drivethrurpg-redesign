@@ -92,7 +92,7 @@ export function NewsletterForm() {
                         variant="secondary"
                         size="sm"
                         disabled={subscribe.isPending}
-                        className="rounded-l-none border border-l-0 border-border cursor-pointer"
+                        className="rounded-l-none border border-l-0 border-border"
                       >
                         {subscribe.isPending
                           ? t('newsletter.subscribing')

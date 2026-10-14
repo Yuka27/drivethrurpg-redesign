@@ -4,7 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { safeLocalStorage } from '@/lib/safe-storage'
 
-/** Figma "Recently Viewed": the last few, newest first. */
+/** The last few, newest first. */
 const KEEP = 10
 
 const ViewedSchema = z.object({
@@ -21,6 +21,9 @@ export type ViewedTitle = z.infer<typeof ViewedSchema>
 export const useRecentlyViewed = create<{
   titles: Array<ViewedTitle>
   record: (title: ViewedTitle) => void
+  /** forget them all ("Clear"); `restore` puts them back (Undo) */
+  clear: () => void
+  restore: (titles: Array<ViewedTitle>) => void
 }>()(
   persist(
     (set) => ({
@@ -32,6 +35,8 @@ export const useRecentlyViewed = create<{
             ...titles.filter((item) => item.id !== title.id),
           ].slice(0, KEEP),
         })),
+      clear: () => set({ titles: [] }),
+      restore: (titles) => set({ titles: titles.slice(0, KEEP) }),
     }),
     {
       name: 'dtrpg-recently-viewed',

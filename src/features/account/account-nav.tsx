@@ -75,8 +75,8 @@ export function AccountSidebarNav() {
                     search={linkSearch(to)}
                     aria-current={current ? 'page' : undefined}
                     className={cn(
-                      'block py-2.5 text-sm font-medium hover:text-primary',
-                      current && 'text-primary',
+                      'block py-2.5 text-sm font-medium hover:text-primary-text',
+                      current && 'text-primary-text',
                     )}
                   >
                     {t(`nav.${label}`)}

@@ -4,7 +4,7 @@ import { useTitleFacets } from '@/api/titles'
 import type { TitleFacets } from '@/api/titles'
 import type { ListingFacet } from '@/features/listing/listing-search'
 
-/** Figma's order: Publisher, Genre, Product Type, Rule System, Format. */
+/** In this order: Publisher, Genre, Product Type, Rule System, Format. */
 const GROUPS = [
   ['publisher', 'publishers'],
   ['genre', 'genres'],

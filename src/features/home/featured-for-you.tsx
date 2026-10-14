@@ -53,8 +53,8 @@ export function FeaturedForYou() {
     .map(({ facet, value, label }) => ({
       facet,
       value,
-      // systems have our names ("D20 / 5e"); genres the API's ("Sci-Fi")
-      label: facet === 'system' ? facetLabel('system', value) : label,
+      // our names ("D20 / 5e", "Science fiction"), else the API's
+      label: facetLabel(facet, value, label),
     }))
   if (groups.length === 0) return null
 
@@ -120,7 +120,12 @@ function WhyPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          // a quiet aside to the heading: muted until pointed at or open
+          className="h-8 gap-1.5 px-2 text-muted-foreground hover:text-foreground data-[state=open]:text-foreground"
+        >
           <InfoIcon aria-hidden />
           <span className="max-sm:sr-only">{t('why.button')}</span>
         </Button>

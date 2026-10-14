@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils'
 export type SelectOption = { value: string; label: string }
 
 /**
- * Figma: 36px outline button with the value and a chevron; the list opens below
+ * A 36px outline button with the value and a chevron; the list opens below
  * it (popper), never over it.
  */
 export function OptionSelect({

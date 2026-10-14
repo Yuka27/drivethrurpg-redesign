@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { brandName } from './card-brand'
+import { brandName } from '@/lib/card-brand'
 import { ConfirmDialog } from './confirm-dialog'
 import {
   SettingsCard,
@@ -59,7 +59,7 @@ export function PaymentMethodsCard() {
       )}
       {methods.isPending && <SettingsRowsSkeleton />}
       {empty && (
-        // Figma: the text and the button share a row on desktop; the button
+        // the text and the button share a row on desktop; the button
         // goes full width under the text on mobile
         <div className="flex gap-4 border-t border-muted py-4 max-lg:flex-col lg:items-center">
           <p className="flex-1 text-sm text-muted-foreground">

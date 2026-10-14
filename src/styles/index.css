@@ -4,9 +4,9 @@
 /* dark is the designed theme: <html class="dark"> by default (see ThemeProvider) */
 @custom-variant dark (&:is(.dark *));
 
-/* ---------- Light (from the light homepage prototype) ---------- */
+/* ---------- Light ---------- */
 :root {
-  --background: oklch(0.97 0 0); /* Figma light background #f5f5f5 */
+  --background: oklch(0.97 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -30,18 +30,18 @@
   --success-foreground: #ffffff;
   --warning: #f4b942; /* stars, low stock */
   --warning-foreground: oklch(0.145 0 0);
-  --update: #b0e64c; /* Figma lime/10: "Updated" badge (library) */
+  --update: #b0e64c; /* "Updated" badge (library) */
   --update-foreground: #202020;
   --radius: 0.625rem;
 }
 
-/* ---------- Dark (default; from every dark mockup) ---------- */
+/* ---------- Dark (default) ---------- */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
-  /* Figma dark popover #262626 (mobile menu sheet) */
+  /* also the mobile menu sheet */
   --popover: oklch(0.269 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: #d8413f;
@@ -55,7 +55,7 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  /* Figma dark border #404040 (solid, not white 10%) */
+  /* solid, not white 10% */
   --border: oklch(0.371 0 0);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -68,7 +68,38 @@
 }
 
 /* ---------- Tailwind v4 token mapping (bg-primary, text-muted-foreground, rounded-lg …) ---------- */
+/* ---------- Portfolio notice: the same dark glass in both themes ---------- */
+:root {
+  --glass-bg: rgba(26, 26, 32, 0.58);
+  /* no backdrop-filter, or reduced transparency asked for */
+  --glass-solid: rgba(20, 20, 24, 0.96);
+  --glass-blur: blur(24px) saturate(150%);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.18);
+  --glass-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.35);
+  /* secondary text: AA on the glass over a light page too */
+  --glass-muted: rgba(255, 255, 255, 0.8);
+  --glass-tile: rgba(255, 255, 255, 0.06);
+  --glass-tile-hover: rgba(255, 255, 255, 0.11);
+  --overlay-bg: rgba(6, 6, 8, 0.45);
+  --overlay-solid: rgba(6, 6, 8, 0.82);
+  --overlay-blur: blur(8px);
+  --notice: #f5c451; /* "Not a real store" badge */
+  --notice-foreground: #1a1405;
+  --notice-accent: #e5484d; /* its checkbox */
+  --z-notice: 1000000000; /* above Sonner's toasts (999999999) */
+}
+
 @theme inline {
+  --color-notice: var(--notice);
+  --color-notice-foreground: var(--notice-foreground);
+  --color-notice-accent: var(--notice-accent);
+  --color-glass-muted: var(--glass-muted);
+  --color-glass-tile: var(--glass-tile);
+  --color-glass-tile-hover: var(--glass-tile-hover);
+  --color-glass-border: var(--glass-border);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -122,7 +153,7 @@
   }
 }
 
-/* page width used by every mockup: 1240px max, 24px gutters */
+/* page width: 1240px max, 24px gutters */
 @utility container {
   margin-inline: auto;
   width: 100%;
@@ -144,6 +175,12 @@
   body,
   #app {
     min-height: 100%;
+  }
+  /* Tailwind v4 no longer gives buttons a pointer: every enabled control gets one */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary {
+    cursor: pointer;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -174,4 +211,40 @@
   font-weight: 800;
   font-size: 1.25rem;
   color: var(--primary);
+}
+
+/* the portfolio notice's glass, and the dimmed, blurred page behind it */
+@utility glass-panel {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    var(--glass-shadow);
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
+    background: var(--glass-solid);
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    background: var(--glass-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@utility glass-overlay {
+  background: var(--overlay-bg);
+  -webkit-backdrop-filter: var(--overlay-blur);
+  backdrop-filter: var(--overlay-blur);
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
+    background: var(--overlay-solid);
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    background: var(--overlay-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }

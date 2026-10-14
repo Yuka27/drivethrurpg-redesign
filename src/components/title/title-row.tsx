@@ -7,6 +7,7 @@ import { TitlePrice } from './title-price'
 import { useFacetLabel } from './use-facet-label'
 import type { TitleSummary as Title } from '@/api/titles'
 import { cn } from '@/lib/utils'
+import { tagClass } from './tag-class'
 
 /**
  * A title in the listing's list view, rendered once for both layouts:
@@ -38,10 +39,7 @@ export function TitleRow({ title }: { title: Title }) {
         {tags.length > 0 && (
           <ul aria-label={t('card.tags')} className="flex flex-wrap gap-1">
             {tags.map((tag) => (
-              <li
-                key={tag}
-                className="inline-flex h-[22px] items-center rounded-md border border-border px-2 text-xs font-medium"
-              >
+              <li key={tag} className={tagClass}>
                 {tag}
               </li>
             ))}

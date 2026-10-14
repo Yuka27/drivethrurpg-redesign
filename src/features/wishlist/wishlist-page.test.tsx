@@ -8,11 +8,9 @@ import { WishlistSearchSchema } from './wishlist-search'
 import type { WishlistSearch } from './wishlist-search'
 import { toTitleSummary } from '@/api/wishlist'
 import type { WishlistItem } from '@/api/wishlist'
-import { mockApi, user } from '@/test/api'
+import { mockApi, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
-
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 
 function item(
   titleId: string,

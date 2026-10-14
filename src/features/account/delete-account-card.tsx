@@ -8,7 +8,7 @@ import { useDeleteAccount } from '@/api/account'
 import { Button } from '@/components/ui/button'
 import { useApiError } from '@/i18n/use-api-error'
 
-/** Figma: outlined, no fill, so it stands apart from the other settings. */
+/** Outlined, no fill, so it stands apart from the other settings. */
 export function DeleteAccountCard() {
   const { t } = useTranslation('account')
   const apiError = useApiError()

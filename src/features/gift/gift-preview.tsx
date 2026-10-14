@@ -7,7 +7,7 @@ import { useFacetLabel } from '@/components/title/use-facet-label'
 import { useFormatDate } from '@/i18n/format'
 
 /**
- * Mockup "gift": who it is from, how many titles, the sender's message and the
+ * Who it is from, how many titles, the sender's message and the
  * titles, on a card with a ribbon.
  */
 export function GiftPreview({ gift }: { gift: Gift }) {

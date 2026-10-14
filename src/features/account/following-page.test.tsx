@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { FollowingPage } from './following-page'
-import { apiError, mockApi } from '@/test/api'
+import { apiError, mockApi, usd } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
@@ -38,8 +38,8 @@ const items = [
     false,
   ),
   item(
-    'pub_lantern_ash',
-    'Lantern & Ash Games',
+    'pub_lans_macabre',
+    'Lans Macabre Publishing',
     63,
     '2024-03-04T10:00:00Z',
     true,
@@ -47,8 +47,49 @@ const items = [
   ),
 ]
 
-/** /following/feed: 3 new titles from Free League, 1 from Cubicle 7, none from Lantern & Ash */
-const usd = (amount: number) => ({ amount, currency: 'USD' })
+/** GET /following?type=all also lists series, imprints, systems and genres */
+const others = [
+  {
+    type: 'product_line',
+    target: { id: 'pl_vaesen', name: 'Vaesen', following: true },
+    followedAt: '2026-04-01T10:00:00Z',
+    emailNewReleases: true,
+  },
+  {
+    type: 'genre',
+    target: { id: 'horror', name: 'Horror', following: true },
+    followedAt: '2026-03-09T10:00:00Z',
+    emailNewReleases: false,
+  },
+  {
+    type: 'rule_system',
+    target: { id: 'year_zero', name: 'Year Zero Engine', following: true },
+    followedAt: '2026-02-03T10:00:00Z',
+    emailNewReleases: false,
+  },
+  {
+    type: 'imprint',
+    target: {
+      id: 'imp_miskatonic',
+      name: 'Miskatonic Repository',
+      following: true,
+    },
+    followedAt: '2026-01-12T10:00:00Z',
+    emailNewReleases: true,
+  },
+  // a kind this app does not know: left out, not an error
+  {
+    type: 'author',
+    target: { id: 'aut_1', name: 'Some Author' },
+    followedAt: '2026-01-01T10:00:00Z',
+    emailNewReleases: true,
+  },
+]
+const page = (publishers: typeof items, rest = others) => ({
+  items: [...publishers.map((i) => ({ type: 'publisher', ...i })), ...rest],
+})
+
+/** /following/feed: 3 new titles from Free League, 1 from Cubicle 7, none from Lans Macabre */
 const released = (id: string, publisherId: string) => ({
   id,
   title: `Title ${id}`,
@@ -66,8 +107,13 @@ const feed = {
 
 function mockFollowingApi(overrides: Record<string, Handler> = {}) {
   let current = [...items]
+  let rest = [...others]
   return mockApi({
-    'GET /following': () => ({ body: { items: current } }),
+    'GET /following': () => ({ body: page(current, rest) }),
+    'DELETE /following/horror': () => {
+      rest = rest.filter((i) => i.target.id !== 'horror')
+      return { status: 204 }
+    },
     'GET /following/feed': { body: feed },
     'PATCH /following/pub_cubicle7': { body: {} },
     'DELETE /following/pub_free_league': () => {
@@ -85,9 +131,9 @@ function mockFollowingApi(overrides: Record<string, Handler> = {}) {
   })
 }
 
-/** Publisher names in list order (only the followed list, not the breadcrumb) */
+/** Publisher names in list order (the Publishers group only) */
 const rows = () =>
-  within(screen.getByRole('list', { name: 'Following' }))
+  within(screen.getByRole('region', { name: 'Publishers' }))
     .getAllByRole('listitem')
     .map(
       (row) =>
@@ -108,7 +154,7 @@ describe('FollowingPage', () => {
     expect(rows()).toEqual([
       'Cubicle 7 Entertainment',
       'Free League Publishing',
-      'Lantern & Ash Games',
+      'Lans Macabre Publishing',
     ])
     expect(screen.getByText('187 titles · followed Nov 2025')).toBeVisible()
     // "N new" counts the publisher's titles in the following feed
@@ -132,21 +178,78 @@ describe('FollowingPage', () => {
     expect(rows()).toEqual([
       'Cubicle 7 Entertainment',
       'Free League Publishing',
-      'Lantern & Ash Games',
+      'Lans Macabre Publishing',
     ])
     await user.click(screen.getByRole('combobox', { name: 'Sort' }))
     await user.click(await screen.findByRole('option', { name: 'Name (A–Z)' }))
     expect(rows()[0]).toBe('Cubicle 7 Entertainment')
-    expect(rows()[2]).toBe('Lantern & Ash Games')
+    expect(rows()[2]).toBe('Lans Macabre Publishing')
 
     const search = screen.getByRole('searchbox', {
-      name: 'Search publishers you follow',
+      name: 'Search what you follow',
     })
     await user.type(search, 'league')
     expect(rows()).toEqual(['Free League Publishing'])
     await user.clear(search)
     await user.type(search, 'zzz')
-    expect(screen.getByText('No publishers match “zzz”.')).toBeVisible()
+    expect(screen.getByText('Nothing you follow matches “zzz”.')).toBeVisible()
+  })
+
+  it('groups everything followed by kind', async () => {
+    const { params } = mockFollowingApi()
+    await renderPage()
+
+    expect(
+      screen
+        .getAllByRole('heading', { level: 2 })
+        .map((heading) => heading.textContent),
+    ).toEqual(['Publishers', 'Series', 'Imprints', 'Game systems', 'Genres'])
+    const genres = screen.getByRole('region', { name: 'Genres' })
+    expect(within(genres).getByText('Horror')).toBeVisible()
+    // no title count for anything but publishers
+    expect(within(genres).getByText('Followed Mar 2026')).toBeVisible()
+    expect(screen.queryByText('Some Author')).not.toBeInTheDocument()
+    expect(params('GET /following')[0]?.get('type')).toBe('all')
+  })
+
+  it('switches emails, views and unfollows a genre like a publisher', async () => {
+    const { bodies } = mockFollowingApi({
+      'PATCH /following/horror': { body: {} },
+    })
+    const { user } = await renderPage()
+
+    await user.click(
+      screen.getByRole('switch', {
+        name: 'Email me about new releases from Horror',
+      }),
+    )
+    await waitFor(() =>
+      expect(bodies('PATCH /following/horror')).toEqual([
+        { emailNewReleases: true },
+      ]),
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Following Horror' }))
+    expect(
+      await screen.findByRole('menuitem', { name: 'View titles' }),
+    ).toHaveAttribute('href', '/titles?genre=horror')
+    await user.click(screen.getByRole('menuitem', { name: 'Unfollow' }))
+
+    expect(screen.queryByText('Horror')).not.toBeInTheDocument()
+    await waitFor(() =>
+      expect(bodies('DELETE /following/horror')).toHaveLength(1),
+    )
+  })
+
+  it('offers no listing for a series, which has no filter there', async () => {
+    mockFollowingApi()
+    const { user } = await renderPage()
+
+    await user.click(screen.getByRole('button', { name: 'Following Vaesen' }))
+    expect(
+      await screen.findByRole('menuitem', { name: 'Unfollow' }),
+    ).toBeVisible()
+    expect(screen.queryByRole('menuitem', { name: /View/ })).toBeNull()
   })
 
   it('switches new-release emails per publisher', async () => {
@@ -222,9 +325,9 @@ describe('FollowingPage', () => {
       // the refetch after the failure is slow: the row must come back before it
       'GET /following': () =>
         ++loads === 1
-          ? { body: { items } }
+          ? { body: page(items) }
           : new Promise((resolve) =>
-              setTimeout(() => resolve({ body: { items } }), 2000),
+              setTimeout(() => resolve({ body: page(items) }), 2000),
             ),
     })
     const { user } = await renderPage()
@@ -257,7 +360,7 @@ describe('FollowingPage', () => {
     const { container } = await renderPage()
 
     // no logo at all
-    expect(screen.getByText('LA')).toBeInTheDocument()
+    expect(screen.getByText('LM')).toBeInTheDocument()
     // a logo that cannot be drawn: first letters of the words, "Cubicle 7 Entertainment" -> "CE"
     const logos = container.querySelectorAll('img')
     fireEvent.error(logos[0])

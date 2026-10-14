@@ -28,7 +28,9 @@
       "noMatchHint": "Sprawdź pisownię albo przeszukaj cały katalog.",
       "hintMove": "aby się przesuwać",
       "hintSearch": "aby szukać",
-      "hintClose": "aby zamknąć"
+      "hintClose": "aby zamknąć",
+      "keyEnter": "Enter",
+      "keyEsc": "Esc"
     },
     "currency": "Waluta",
     "language": "Język",
@@ -83,7 +85,6 @@
     "title": "Menu",
     "descriptionGuest": "Preferencje strony i logowanie",
     "descriptionUser": "Preferencje strony i Twoje konto",
-    "preferences": "Preferencje",
     "currency": "Waluta",
     "language": "Język",
     "theme": "Motyw",
@@ -95,7 +96,13 @@
     "createAccount": "Załóż konto",
     "wishlist": "Lista życzeń",
     "browse": "Przeglądaj",
-    "more": "Więcej"
+    "more": "Więcej",
+    "library": "Moja biblioteka",
+    "settings": "Ustawienia",
+    "account": "Konto",
+    "quickPreferences": "Szybkie ustawienia",
+    "currencyValue": "Waluta: {{value}}",
+    "languageValue": "Język: {{value}}"
   },
   "nav": {
     "label": "Przeglądaj katalog",
@@ -266,5 +273,15 @@
   },
   "status": {
     "loading": "Ładowanie…"
+  },
+  "languages": {
+    "en": "angielski",
+    "es": "hiszpański",
+    "ko": "koreański",
+    "pl": "polski",
+    "de": "niemiecki",
+    "it": "włoski",
+    "ja": "japoński",
+    "fr": "francuski"
   }
 }

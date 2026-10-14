@@ -6,7 +6,7 @@ import { Switch } from '@/components/ui/switch'
 
 /**
  * A setting that is on or off, saved as soon as it changes. The label and hint
- * name and describe the switch. Figma: off is a light track with a dark thumb.
+ * name and describe the switch. Off is a light track with a dark thumb.
  */
 export function SwitchRow({
   label,

@@ -3,13 +3,11 @@ import { afterEach, describe, expect, it } from 'vite-plus/test'
 
 import { highlight, SearchBar } from './search-bar'
 import { useRecentSearches } from '@/stores/recent-searches'
-import { mockApi } from '@/test/api'
+import { mockApi, usd } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
 afterEach(() => useRecentSearches.setState({ queries: [] }))
-
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 
 const suggestions = {
   queries: ['Vaesen', 'Vaesen horror'],

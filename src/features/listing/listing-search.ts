@@ -22,10 +22,13 @@ export const LISTING_FACETS = [
 ] as const
 export type ListingFacet = (typeof LISTING_FACETS)[number]
 
-/** Figma "Price": bands, as the highest price (in whole currency units). */
+/** Price bands, as the highest price (in whole currency units). */
 export const PRICE_BANDS = [0, 5, 10, 20, 50] as const
 
-/** What the listing opens on. Figma: "Sort: Best Match", cards. Defaults stay out of the URL. */
+/** Cards or rows. */
+export type ListingView = 'grid' | 'list'
+
+/** What the listing opens on ("Sort: Best Match", cards). Defaults stay out of the URL. */
 export const LISTING_SEARCH_DEFAULTS = {
   /** a search's words (the /search page); empty on the catalogue */
   q: '',
@@ -38,7 +41,7 @@ export const LISTING_SEARCH_DEFAULTS = {
   language: '',
   priceMax: undefined as number | undefined,
   sort: 'match' as ListingSort,
-  view: 'grid' as 'grid' | 'list',
+  view: 'grid' as ListingView,
   page: 1,
 }
 
@@ -72,10 +75,10 @@ export type FilterSearch = Pick<
 /** A change from the filter panel; filters send the reader back to page 1. */
 export type FilterPatch = Partial<FilterSearch> & { page?: number }
 
-/** The API's filters for this search; `except` leaves one facet out (for its counts). */
+/** The API's filters for this search; `except` leaves one filter out (for its counts). */
 export function toTitleFilters(
   search: ListingSearch,
-  except?: ListingFacet,
+  except?: ListingFacet | 'language' | 'priceMax',
 ): TitleFilters {
   return {
     q: search.q || undefined,
@@ -85,10 +88,10 @@ export function toTitleFilters(
     type: except === 'type' ? undefined : search.type,
     format: except === 'format' ? undefined : search.format,
     publisher: except === 'publisher' ? undefined : search.publisher,
-    language: search.language,
+    language: except === 'language' ? undefined : search.language,
     // the API takes minor units of the display currency
     priceMax:
-      search.priceMax === undefined
+      search.priceMax === undefined || except === 'priceMax'
         ? undefined
         : Math.round(search.priceMax * 100),
   }

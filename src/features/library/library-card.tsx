@@ -111,7 +111,7 @@ export function LibraryCard({
                 {item.giftFrom && (
                   <Badge
                     variant="outline"
-                    className="h-5 rounded-md border-primary px-2 text-primary"
+                    className="h-5 rounded-md border-primary px-2 text-primary-text"
                   >
                     <GiftIcon aria-hidden />
                     {t('card.giftFrom', { name: item.giftFrom.displayName })}

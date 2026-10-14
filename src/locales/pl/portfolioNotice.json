@@ -1,0 +1,53 @@
+{
+  "badge": "Projekt do portfolio · To nie prawdziwy sklep",
+  "badgeShort": "To nie prawdziwy sklep",
+  "title": "Oglądasz studium przypadku projektu, nie sklep.",
+  "titleShort": "Studium projektu, nie sklep.",
+  "lead": "To redesign UX/UI sklepu z grami fabularnymi, przygotowany, by pokazać moją pracę projektową i front-endową. Przeglądaj, szukaj, wypełniaj koszyk i przeklikaj płatność do woli: wszystko działa na makiecie API.",
+  "leadShort": "Redesign UX/UI sklepu z grami fabularnymi, zrobiony do portfolio. Wszystko działa na makiecie API: bez płatności, bez prawdziwych kont, tylko przykładowe dane. Bez związku z DriveThruRPG ani żadnym wydawcą.",
+  "facts": {
+    "label": "Czym to nie jest",
+    "sale": {
+      "title": "Nic nie jest na sprzedaż",
+      "text": "Bez płatności, zamówień i prawdziwych kont."
+    },
+    "data": {
+      "title": "Tylko przykładowe dane",
+      "text": "Ceny, recenzje i biblioteki są zmyślone."
+    },
+    "affiliation": {
+      "title": "Bez powiązań",
+      "text": "Bez poparcia DriveThruRPG ani żadnego wydawcy."
+    }
+  },
+  "explore": "Poznaj projekt",
+  "links": {
+    "figma": {
+      "title": "Studium w Figmie",
+      "titleShort": "Figma",
+      "text": "Badania, makiety, projekty"
+    },
+    "github": {
+      "title": "GitHub",
+      "titleShort": "GitHub",
+      "text": "Kod front-endu"
+    },
+    "apiDocs": {
+      "title": "Dokumentacja API",
+      "titleShort": "API",
+      "text": "OpenAPI, wypróbuj każdy endpoint"
+    },
+    "coverage": {
+      "title": "Pokrycie testami",
+      "titleShort": "Testy",
+      "text": "Raport Vitest na żywo"
+    }
+  },
+  "opensInNewTab": "(otwiera się w nowej karcie)",
+  "dontShowAgain": "Nie pokazuj więcej",
+  "enter": "Wejdź do prototypu",
+  "close": "Zamknij informację",
+  "smallPrint": "Zaprojektowane i zbudowane przez theNoy jako projekt do portfolio. Okładki, logotypy i nazwy należą do wydawców i służą tu wyłącznie do demonstracji.",
+  "smallPrintShort": "Autorstwo: theNoy. Okładki, logotypy i nazwy należą do wydawców, użyte tylko do demonstracji.",
+  "footerLink": "O tym projekcie"
+}

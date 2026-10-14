@@ -11,6 +11,7 @@ import userEvent from '@testing-library/user-event'
 import type { ReactNode } from 'react'
 
 import { Dialog } from '@/components/ui/dialog'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 /**
  * Renders `ui` the way the app does: a fresh React Query cache (no retries) and
@@ -29,7 +30,10 @@ export async function renderWithProviders(
       mutations: { retry: false },
     },
   })
-  const rootRoute = createRootRoute({ component: () => ui })
+  // as the root route does: tooltips need their provider
+  const rootRoute = createRootRoute({
+    component: () => <TooltipProvider>{ui}</TooltipProvider>,
+  })
   const router = createRouter({
     routeTree: rootRoute,
     history: createMemoryHistory({ initialEntries: ['/'] }),

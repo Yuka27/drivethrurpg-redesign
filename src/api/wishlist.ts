@@ -77,6 +77,8 @@ export const toTitleSummary = (item: WishlistItem): TitleSummary => ({
   inWishlist: true,
   // unknown here: no "shown in another language" note
   textLanguage: '',
+  // the wishlist does not say
+  payWhatYouWant: false,
 })
 
 const AddToCartSchema = z.object({

@@ -1,9 +1,7 @@
 // The product page's test data: one title ("Vaesen") and its API, faked.
 import type { TitleDetail } from '@/api/titles'
-import { mockApi, user } from '@/test/api'
+import { mockApi, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
-
-export const usd = (amount: number) => ({ amount, currency: 'USD' })
 
 export const vaesen: TitleDetail = {
   id: 'ttl_vaesen',
@@ -20,6 +18,7 @@ export const vaesen: TitleDetail = {
   owned: false,
   inWishlist: false,
   textLanguage: 'en',
+  payWhatYouWant: false,
   shortDescription: 'Stockholm, 1897: the monsters are real.',
   description: 'A city of nightmares.\n\nSecond paragraph.',
   authors: [{ id: 'aut_1', name: 'Nils Karlén' }],
@@ -29,6 +28,31 @@ export const vaesen: TitleDetail = {
   language: 'en',
   isbn: null,
   contentFlags: { aiGenerated: false },
+  // like the API: publisher, series, system, then genres
+  followTargets: [
+    {
+      type: 'publisher',
+      id: 'pub_free_league',
+      name: 'Free League Publishing',
+      following: false,
+    },
+    { type: 'product_line', id: 'pl_vaesen', name: 'Vaesen', following: true },
+    {
+      type: 'rule_system',
+      id: 'year_zero',
+      name: 'Year Zero Engine',
+      following: false,
+    },
+    { type: 'genre', id: 'horror', name: 'Horror', following: false },
+  ],
+  genreRefs: [{ id: 'horror', name: 'Horror', following: false }],
+  productLineRef: { id: 'pl_vaesen', name: 'Vaesen', following: true },
+  sampleFile: {
+    url: '/files/sample.pdf',
+    pageCount: 12,
+    sizeMb: 10.6,
+    format: 'pdf',
+  },
   editions: [
     {
       sku: 'sku_pdf',

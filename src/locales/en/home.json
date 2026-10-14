@@ -11,9 +11,29 @@
     "following": "Following",
     "unseen": "new"
   },
-  "preview": "Preview: {{title}}",
-  "byline": "By {{names}}",
-  "released": "Added to Catalog",
+  "preview": {
+    "label": "Preview: {{title}}",
+    "loadError": "We couldn’t load this preview.",
+    "open": "Open the title",
+    "sample": "Sample {{index}} of {{total}}",
+    "samplePage": "Sample page {{index}}",
+    "seeAll_one": "See the {{count}} page",
+    "seeAll_other": "See all {{count}} pages",
+    "facts": {
+      "pages": "Pages",
+      "format": "Format",
+      "language": "Language",
+      "released": "Released"
+    },
+    "humanCreated": "Human-created, no AI",
+    "instantDownload": "Instant download",
+    "edition": "Edition",
+    "addToCart": "Add to Cart · {{price}}",
+    "getFree": "Get it free",
+    "preorder": "Pre-order · {{price}}",
+    "inLibrary": "In your library",
+    "unavailable": "No longer available"
+  },
   "featured": "Featured for you",
   "catalog": {
     "stats": "{{titles}} titles · {{systems}} systems · updated daily",
@@ -21,7 +41,6 @@
     "browse": "Browse all titles"
   },
   "publishers": "Browse by Publisher",
-  "seeMore": "See more:",
   "following": {
     "emptyTitle": "You don’t follow anything yet",
     "empty": "Follow a publisher, imprint or system to see their new releases here.",
@@ -31,7 +50,9 @@
     "none": "New releases from what you follow will show up here.",
     "fromPublisher": "New from {{name}}",
     "forSystem": "New for {{name}}",
-    "chip": "Following"
+    "chip": "Following",
+    "categoriesTitle": "Nothing new in what you follow yet",
+    "categories": "This feed covers the genres and series you follow too: their new releases will show up here."
   },
   "popular": "Popular this week",
   "why": {
@@ -44,5 +65,23 @@
     "owned_other": "Because you own {{count}} {{genre}} titles",
     "wishlist": "Because it’s on your wishlist",
     "popular": "Popular in {{genre}}"
+  },
+  "hero": {
+    "label": "Featured",
+    "slide": "{{index}} of {{total}}",
+    "slides": "Slides",
+    "goTo": "Slide {{index}}: {{title}}",
+    "previous": "Previous slide",
+    "next": "Next slide",
+    "pause": "Pause the slides",
+    "play": "Play the slides",
+    "carousel": "carousel",
+    "slideRole": "slide"
+  },
+  "promo": {
+    "endsAt": "Ends {{date}}",
+    "previous": "Previous promos",
+    "next": "Next promos",
+    "page": "Promos, page {{index}} of {{total}}"
   }
 }

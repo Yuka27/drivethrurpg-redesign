@@ -1,10 +1,10 @@
-import { screen, waitFor, within } from '@testing-library/react'
+import { act, screen, waitFor, within } from '@testing-library/react'
 import { toast } from 'sonner'
 import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { TitlePage } from './title-page'
 import { useAuthDialogStore } from '@/stores/auth-dialog'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, mockApi, never, user } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 import { mockTitle, vaesen } from '@/test/title'
 
@@ -49,7 +49,7 @@ describe('TitlePage', () => {
     const overview = screen.getByRole('region', { name: 'Overview' })
     expect(within(overview).getByText('A city of nightmares.')).toBeVisible()
     expect(within(overview).getByText('Second paragraph.')).toBeVisible()
-    // the header no longer repeats the description's first paragraph
+    // the header does not repeat the description
     expect(screen.getAllByText('A city of nightmares.')).toHaveLength(1)
   })
 
@@ -160,14 +160,94 @@ describe('TitlePage', () => {
     ).toHaveAttribute('href', '/titles/ttl_coriolis')
   })
 
-  it('follows the publisher, and asks a guest to log in first', async () => {
+  it('lists what the title belongs to, each with its own switch', async () => {
+    mockTitle()
+    await renderTitle()
+
+    const card = screen.getByRole('region', {
+      name: 'Follow your favorite publishers and categories to receive a weekly email of new releases',
+    })
+    // the API's order, each saying what it follows
+    expect(
+      within(card)
+        .getAllByRole('switch')
+        .map((toggle) => toggle.getAttribute('aria-label')),
+    ).toEqual([
+      'Follow publisher Free League Publishing',
+      'Follow series Vaesen',
+      'Follow game system Year Zero Engine',
+      'Follow genre Horror',
+    ])
+    expect(
+      within(card).getByRole('switch', { name: 'Follow series Vaesen' }),
+    ).toBeChecked()
+    expect(within(card).getByText('Game system')).toBeVisible()
+  })
+
+  it.each([
+    ['Follow series Vaesen', 'DELETE /product-lines/pl_vaesen/follow', false],
+    ['Follow genre Horror', 'POST /genres/horror/follow', true],
+    [
+      'Follow game system Year Zero Engine',
+      'POST /rule-systems/year_zero/follow',
+      true,
+    ],
+  ] as const)('%s calls %s', async (name, request, checked) => {
+    // the API never answers: what shows is the optimistic state
+    const { bodies } = mockTitle({ [request]: never })
+    const { user: u } = await renderTitle()
+
+    const toggle = screen.getByRole('switch', { name })
+    await waitFor(() => expect(toggle).toBeEnabled())
+    await u.click(toggle)
+
+    // at once, before the API answers
+    expect(toggle).toHaveAttribute('aria-checked', String(checked))
+    await waitFor(() => expect(bodies(request)).toHaveLength(1))
+  })
+
+  it('puts a switch back when following fails', async () => {
+    const error = vi.spyOn(toast, 'error')
     const { bodies } = mockTitle({
-      'POST /publishers/pub_free_league/follow': { body: {} },
+      // fails a moment later, once the switch has moved
+      'POST /genres/horror/follow': () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve(apiError(503, 'unavailable')), 50),
+        ),
+    })
+    const { user: u } = await renderTitle()
+
+    const toggle = screen.getByRole('switch', { name: 'Follow genre Horror' })
+    await waitFor(() => expect(toggle).toBeEnabled())
+    await u.click(toggle)
+    expect(toggle).toBeChecked()
+
+    await waitFor(() => expect(toggle).not.toBeChecked())
+    expect(error).toHaveBeenCalled()
+    expect(bodies('POST /genres/horror/follow')).toHaveLength(1)
+  })
+
+  it('follows the publisher, and keeps it once the API agrees', async () => {
+    let following = false
+    const { bodies } = mockTitle({
+      'POST /publishers/pub_free_league/follow': () => {
+        following = true
+        return { body: { following } }
+      },
+      // the refetch after the follow sees it
+      'GET /titles/ttl_vaesen': () => ({
+        body: {
+          ...vaesen,
+          followTargets: vaesen.followTargets.map((target) =>
+            target.type === 'publisher' ? { ...target, following } : target,
+          ),
+        },
+      }),
     })
     const { user: u } = await renderTitle()
 
     const follow = await screen.findByRole('switch', {
-      name: 'Follow Free League Publishing',
+      name: 'Follow publisher Free League Publishing',
     })
     await waitFor(() => expect(follow).toBeEnabled())
     await u.click(follow)
@@ -175,22 +255,24 @@ describe('TitlePage', () => {
     await waitFor(() =>
       expect(bodies('POST /publishers/pub_free_league/follow')).toHaveLength(1),
     )
+    await waitFor(() => expect(follow).toBeChecked())
   })
 
   it('asks a guest to log in before following', async () => {
-    mockTitle({}, apiError(401, 'unauthorized'))
+    const { bodies } = mockTitle({}, apiError(401, 'unauthorized'))
     const { user: u } = await renderTitle()
 
-    await u.click(
-      await screen.findByRole('switch', {
-        name: 'Follow Free League Publishing',
-      }),
-    )
+    // a guest follows nothing, whatever the data says
+    const series = screen.getByRole('switch', { name: 'Follow series Vaesen' })
+    await waitFor(() => expect(series).toBeEnabled())
+    expect(series).not.toBeChecked()
+    await u.click(screen.getByRole('switch', { name: 'Follow genre Horror' }))
 
     expect(useAuthDialogStore.getState()).toMatchObject({
       open: true,
       view: 'login',
     })
+    expect(bodies('POST /genres/horror/follow')).toHaveLength(0)
     useAuthDialogStore.getState().setOpen(false)
   })
 
@@ -212,6 +294,106 @@ describe('TitlePage', () => {
     expect(
       within(dialog).getByRole('img', { name: 'Map of the city' }),
     ).toBeVisible()
+  })
+
+  it('leaves samples out when the title has none', async () => {
+    const { params } = mockTitle({
+      'GET /titles/ttl_vaesen/samples': {
+        body: { previewPages: [], sampleFileUrl: null },
+      },
+    })
+    await renderTitle()
+
+    // the answer has arrived and been drawn: still no samples
+    await waitFor(() =>
+      expect(params('GET /titles/ttl_vaesen/samples')).toHaveLength(1),
+    )
+    await act(async () => {})
+    expect(screen.getByText('Second paragraph.')).toBeVisible()
+    expect(screen.queryByText('Sample pages')).toBeNull()
+    expect(screen.queryByRole('link', { name: 'Download sample' })).toBeNull()
+  })
+
+  it('offers no sample download without a sample file', async () => {
+    mockTitle({
+      'GET /titles/ttl_vaesen/samples': {
+        body: {
+          previewPages: [{ url: '/img/p1.jpg', alt: 'Map of the city' }],
+          sampleFileUrl: null,
+        },
+      },
+    })
+    await renderTitle()
+
+    expect(
+      await screen.findByRole('button', { name: 'Map of the city · 1 / 1' }),
+    ).toBeVisible()
+    expect(screen.queryByRole('link', { name: 'Download sample' })).toBeNull()
+  })
+
+  it.each([
+    ['es', 'Spanish'],
+    ['ko', 'Korean'],
+  ])('names the language %s in words', async (language, name) => {
+    mockTitle({
+      'GET /titles/ttl_vaesen': { body: { ...vaesen, language } },
+    })
+    await renderTitle()
+
+    expect(within(buy()).getByText(name)).toBeVisible()
+  })
+
+  it('links the sample PDF under the tags, in a new tab', async () => {
+    mockTitle()
+    await renderTitle()
+
+    const link = within(header()).getByRole('link', {
+      name: 'Preview PDF, opens in a new tab',
+    })
+    // the file is on the API's origin, not under /api/v1
+    expect(link).toHaveAttribute(
+      'href',
+      expect.stringMatching(/^https?:\/\/[^/]+\/files\/sample\.pdf$/),
+    )
+    expect(link.getAttribute('href')).not.toContain('/api/v1')
+    expect(link).toHaveAttribute('target', '_blank')
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(link).toHaveAccessibleDescription('First 12 pages · PDF · 10.6 MB')
+    // right under the tags
+    expect(
+      within(header()).getByRole('list', { name: 'Tags' }).nextElementSibling,
+    ).toBe(link)
+  })
+
+  it('leaves no PDF link, and no gap, when there is no sample file', async () => {
+    mockTitle({
+      'GET /titles/ttl_vaesen': { body: { ...vaesen, sampleFile: null } },
+    })
+    await renderTitle()
+
+    expect(
+      within(header()).queryByRole('link', { name: /Preview PDF/ }),
+    ).toBeNull()
+    expect(
+      within(header()).getByRole('list', { name: 'Tags' }).nextElementSibling
+        ?.tagName,
+    ).not.toBe('A')
+  })
+
+  it('says "First page" for a one-page sample', async () => {
+    mockTitle({
+      'GET /titles/ttl_vaesen': {
+        body: {
+          ...vaesen,
+          sampleFile: { url: '/files/one.pdf', pageCount: 1, sizeMb: 0.4 },
+        },
+      },
+    })
+    await renderTitle()
+
+    expect(
+      within(header()).getByRole('link', { name: /Preview PDF/ }),
+    ).toHaveAccessibleDescription('First page · PDF · 0.4 MB')
   })
 
   it('lists the details that are known', async () => {
@@ -299,8 +481,6 @@ describe('TitlePage', () => {
 })
 
 describe('TitlePage while loading', () => {
-  const never = () => new Promise<never>(() => {})
-
   it('outlines the page until the title arrives', async () => {
     mockTitle({ 'GET /titles/ttl_vaesen': never })
     await renderWithProviders(<TitlePage titleId="ttl_vaesen" />)

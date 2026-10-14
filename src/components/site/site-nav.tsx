@@ -17,7 +17,7 @@ import { linkTarget, utilityMenus } from '@/config/utility-menus'
 import { useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
-/** Figma "Nav": small pill triggers, catalogue on the left, help on the right. */
+/** Small pill triggers, catalogue on the left, help on the right. */
 const triggerClass =
   'h-6 rounded-full bg-transparent px-2 text-xs font-medium hover:bg-accent focus:bg-accent data-[state=open]:bg-accent/50 [&>svg]:ml-0'
 
@@ -27,11 +27,10 @@ const itemClass =
 /**
  * Desktop: the row under the header. Each catalogue menu lists the values with
  * the most titles; each opens the listing filtered by that value
- * (/titles?genre=horror). On the listing, the cart and the wishlist the catalogue menus
- * give way to "Back to Home" (Figma); the listing's sidebar filters do their
- * job there. The right-hand
- * menus link out to the main site; a product page shows them in its own sticky
- * menu instead (ProductStickyNav), so not here.
+ * (/titles?genre=horror). On the listing, the cart and the wishlist the
+ * catalogue menus give way to "Back to Home". The right-hand menus link
+ * out to the main site; a product page shows them in its own sticky menu
+ * instead (ProductStickyNav), so not here.
  */
 export function SiteNav() {
   const { t } = useTranslation(['common', 'listing'])

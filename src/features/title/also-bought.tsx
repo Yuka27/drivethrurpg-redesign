@@ -8,10 +8,10 @@ import { TitlePrice } from '@/components/title/title-price'
 import { useFacetLabel } from '@/components/title/use-facet-label'
 import { Skeleton } from '@/components/ui/skeleton'
 
-/** Figma: five titles, then a link to more like them. */
+/** Five titles, then a link to more like them. */
 const SHOWN = 5
 
-/** Figma "Customers also bought": GET /titles/{id}/similar, and more of the same system. */
+/** "Customers also bought": GET /titles/{id}/similar, and more of the same system. */
 export function AlsoBought({
   titleId,
   ruleSystem,
@@ -76,7 +76,7 @@ export function AlsoBought({
       <Link
         to="/titles"
         search={ruleSystem ? { system: ruleSystem } : {}}
-        className="flex items-center justify-center gap-1 pt-3 text-sm text-primary hover:underline"
+        className="flex items-center justify-center gap-1 pt-3 text-sm text-primary-text hover:underline"
       >
         {t('moreRecommendations')}
         <ArrowRightIcon aria-hidden className="size-4" />

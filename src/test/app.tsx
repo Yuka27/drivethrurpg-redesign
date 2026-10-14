@@ -5,19 +5,8 @@ import userEvent from '@testing-library/user-event'
 
 import { queryClient } from '@/lib/query-client'
 import { createAppRouter } from '@/router'
-import { cart, mockApi, user } from '@/test/api'
+import { cart, locales, mockApi, user } from '@/test/api'
 import type { Handler, Handlers } from '@/test/api'
-
-const locales = {
-  currencies: [{ code: 'USD', symbol: '$', label: 'US dollar' }],
-  languages: [{ code: 'en', short: 'ENG', label: 'English' }],
-  defaults: {
-    currency: 'USD',
-    language: 'en',
-    showAiGenerated: false,
-    theme: 'dark',
-  },
-}
 
 const preferences = {
   email: {},

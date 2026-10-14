@@ -1,4 +1,4 @@
-// Shared by the auth modal's views, after the mockups.
+// Shared by the auth modal's views.
 
 /** 48px tall (touch target), 10px radius, 15px text, --input fill in dark mode. */
 export const inputClass =

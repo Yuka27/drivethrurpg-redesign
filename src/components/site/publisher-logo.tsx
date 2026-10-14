@@ -22,7 +22,7 @@ export function PublisherLogo({
   if (!url || failed) {
     const initials = name
       .split(/\s+/)
-      // words only: "Lantern & Ash Games" -> "LA"
+      // words only: "Lans Macabre Publishing" -> "LM"
       .filter((word) => /^\p{L}/u.test(word))
       .slice(0, 2)
       .map((word) => word[0])

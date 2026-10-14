@@ -135,7 +135,7 @@ export const linkGroups: Array<LinkGroup> = [
     title: 'Demiplane',
     titleHref: 'https://www.demiplane.com',
     previewCount: 3,
-    moreKey: 'footer.moreSystems', // count is computed from the list: 15 systems - 3 shown = 12
+    moreKey: 'footer.moreSystems',
     links: [
       'Pathfinder',
       'Cyberpunk RED',

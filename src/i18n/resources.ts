@@ -9,6 +9,7 @@ import common from '@/locales/en/common.json'
 import library from '@/locales/en/library.json'
 import home from '@/locales/en/home.json'
 import listing from '@/locales/en/listing.json'
+import portfolioNotice from '@/locales/en/portfolioNotice.json'
 import title from '@/locales/en/title.json'
 import wishlist from '@/locales/en/wishlist.json'
 
@@ -24,6 +25,7 @@ export const NAMESPACES = [
   'home',
   'wishlist',
   'gift',
+  'portfolioNotice',
 ] as const
 export type Namespace = (typeof NAMESPACES)[number]
 
@@ -39,4 +41,5 @@ export const enResources = {
   home,
   wishlist,
   gift,
+  portfolioNotice,
 } satisfies Record<Namespace, unknown>

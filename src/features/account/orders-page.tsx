@@ -8,7 +8,7 @@ import { AccountPage } from './account-page'
 import { ErrorState } from '@/components/site/empty-state'
 import { OptionSelect } from '@/components/site/option-select'
 import { SearchField } from '@/components/site/search-field'
-import { brandName } from './card-brand'
+import { brandName } from '@/lib/card-brand'
 import { useStatusLabel } from './order-status'
 import type { OrdersSearch, Period } from './orders-search'
 import { useOpenInvoice } from './use-open-invoice'
@@ -94,7 +94,7 @@ export function OrdersPage({
         <OrdersEmpty />
       ) : (
         <div className="flex flex-col gap-4">
-          {/* Figma: one row on desktop; on mobile the search, then both filters side by side */}
+          {/* one row on desktop; on mobile the search, then both filters side by side */}
           <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
             <SearchField
               label={t('orders.search')}

@@ -14,7 +14,7 @@ import { useFormatDate, useFormatNumber } from '@/i18n/format'
 import { useComingSoon } from '@/lib/use-coming-soon'
 import { cn } from '@/lib/utils'
 
-/** Figma: five entries a page. */
+/** Five entries a page. */
 const PAGE_SIZE = 5
 
 const SORTS = ['newest', 'helpful'] as const satisfies ReadonlyArray<ReviewSort>
@@ -195,7 +195,7 @@ export function ReviewsSection({ title }: { title: TitleDetail }) {
   )
 }
 
-/** Figma "raiting card": the average, then one bar per star with its share. */
+/** The rating card: the average, then one bar per star with its share. */
 function RatingSummary({
   average,
   count,

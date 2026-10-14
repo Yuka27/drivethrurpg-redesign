@@ -13,7 +13,7 @@ import { useFormatMoney } from '@/i18n/format'
 import { useReducedMotion } from '@/lib/use-reduced-motion'
 import { cn } from '@/lib/utils'
 
-/** Prototype: "Added ✓" stays this long, then the button is back. */
+/** "Added ✓" stays this long, then the button is back. */
 const ADDED_MS = 1800
 
 /** Phones (< 700px): two rows, the tabs as scrolling pills under the rest. */
@@ -21,7 +21,7 @@ const phone =
   "max-[700px]:grid max-[700px]:grid-cols-[auto_minmax(0,1fr)_auto_auto] max-[700px]:gap-x-2.5 max-[700px]:gap-y-2 max-[700px]:[grid-template-areas:'th_tt_pr_btn'_'nav_nav_nav_nav']"
 
 /**
- * Prototype row 2: cover, title, the section tabs, the chosen edition's price
+ * Row 2: cover, title, the section tabs, the chosen edition's price
  * and Add to Cart. It slides open under the breadcrumb row once the title has
  * scrolled away (max-height, 0.22s, none with reduced motion). Out of the flow,
  * so it covers the page instead of pushing it down; `inert` while closed.

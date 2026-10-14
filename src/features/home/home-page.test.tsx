@@ -1,24 +1,18 @@
 import { act, screen, waitFor, within } from '@testing-library/react'
-import { afterEach, describe, expect, it } from 'vite-plus/test'
+import { toast } from 'sonner'
+import { afterEach, describe, expect, it, vi } from 'vite-plus/test'
 
 import { HomePage } from './home-page'
 import type { TitleSummary } from '@/api/titles'
 import { useFollowingSeen } from '@/stores/following-seen'
 import { useRecentlyViewed } from '@/stores/recently-viewed'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, facet, mockApi, never, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { libraryItem } from '@/test/library'
+import { pdfEdition, previewOf } from '@/test/preview'
 import { renderWithProviders } from '@/test/render'
 
 afterEach(() => useRecentlyViewed.setState({ titles: [] }))
-
-const usd = (amount: number) => ({ amount, currency: 'USD' })
-const facet = (value: string, label: string, count: number) => ({
-  value,
-  label,
-  count,
-})
-const never = () => new Promise<never>(() => {})
 
 function title(
   id: string,
@@ -27,7 +21,7 @@ function title(
   return {
     id,
     title: `Title ${id}`,
-    publisher: { id: 'pub_red_door', name: 'Red Door Games' },
+    publisher: { id: 'pub_green_ronin', name: 'Green Ronin Publishing' },
     cover: { url: `/img/${id}.jpg`, alt: '' },
     type: 'adventure',
     ruleSystem: 'osr',
@@ -39,6 +33,7 @@ function title(
     owned: false,
     inWishlist: false,
     textLanguage: 'en',
+    payWhatYouWant: false,
     ...overrides,
   }
 }
@@ -55,7 +50,44 @@ function mockHome(overrides: Record<string, Handler> = {}) {
             subtitle: 'Up to 30% off',
             cta: 'Shop the sale',
             link: '/titles?onSale=true',
-            image: { url: '/img/hero.jpg', alt: '' },
+            image: { url: '/img/hero/autumn.jpg', alt: '' },
+            contentSide: 'right',
+            autoplayMs: 6000,
+          },
+        ],
+        heroOptions: null,
+        promos: [
+          {
+            id: 'promo_horror',
+            label: 'Seasonal sale',
+            discountLabel: 'Up to 30% off',
+            title: 'Autumn of Horror',
+            subtitle: 'Vaesen, Coriolis and more',
+            art: { url: '/img/promos/autumn-of-horror.jpg', alt: '' },
+            link: '/titles?onSale=true&genre=horror',
+            endsAt: '2026-10-31T12:00:00Z',
+          },
+        ],
+        publishers: [
+          {
+            id: 'pub_free_league',
+            name: 'Free League Publishing',
+            logo: {
+              url: '/img/publishers/pub_free_league.png',
+              alt: 'Free League Publishing logo',
+            },
+            titleCount: 187,
+            following: true,
+          },
+          {
+            id: 'pub_chaosium',
+            name: 'Chaosium Inc.',
+            logo: {
+              url: '/img/publishers/pub_chaosium.png',
+              alt: 'Chaosium Inc. logo',
+            },
+            titleCount: 260,
+            following: false,
           },
         ],
         sections: [
@@ -74,7 +106,7 @@ function mockHome(overrides: Record<string, Handler> = {}) {
             id: 'new',
             title: 'New releases',
             titles: [
-              title('ttl_bells', { title: 'Drowned Bells' }),
+              title('ttl_dead_air', { title: 'Dead Air' }),
               title('ttl_gloam', { title: 'Gloamwood' }),
             ],
           },
@@ -115,33 +147,19 @@ function mockHome(overrides: Record<string, Handler> = {}) {
         },
       }
     },
-    'GET /titles/ttl_bells': {
-      body: {
-        ...title('ttl_bells', { title: 'Drowned Bells' }),
-        description: 'Bells under the sea.',
-        authors: [{ id: 'a', name: 'Ann' }],
-        pageCount: 131,
-      },
+    'GET /titles/ttl_dead_air/preview': {
+      body: previewOf('ttl_dead_air', {
+        title: 'Dead Air',
+        publisher: { id: 'pub_green_ronin', name: 'Green Ronin Publishing' },
+        shortDescription: 'A radio show for the end of the world.',
+        editions: [pdfEdition({ price: usd(1999), onSale: false })],
+      }),
     },
-    'GET /titles/ttl_gloam': {
-      body: {
-        ...title('ttl_gloam', { title: 'Gloamwood' }),
-        description: 'A wilderness toolkit.',
-        authors: [],
-        pageCount: 64,
-      },
+    'GET /titles/ttl_gloam/preview': {
+      body: previewOf('ttl_gloam', { title: 'Gloamwood' }),
     },
-    'GET /titles/ttl_eberron': {
-      body: { ...title('ttl_eberron'), description: '', authors: [] },
-    },
-    'GET /publishers/pub_free_league': {
-      body: {
-        id: 'pub_free_league',
-        name: 'Free League Publishing',
-        logo: null,
-        titleCount: 187,
-        following: false,
-      },
+    'GET /titles/ttl_eberron/preview': {
+      body: previewOf('ttl_eberron', { title: 'Exploring Eberron' }),
     },
     // signed in, following nothing yet
     'GET /following': { body: { items: [] } },
@@ -153,17 +171,29 @@ function mockHome(overrides: Record<string, Handler> = {}) {
 }
 
 describe('HomePage', () => {
-  it('shows the banner and the sale titles as promos', async () => {
+  it('shows the hero and the promo campaigns', async () => {
     mockHome()
     await renderWithProviders(<HomePage />)
 
     expect(
       await screen.findByRole('heading', { name: 'Autumn of Horror sale' }),
     ).toBeVisible()
-    const promos = screen.getByRole('region', { name: 'Discounts & Promos' })
+    // the API's wide image, its empty alt standing in with the banner's title
     expect(
-      within(promos).getByRole('link', { name: /Imperium Maledictum/ }),
-    ).toHaveTextContent('-20%')
+      screen.getByRole('img', { name: 'Autumn of Horror sale' }),
+    ).toHaveAttribute('src', expect.stringMatching(/\/img\/hero\/autumn\.jpg$/))
+    const promos = screen.getByRole('region', { name: 'Discounts & Promos' })
+    const promo = within(promos).getByRole('link', {
+      name: /Autumn of Horror/,
+    })
+    expect(promo).toHaveAttribute('href', '/titles?onSale=true&genre=horror')
+    expect(promo).toHaveTextContent('Up to 30% off')
+    expect(promo).toHaveTextContent('Vaesen, Coriolis and more · Ends Oct 31')
+    // the art as the API gives it, whatever its type
+    expect(promo.querySelector('img')).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/img\/promos\/autumn-of-horror\.jpg$/),
+    )
     expect(
       within(promos).getByRole('link', { name: 'View more' }),
     ).toHaveAttribute('href', '/titles?onSale=true')
@@ -182,23 +212,34 @@ describe('HomePage', () => {
     ).toEqual(['New Releases', 'Following', 'Bestselling', 'Specials'])
     const panel = screen.getByRole('tabpanel')
     expect(
-      within(panel).getByRole('complementary', {
-        name: 'Preview: Drowned Bells',
+      await within(panel).findByRole('complementary', {
+        name: 'Preview: Dead Air',
       }),
     ).toBeInTheDocument()
     expect(
-      await within(panel).findByText('Bells under the sea.'),
+      await within(panel).findByText('A radio show for the end of the world.'),
     ).toBeInTheDocument()
+    // the publisher alone, no "By …"
+    expect(within(panel).getByText('Green Ronin Publishing')).toBeVisible()
     expect(
-      within(panel).getByText('By Ann, Red Door Games'),
-    ).toBeInTheDocument()
-    expect(
-      within(panel).getByRole('button', { name: 'Add to Cart: Drowned Bells' }),
-    ).toHaveTextContent('Add to Cart - $19.99')
+      within(panel).getByRole('button', { name: 'Add to Cart · $19.99' }),
+    ).toBeVisible()
 
+    // the panel follows the pointer after a moment
     await u.hover(within(panel).getByRole('link', { name: /^Gloamwood/ }))
     expect(
-      within(panel).getByRole('complementary', { name: 'Preview: Gloamwood' }),
+      await within(panel).findByRole('complementary', {
+        name: 'Preview: Gloamwood',
+      }),
+    ).toBeInTheDocument()
+    // and keyboard focus does the same
+    within(panel)
+      .getByRole('link', { name: /^Dead Air/ })
+      .focus()
+    expect(
+      await within(panel).findByRole('complementary', {
+        name: 'Preview: Dead Air',
+      }),
     ).toBeInTheDocument()
 
     await u.click(within(tabs).getByRole('tab', { name: 'Bestselling' }))
@@ -239,13 +280,32 @@ describe('HomePage', () => {
     expect(
       await screen.findByText('21 titles · 4 systems · updated daily'),
     ).toBeVisible()
-    // a publisher opens the listing filtered by it
-    expect(
-      screen.getByRole('link', { name: 'Free League Publishing' }),
-    ).toHaveAttribute('href', '/titles?publisher=pub_free_league')
     expect(
       screen.getByRole('link', { name: 'Browse all titles' }),
     ).toHaveAttribute('href', '/titles')
+  })
+
+  it('shows the publishers GET /home picks, with their logos', async () => {
+    mockHome()
+    await renderWithProviders(<HomePage />)
+
+    const strip = await screen.findByRole('region', {
+      name: 'Browse by Publisher',
+    })
+    const links = within(strip).getAllByRole('link')
+    expect(links.map((link) => link.getAttribute('aria-label'))).toEqual([
+      'Free League Publishing',
+      'Chaosium Inc.',
+    ])
+    // a publisher opens the listing filtered by it
+    expect(links[0]).toHaveAttribute(
+      'href',
+      '/titles?publisher=pub_free_league',
+    )
+    expect(links[1].querySelector('img')).toHaveAttribute(
+      'src',
+      expect.stringMatching(/\/img\/publishers\/pub_chaosium\.png$/),
+    )
   })
 
   it('shows recently viewed titles only once there are some', async () => {
@@ -266,6 +326,45 @@ describe('HomePage', () => {
     expect(
       within(recent).getByRole('link', { name: 'Vaesen' }),
     ).toHaveAttribute('href', '/titles/ttl_vaesen')
+  })
+
+  it('clears recently viewed, and Undo brings them back', async () => {
+    const success = vi.spyOn(toast, 'success')
+    useRecentlyViewed.setState({
+      titles: [
+        { id: 'ttl_vaesen', title: 'Vaesen', coverUrl: null },
+        { id: 'ttl_coriolis', title: 'Coriolis', coverUrl: null },
+      ],
+    })
+    mockHome()
+    const { user: u } = await renderWithProviders(<HomePage />)
+
+    const recent = await screen.findByRole('region', {
+      name: 'Recently Viewed',
+    })
+    await u.click(
+      within(recent).getByRole('button', { name: 'Clear recently viewed' }),
+    )
+
+    expect(screen.queryByRole('region', { name: 'Recently Viewed' })).toBeNull()
+    expect(useRecentlyViewed.getState().titles).toEqual([])
+    expect(success).toHaveBeenCalledWith(
+      'Recently viewed cleared.',
+      expect.anything(),
+    )
+
+    const options = success.mock.calls[0]?.[1] as {
+      action: { label: string; onClick: () => void }
+    }
+    expect(options.action.label).toBe('Undo')
+    act(() => options.action.onClick())
+    expect(
+      await screen.findByRole('region', { name: 'Recently Viewed' }),
+    ).toBeVisible()
+    expect(useRecentlyViewed.getState().titles.map((t) => t.id)).toEqual([
+      'ttl_vaesen',
+      'ttl_coriolis',
+    ])
   })
 })
 
@@ -295,10 +394,11 @@ describe('HomePage while loading', () => {
     })
     await renderWithProviders(<HomePage />)
 
-    expect(await screen.findByText('Loading…')).toHaveAttribute(
-      'role',
-      'status',
-    )
+    // a "Loading…" per region still loading: hero, promos, lists
+    const loading = await screen.findAllByText('Loading…')
+    expect(loading.length).toBeGreaterThan(0)
+    for (const status of loading)
+      expect(status).toHaveAttribute('role', 'status')
     expect(
       screen.queryByRole('region', { name: 'Discounts & Promos' }),
     ).toBeNull()
@@ -314,7 +414,7 @@ describe('the Following tab', () => {
     items: [
       {
         type: 'publisher',
-        publisher: { id: 'pub_red_door', name: 'Red Door Games' },
+        publisher: { id: 'pub_green_ronin', name: 'Green Ronin Publishing' },
         followedAt: '2026-01-01T10:00:00Z',
         emailNewReleases: true,
       },
@@ -355,6 +455,43 @@ describe('the Following tab', () => {
     expect(tabNames()).not.toContain('Following')
   })
 
+  it('says the feed covers genres and series to one who follows only those', async () => {
+    mockHome({
+      'GET /following': {
+        body: {
+          items: [
+            {
+              type: 'genre',
+              target: { id: 'horror', name: 'Horror', following: true },
+              followedAt: '2026-03-09T10:00:00Z',
+              emailNewReleases: true,
+            },
+            {
+              type: 'product_line',
+              target: { id: 'pl_vaesen', name: 'Vaesen', following: true },
+              followedAt: '2026-04-01T10:00:00Z',
+              emailNewReleases: true,
+            },
+          ],
+        },
+      },
+      // the API's feed lists followed publishers' titles only, for now
+      'GET /following/feed': { body: { items: [] } },
+    })
+    const { user: u } = await renderWithProviders(<HomePage />)
+
+    await u.click(await screen.findByRole('tab', { name: 'Following' }))
+
+    expect(
+      await within(panel()).findByText(
+        'This feed covers the genres and series you follow too: their new releases will show up here.',
+      ),
+    ).toBeVisible()
+    expect(
+      within(panel()).getByRole('link', { name: 'Go to Following' }),
+    ).toHaveAttribute('href', '/following')
+  })
+
   it('invites a user who follows nothing to start', async () => {
     mockHome()
     const { user: u } = await renderWithProviders(<HomePage />)
@@ -392,7 +529,7 @@ describe('the Following tab', () => {
     await u.click(screen.getByRole('tab', { name: 'Following new' }))
 
     expect(
-      await within(panel()).findByText('New from Red Door Games'),
+      await within(panel()).findByText('New from Green Ronin Publishing'),
     ).toBeVisible()
     expect(within(panel()).getByText('New for Year Zero Engine')).toBeVisible()
     expect(useFollowingSeen.getState().seen[user.id]).toBe('2026-10-01')
@@ -519,5 +656,93 @@ describe('Featured for you', () => {
       expect(screen.queryByText(/These genres come from/)).toBeNull(),
     )
     expect(why).toHaveFocus()
+  })
+})
+
+describe('the title lists', () => {
+  const TABS = [
+    ['new', 'New Releases'],
+    ['bestselling', 'Bestselling'],
+    ['sale', 'Specials'],
+    ['free', 'Free & PWYW'],
+  ] as const
+
+  /** GET /home with `count` titles in each of the four lists. */
+  function mockLists(
+    count: number,
+    extra: (
+      section: string,
+      index: number,
+    ) => Partial<TitleSummary> = () => ({}),
+  ) {
+    const handlers: Record<string, Handler> = {
+      'GET /home': {
+        body: {
+          hero: [],
+          promos: [],
+          publishers: [],
+          sections: TABS.map(([id]) => ({
+            id,
+            title: id,
+            titles: Array.from({ length: count }, (_, index) =>
+              title(`ttl_${id}_${index + 1}`, {
+                title: `${id} ${index + 1}`,
+                ...extra(id, index),
+              }),
+            ),
+          })),
+        },
+      },
+    }
+    // each tab's first row loads its preview with the tab
+    for (const [id] of TABS) handlers[`GET /titles/ttl_${id}_1/preview`] = never
+    return mockHome(handlers)
+  }
+
+  /** The rows of the open tab (its first list: the panel has lists too). */
+  const rows = () =>
+    within(within(screen.getByRole('tabpanel')).getAllByRole('list')[0])
+      .getAllByRole('listitem')
+      .map((row) => row.textContent)
+
+  it('shows ten rows in each list', async () => {
+    mockLists(10)
+    const { user: u } = await renderWithProviders(<HomePage />)
+
+    for (const [id, name] of TABS) {
+      await u.click(await screen.findByRole('tab', { name }))
+      expect(rows()).toHaveLength(10)
+      expect(rows()[9]).toContain(`${id} 10`)
+    }
+  })
+
+  it('shows no more than ten', async () => {
+    mockLists(12)
+    const { user: u } = await renderWithProviders(<HomePage />)
+
+    for (const [id, name] of TABS) {
+      await u.click(await screen.findByRole('tab', { name }))
+      expect(rows()).toHaveLength(10)
+      expect(rows().join()).not.toContain(`${id} 11`)
+    }
+  })
+
+  it('says "Pay what you want" for such a title, and "Free" for a free one', async () => {
+    mockLists(3, (section, index) =>
+      section !== 'free'
+        ? {}
+        : index === 0
+          ? { price: usd(0), listPrice: usd(0) }
+          : index === 1
+            ? { payWhatYouWant: true, price: usd(1299), listPrice: usd(1299) }
+            : {},
+    )
+    const { user: u } = await renderWithProviders(<HomePage />)
+
+    await u.click(await screen.findByRole('tab', { name: 'Free & PWYW' }))
+    expect(rows()[0]).toContain('Free')
+    expect(rows()[1]).toContain('Pay what you want')
+    expect(rows()[1]).not.toContain('$12.99')
+    expect(rows()[2]).toContain('$19.99')
   })
 })

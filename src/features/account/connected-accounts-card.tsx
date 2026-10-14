@@ -19,7 +19,7 @@ import { useApiError } from '@/i18n/use-api-error'
 import { cn } from '@/lib/utils'
 import { useComingSoon } from '@/lib/use-coming-soon'
 
-// Figma order; brand names are never translated
+// brand names are never translated
 const PROVIDERS: Array<{ id: SocialProvider; name: string; icon: string }> = [
   { id: 'roll20', name: 'Roll20', icon: roll20Icon },
   { id: 'google', name: 'Google', icon: googleIcon },
@@ -52,7 +52,7 @@ export function ConnectedAccountsCard() {
           <SettingsRow
             key={id}
             icon={
-              // Figma: Roll20's logo sits on a white tile
+              // Roll20's logo sits on a white tile
               <img
                 src={icon}
                 alt=""

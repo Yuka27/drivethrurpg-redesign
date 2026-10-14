@@ -21,7 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useFormatMoney } from '@/i18n/format'
 
 /**
- * /cart (Figma "Cart"). Desktop: the lines and the gift card on the left, the
+ * /cart. Desktop: the lines and the gift card on the left, the
  * order summary on the right. Phones: one column, with a bar stuck to the
  * bottom of the screen: the item count, the total and "Checkout".
  */
@@ -103,7 +103,7 @@ export function CartPage() {
 }
 
 /**
- * Mockup "Cart: empty": back to the store, and anything saved for later
+ * An empty cart: back to the store, and anything saved for later
  * (each can move back to the cart).
  */
 function EmptyCart({ saved }: { saved: Array<CartLine> }) {
@@ -141,7 +141,7 @@ function EmptyCart({ saved }: { saved: Array<CartLine> }) {
 }
 
 /**
- * Figma mobile: the total and "Checkout" stuck to the bottom of the screen
+ * Phones: the total and "Checkout" stuck to the bottom of the screen
  * while the cart scrolls. Sticky, not fixed, so it stops at the end of the
  * cart and never covers the site footer.
  */

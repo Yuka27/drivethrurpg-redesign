@@ -1,44 +1,56 @@
-import { useRouter } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
+import { AppAnchor } from './app-anchor'
 import { assetUrl } from '@/api/client'
 import { useHomeBanners } from '@/api/titles'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
 
 /**
- * Figma: the promotion at the top of the home page and the listing. Its content is the API's (the first
- * GET /home banner), on its image with a dark gradient for the text: from the
- * left on desktop, from the bottom on phones. Its outline while it loads,
+ * The promotion at the top of the home page and the listing. Its content is the API's (the first
+ * GET /home banner), on its image with a dark gradient for the text: from its
+ * `contentSide` on desktop, from the bottom on phones. Its outline while it loads,
  * nothing when it fails.
  */
 export function PromoBanner() {
   const { t } = useTranslation('listing')
   const banners = useHomeBanners()
-  const router = useRouter()
   const banner = banners.data?.[0]
   if (banners.isPending)
     return <Skeleton className="h-[336px] rounded-xl lg:h-[255px]" />
   if (!banner) return null
+  const right = banner.contentSide === 'right'
 
   return (
     <section
       aria-labelledby={`banner-${banner.id}`}
-      className="relative isolate flex h-[336px] overflow-hidden rounded-xl border border-muted bg-card lg:h-[255px] lg:items-center lg:px-10"
+      className={cn(
+        'relative isolate flex h-[336px] overflow-hidden rounded-xl border border-muted bg-card lg:h-[255px] lg:items-center lg:px-10',
+        right && 'lg:justify-end',
+      )}
     >
       {banner.image && (
         <img
           src={assetUrl(banner.image.url)}
-          alt={banner.image.alt}
+          alt={banner.image.alt || banner.title}
           className="absolute inset-0 -z-10 size-full object-cover"
         />
       )}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-linear-to-t from-black/90 from-35% to-transparent to-75% lg:bg-linear-to-r lg:from-black/80 lg:from-28% lg:to-transparent lg:to-48%"
+        className={cn(
+          'absolute inset-0 -z-10 bg-linear-to-t from-black/90 from-35% to-transparent to-75% lg:from-black/80 lg:from-28% lg:to-transparent lg:to-48%',
+          right ? 'lg:bg-linear-to-l' : 'lg:bg-linear-to-r',
+        )}
       />
       {/* always over a dark image: the dark theme's text colours, in both themes */}
-      <div className="dark mt-auto flex max-w-sm flex-col items-start gap-4 p-4 lg:mt-0 lg:p-0">
+      <div
+        className={cn(
+          'dark mt-auto flex max-w-sm flex-col items-start gap-4 p-4 lg:mt-0 lg:p-0',
+          right && 'lg:items-end lg:text-right',
+        )}
+      >
         <div className="flex flex-col gap-2">
           <p className="text-sm font-bold text-primary-text uppercase">
             {t('banner.featured')}
@@ -54,18 +66,7 @@ export function PromoBanner() {
           <p className="text-base text-white/90">{banner.subtitle}</p>
         )}
         <Button asChild className="h-8 rounded-lg px-2.5">
-          <a
-            href={banner.link}
-            onClick={(event) => {
-              // an app link: go there without reloading the page
-              if (banner.link.startsWith('/')) {
-                event.preventDefault()
-                router.history.push(banner.link)
-              }
-            }}
-          >
-            {banner.cta}
-          </a>
+          <AppAnchor href={banner.link}>{banner.cta}</AppAnchor>
         </Button>
       </div>
     </section>

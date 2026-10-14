@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useFormatNumber } from '@/i18n/format'
 import { cn } from '@/lib/utils'
 
-/** Figma's verdict next to the stars ("Very Positive"), from the average rating: a title:rating.verdict key. */
+/** The verdict next to the stars ("Very Positive"), from the average rating: a title:rating.verdict key. */
 export function ratingVerdict(average: number) {
   if (average >= 4.5) return 'veryPositive'
   if (average >= 4) return 'positive'
@@ -42,7 +42,7 @@ export function Stars({
 }
 
 /**
- * Figma: the stars and the review count, "(240)" on cards, "(240 reviews)" in
+ * The stars and the review count, "(240)" on cards, "(240 reviews)" in
  * list rows. Read out as one phrase.
  */
 export function RatingStars({

@@ -3,8 +3,6 @@ import {
   ArrowRightIcon,
   FunnelIcon,
   HeartIcon,
-  LayoutGridIcon,
-  ListIcon,
   ShoppingCartIcon,
 } from 'lucide-react'
 import { useRef, useState } from 'react'
@@ -44,8 +42,8 @@ import { TitleResultsSkeleton } from '@/components/title/title-skeletons'
 import { useFacetLabel } from '@/components/title/use-facet-label'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { ListingFilterPanel } from '@/features/listing/listing-filter-panel'
+import { ViewToggle } from '@/features/listing/view-toggle'
 import {
   activeFilterCount,
   CLEARED_FILTERS,
@@ -57,7 +55,7 @@ import { useApiError } from '@/i18n/use-api-error'
 import { useIsDesktop } from '@/lib/use-media-query'
 import { cn } from '@/lib/utils'
 
-/** Figma: 4 × 5 cards (2 × 10 on phones), as on the listing. */
+/** 4 × 5 cards (2 × 10 on phones), as on the listing. */
 const PAGE_SIZE = 20
 
 /** What "Add all" and "Add sale titles" can still add: not owned, not in the cart. */
@@ -67,7 +65,7 @@ const addable = (items: Array<WishlistItem>) =>
     .map((item) => item.titleId)
 
 /**
- * /wishlist (Figma "Wishlist"): the listing's layout and filters over the
+ * /wishlist: the listing's layout and filters over the
  * saved titles. The API only pages, so the whole wishlist loads once and is
  * filtered, counted, sorted and paged here (as the library is). Above it:
  * Share, "Add all to cart" and, when some titles are on sale, a banner to add
@@ -133,7 +131,6 @@ export function WishlistPage({
     search,
     onSearchChange,
     facetOptions: options,
-    languages: false,
   }
   const sortLabel = (sort: WishlistSort) => t(`sorts.${sort}`)
 
@@ -236,31 +233,10 @@ export function WishlistPage({
                 })}
                 className="h-7 text-xs data-[size=default]:h-7 max-lg:ml-auto"
               />
-              <ToggleGroup
-                type="single"
-                value={search.view}
-                onValueChange={(view) =>
-                  view && onSearchChange({ view: view as 'grid' | 'list' })
-                }
-                aria-label={t('listing:view.label')}
-                className="gap-0"
-              >
-                {(
-                  [
-                    ['grid', LayoutGridIcon],
-                    ['list', ListIcon],
-                  ] as const
-                ).map(([view, Icon]) => (
-                  <ToggleGroupItem
-                    key={view}
-                    value={view}
-                    aria-label={t(`listing:view.${view}`)}
-                    className="size-7 min-w-7 rounded-md data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                  >
-                    <Icon aria-hidden />
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
+              <ViewToggle
+                view={search.view}
+                onChange={(view) => onSearchChange({ view })}
+              />
             </div>
           </>
         )}
@@ -382,7 +358,7 @@ function AddToCartButton({
   )
 }
 
-/** Figma "mini banner": how many saved titles are on sale, and adding them. */
+/** How many saved titles are on sale, and adding them. */
 function SaleBanner({
   count,
   titleIds,
@@ -416,7 +392,7 @@ function SaleBanner({
 const PICKS = 4
 
 /**
- * Mockup "Wishlist: empty": the benefit (sale alerts) in one line, the store,
+ * An empty wishlist: the benefit (sale alerts) in one line, the store,
  * and a few popular titles to start from (the bestsellers).
  */
 function EmptyWishlist() {

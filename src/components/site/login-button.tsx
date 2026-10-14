@@ -24,7 +24,7 @@ export function LoginButton({
   return (
     <Button
       size="sm"
-      className={`cursor-pointer ${className}`}
+      className={className}
       aria-haspopup="dialog"
       onClick={() => {
         onOpen?.()

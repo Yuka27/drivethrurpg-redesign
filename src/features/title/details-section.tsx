@@ -4,7 +4,7 @@ import type { TitleDetail } from '@/api/titles'
 import { useFacetLabel } from '@/components/title/use-facet-label'
 import { useFormatDate, useFormatNumber, useLanguageName } from '@/i18n/format'
 
-/** Figma "Details": label-over-value pairs in two columns, rows split by lines. */
+/** "Details": label-over-value pairs in two columns, rows split by lines. */
 export function DetailsSection({ title }: { title: TitleDetail }) {
   const { t } = useTranslation('title')
   const facetLabel = useFacetLabel()

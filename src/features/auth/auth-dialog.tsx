@@ -222,7 +222,7 @@ export function AuthDialog() {
           <div className="h-full w-1/2 animate-shimmer bg-gradient-to-r from-transparent via-foreground/[0.07] to-transparent motion-reduce:hidden" />
         </div>
 
-        {/* not in Figma: Esc and the backdrop close it too, but touch and
+        {/* Esc and the backdrop close it too, but touch and
             screen-reader users need a visible, labelled way out */}
         <DialogClose asChild>
           <Button

@@ -3,13 +3,11 @@ import { afterEach, describe, expect, it } from 'vite-plus/test'
 
 import { ConfirmationPage } from './confirmation-page'
 import { useCheckoutResult } from '@/stores/checkout-result'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, mockApi, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
 afterEach(() => useCheckoutResult.setState({ result: null }))
-
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 
 const order = (guest: boolean) => ({
   id: 'ord_DT-1',

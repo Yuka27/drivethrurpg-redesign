@@ -260,7 +260,7 @@ export function ClaimCard({ gift, token }: { gift: Gift; token: string }) {
                           returnFocusTo: event.currentTarget,
                         })
                       }
-                      className="text-[13px] font-semibold text-primary hover:underline"
+                      className="text-[13px] font-semibold text-primary-text hover:underline"
                     >
                       {t('claim.forgot')}
                     </button>
@@ -317,7 +317,7 @@ export function ClaimCard({ gift, token }: { gift: Gift; token: string }) {
                   href={TERMS_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-primary hover:underline"
+                  className="font-semibold text-primary-text hover:underline"
                 />
               ),
             }}

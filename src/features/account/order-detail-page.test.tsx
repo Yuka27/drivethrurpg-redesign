@@ -5,11 +5,10 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 import { OrderDetailPage } from './order-detail-page'
 import { ORDERS_SEARCH_DEFAULTS, useLastOrdersSearch } from './orders-search'
 import { assetUrl } from '@/api/client'
-import { apiError, mockApi, user } from '@/test/api'
+import { apiError, mockApi, usd, user } from '@/test/api'
 import type { Handler } from '@/test/api'
 import { renderWithProviders } from '@/test/render'
 
-const usd = (amount: number) => ({ amount, currency: 'USD' })
 const line = (lineId: string, titleId: string, amount: number, qty = 1) => ({
   lineId,
   title: { id: titleId, cover: { url: `/img/${titleId}.jpg`, alt: '' } },

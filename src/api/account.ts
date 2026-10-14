@@ -27,7 +27,6 @@ export function useConnectedAccounts() {
   })
 }
 
-/** DELETE /account/connected/{provider} (204). */
 export function useDisconnectAccount() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -56,7 +55,6 @@ const AddressSchema = z.object({
 })
 export type Address = z.infer<typeof AddressSchema>
 
-/** GET /account/addresses */
 export function useAddresses() {
   const prefs = useRequestPrefs()
   return useQuery({
@@ -70,7 +68,6 @@ export function useAddresses() {
   })
 }
 
-/** DELETE /account/addresses/{id} */
 export function useRemoveAddress() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -109,7 +106,6 @@ export function usePaymentMethods() {
   })
 }
 
-/** DELETE /account/payment-methods/{id} */
 export function useRemovePaymentMethod() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -125,7 +121,6 @@ export function useRemovePaymentMethod() {
   })
 }
 
-/** "Change password" form. */
 export const ChangePasswordRequestSchema = z.object({
   currentPassword: z
     .string()

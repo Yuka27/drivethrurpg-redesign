@@ -19,7 +19,7 @@ import {
 import { cn } from '@/lib/utils'
 
 /**
- * Figma "Buy card": the editions to choose from (PDF, print, bundle), a few
+ * The editions to choose from (PDF, print, bundle), a few
  * facts, then "Add to Cart - $19.99", the heart and "Buy as a gift". The
  * chosen edition is the page's (`sku`), shared with the sticky bar.
  */

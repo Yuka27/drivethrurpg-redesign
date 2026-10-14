@@ -63,7 +63,7 @@ export function BenefitsPanel() {
         aria-labelledby="register-why-title"
         className="mt-18 hidden rounded-[18px] border border-border bg-card bg-[radial-gradient(130%_120%_at_0%_100%,color-mix(in_oklch,var(--primary)_26%,transparent),transparent_58%)] p-[30px] min-[1000px]:block"
       >
-        <p className="text-[0.74rem] font-bold tracking-[0.05em] text-primary uppercase">
+        <p className="text-[0.74rem] font-bold tracking-[0.05em] text-primary-text uppercase">
           {t('register.why.eyebrow')}
         </p>
         <h2
@@ -80,7 +80,7 @@ export function BenefitsPanel() {
       </aside>
 
       <details className="group rounded-[14px] border border-border bg-card min-[1000px]:hidden">
-        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between rounded-[14px] px-4 py-3.5 font-heading text-[0.9rem] font-bold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+        <summary className="flex min-h-12 list-none items-center justify-between rounded-[14px] px-4 py-3.5 font-heading text-[0.9rem] font-bold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
           {t('register.why.toggle')}
           <PlusIcon
             aria-hidden

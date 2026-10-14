@@ -9,7 +9,7 @@ export type QuickFilter = {
   onToggle: () => void
 }
 
-/** Figma: "QUICK FILTERS" then outline chips; an active one turns red. */
+/** "QUICK FILTERS" then outline chips; an active one turns red. */
 export function QuickFilters({
   filters,
   className,
