@@ -105,9 +105,30 @@ export function useRequestPrefs(): Preferences {
   )
 }
 
-/** Covers, avatars and logos come back root-relative ("/img/…"). */
-export const assetUrl = (url: string) =>
-  url.startsWith('/') ? env.VITE_API_URL + url : url
+/**
+ * An image or file address from the API, resolved against `origin`. The API
+ * sends covers, logos, hero and promo art, page spreads, avatars and PDFs as
+ * root-relative paths ("/img/covers/x.jpg"); in production the app and the
+ * API are on different origins, so the browser must not resolve them against
+ * the app's own. Absolute URLs (https:, data:, blob:, //host) pass through;
+ * nothing (null, undefined, "") stays nothing.
+ */
+export function resolveAssetUrl(
+  path: string | null | undefined,
+  origin: string,
+): string | undefined {
+  if (!path) return undefined
+  // a scheme ("https:", "data:", "blob:") or a protocol-relative "//host"
+  if (/^([a-z][a-z\d+.-]*:|\/\/)/i.test(path)) return path
+  return `${origin.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+}
+
+/** `resolveAssetUrl` against the API origin (VITE_API_URL). */
+export function assetUrl(path: string): string
+export function assetUrl(path: string | null | undefined): string | undefined
+export function assetUrl(path: string | null | undefined) {
+  return resolveAssetUrl(path, env.VITE_API_URL)
+}
 
 /** Money from the API: integer minor units (cents) + ISO currency. Format with useFormatMoney. */
 export const MoneySchema = z.object({

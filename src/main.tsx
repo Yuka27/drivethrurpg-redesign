@@ -1,21 +1,7 @@
-import ReactDOM from 'react-dom/client'
-import { QueryClientProvider } from '@tanstack/react-query'
-import { RouterProvider } from '@tanstack/react-router'
-import { createAppRouter } from './router'
-import { queryClient } from './lib/query-client'
-import { initI18n } from './i18n'
-import { detectInitialLanguage } from './i18n/detect'
-import './stores/theme'
+import { showConfigError } from './lib/config-error'
+import { envProblem } from './lib/env'
 
-import './styles/index.css'
-
-const router = createAppRouter()
-
-// load the UI text for the detected language before the first render
-await initI18n(detectInitialLanguage())
-
-ReactDOM.createRoot(document.getElementById('app')!).render(
-  <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router} />
-  </QueryClientProvider>,
-)
+// Check the build's variables before anything reads them: a bad deploy gets a
+// clear error screen, never a blank page. The app loads only when they pass.
+if (envProblem) showConfigError(envProblem)
+else await import('./bootstrap')

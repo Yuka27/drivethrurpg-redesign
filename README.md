@@ -105,6 +105,22 @@ By default the app talks to the hosted mock API. To use a local one, run it (see
 | `npm test`              | Run the tests                                     |
 | `npm run test:coverage` | Tests with an HTML coverage report in `coverage/` |
 
+## Deployment
+
+The app is static files, hosted on **Cloudflare Pages**. In the Pages project settings:
+
+| Setting                | Value                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| Framework preset       | None                                                                          |
+| Build command          | `npm run build`                                                               |
+| Build output directory | `dist`                                                                        |
+| Node version           | 24 (from `.node-version`; or set `NODE_VERSION=24`)                           |
+| Environment variable   | `VITE_API_URL` = the hosted mock API origin (no trailing slash, no `/api/v1`) |
+
+- **Variables are baked in at build time.** Vite writes them into the files it builds, so changing `VITE_API_URL` (or any `VITE_` variable) only takes effect after a new deployment. A missing or invalid `VITE_API_URL` still builds, but the site then shows a "This build is not configured" screen naming the variable, instead of a blank page.
+- **Deep links work without a `_redirects` file:** with no `404.html` in the output, Pages serves `index.html` for unknown paths and the router takes over. `public/_headers` caches the hashed files in `/assets/` for good and makes browsers check `index.html` on every visit.
+- **The hosted mock API sleeps on the free plan.** After a while without visits, the first request can take 30–60 seconds while it wakes up; the app shows its loading outlines meanwhile.
+
 ## Mock API
 
 The mock API imitates a real store back end: catalogue, search facets, cart and checkout, library, orders, follows, notifications and more (about 140 endpoints). Full reference: `<RENDER_URL>/docs`.
